@@ -1,0 +1,211 @@
+.container {
+    width: 90%;
+    margin: 50px auto;
+  }
+  .heading {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 50px;
+  }
+
+
+  .loud-header {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .row {
+    display: flex;
+    // there must be at least a 10px horizontal gap between elements
+
+    // there must be at least a 10px horizontal gap between elements
+    gap: 0px 20px;
+    flex-direction: row;
+    justify-content: center;
+    flex-flow: wrap;
+    @media (min-width: 1200px) {
+        padding: 0 10%;
+    }
+  }
+
+
+// create the class that does some horizontal padding only if the screen is too wide
+.anti-wide {
+    // @media (min-width: 768px) {
+    //     // padding: 0 10px;
+    // }
+    padding: 0 50px;
+ }
+
+  
+ .pad-it {
+    padding: 2px 20px;
+ }
+
+  .card {
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 50px;
+    transition: 0.3s;
+    // padding: 1.5rem;
+    border-radius: 16px;
+    width: 20%;
+    // max-width: 30%;
+  }
+  
+  .card-header {
+
+    // padding: 33px 0px;
+    padding-top: 33px;
+    text-align: center;
+   //  border-right-color: #19177c;
+    border-radius: 16px 16px 0px 0px;
+    // height: 100%;
+    overflow:hidden;
+    background: #19177c;
+    color: #fff;
+    font-weight: bold;
+    font-size: 30px !important;
+    position: relative;
+  }
+  
+  .card-body {
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 18px;
+    
+  }
+  
+  .card-body .btn {
+    display: block;
+    color: #fff;
+    text-align: center;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    margin-top: 30px;
+    text-decoration: none;
+    padding: 10px 5px;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px -10px rgba(0, 0, 0, 0.25);
+  }
+  
+  @media screen and (max-width: 1000px) {
+    .card {
+      width: 40%;
+    }
+  }
+  
+  @media screen and (max-width: 620px) {
+    .container {
+      width: 100%;
+    }
+  
+    .heading {
+      padding: 20px;
+      font-size: 20px;
+    }
+  
+    .card {
+      width: 80%;
+    }
+  }
+  
+
+  // F/S/Y RELATED STUFF
+
+  .session-bumper{
+    // make this a flexbox that positions elements on the bottom left of the div
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+    // margin-bottom: 10px;
+
+  }
+  
+  .session-square {
+    //border-style: solid;
+    // border-width: 2px;
+    // border-color: black;
+    min-width: 20px;
+    min-height: 10px;
+  }
+
+  .fsy {
+    mix-blend-mode: overlay;
+    opacity: 95%;
+    font-size: 23px;
+    // color: #96ff3a;
+    // make it bold
+    font-weight: bold;
+    // add 5x padding
+    padding: 4px 5px;
+  }
+
+
+
+// BRQ RELATED STUFF
+
+.brq-bumper{
+
+    
+
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0;
+    justify-content: flex-start;
+    margin: 0 auto;
+    height: 91px;
+
+
+  }
+  .flexit01 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: space-between;
+    align-items: center;
+    // place the elements in this class at the horizontal center of the screen
+    justify-content: center;
+}
+  .brq-square {
+    //border-style: solid;
+    // border-width: 2px;
+    // border-color: black;
+    float: right;
+    background-color: black;
+    min-width: 20px;
+
+
+    position: relative;
+    // height: 50%;
+    // any text in this is vertically centered
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    // make the min height as big as the parent div
+    // min-height: 97px;
+    // min-height: 97px;
+  }
+
+  .center {
+    text-align: center;
+}
+
+.description {
+  text-align: left;
+}
+
+.title-text {
+  font-size: 30px;
+  font-weight: bold;
+  padding: 15px;
+}

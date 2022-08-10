@@ -1,0 +1,131 @@
+<mat-dialog-content class="mat-typography">
+    <div class="v-pad-it">
+        <div class="flexith">
+            <div class="margin-it" *ngFor="let crs of storedCourses">
+                <div class="pad-it">
+                    <div>
+
+                        <table mat-table [dataSource]="
+                        sortSections(ensureCourseFormat(crs.sections))
+                        " class="mat-elevation-z8" [ngClass]="{accent:true}"
+                            [style.background-color]="getTableColor(crs)">
+
+                            <!-- Lec column -->
+                            <ng-container matColumnDef="lec">
+                                <th mat-header-cell *matHeaderCellDef> ACT </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.name }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="ins">
+                                <th mat-header-cell *matHeaderCellDef> INS </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <ul style="list-style-type:none; padding-left: 0;">
+                                        <li *ngFor="let ins of ensureInstructorsFromElement(element)">
+                                            {{ins.firstName}} {{ins.lastName}}
+                                        </li>
+                                    </ul>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="time">
+                                <th mat-header-cell *matHeaderCellDef> TIME </th>
+                                <td mat-cell *matCellDef="let element">
+
+                                    <div class="flexit">
+                                        <div>
+                                            <div class="flexit">
+                                                <div *ngFor="let meets of groupMeetings(ensureSchedule(element))"
+                                                    class="r-chip" [style.min-height]="24"
+                                                    [style.background-color]="getDayColor(meets[0].start.day)"
+                                                    [style.color]="getDayColoredText(meets[0].start.day)">
+                                                    <div class="meeting-day"
+                                                        [style.background-color]="getDayBrightenedColors(meets[0].start.day)">
+                                                        <div class="vert-center">
+                                                            {{ getDayCode(meets[0].start.day) }}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="meeting-time">
+                                                        <div class="vert-center">
+                                                            <div class="flex-horizontal-nowrap">
+                                                                <div>
+                                                                    {{getTimeCode(meets[0].start.millisofday)}}-{{getTimeCode(meets[0].end.millisofday)}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="assigned-room">
+                                                        <div class="flex-horizontal-nowrap">
+                                                            <div *ngFor="let mt4 of getRidOfDuplicateLocations(meets)">
+                                                                <a [attr.href]="mt4.building.buildingUrl"
+                                                                    target="_blank">
+                                                                    {{ mt4.building.buildingCode }} {{
+                                                                    mt4.building.buildingRoomNumber }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="delivery">
+                                <th mat-header-cell *matHeaderCellDef> DELIVERY </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div class="center-it">
+                                        <div class="allow-wrap">
+                                            <mat-icon matTooltipPosition="right" matTooltip="{{getToolTip(element)}}">
+                                                {{getIcon(element)}}
+                                            </mat-icon>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <!-- Disclaimer column -->
+                            <ng-container matColumnDef="disclaimer">
+                                <td mat-footer-cell *matFooterCellDef [attr.colspan]="displayedColumns.length">
+                                    <!-- Please note that the cost of items displayed are completely and totally made up. -->
+                                    <div style="max-width: 340px; padding-top: 12px;
+                                    padding-bottom: 8px;"
+                                        [innerHTML]="ensureNotes(crs.notes)"></div>
+
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                            <ng-container *ngIf="ensureNotes(crs.notes) !== ''">
+                                <tr mat-footer-row *matFooterRowDef="
+                            ensureNotes(crs.notes) !== '' ? 
+                            ['disclaimer'] : []
+                            " class="example-second-footer-row"></tr>
+                            </ng-container>
+
+                        </table>
+
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</mat-dialog-content>

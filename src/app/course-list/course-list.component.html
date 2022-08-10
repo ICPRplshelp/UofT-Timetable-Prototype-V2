@@ -1,0 +1,161 @@
+<div class="center">
+
+    <h1 class="title-text"> UofT Course list </h1>
+    <p> Search for the first three letters of any course code.
+        All UofT undergraduate courses are supported. </p>
+
+<div class="flexit01">
+
+
+
+
+<mat-form-field class="example-form-field" appearance="fill" (keydown)="keyDownFunction($event)">
+    <mat-label>Course designators</mat-label>
+
+    <input matInput type="text" [(ngModel)]="courseFilter">
+    <mat-error *ngIf="courseFilter.length >= 4">
+        This search can't be more specific than the first three letters of a course
+    </mat-error>
+</mat-form-field>
+
+<button id="reloadit" 
+matTooltip="Reload all courses"
+          matTooltipPosition="right"
+type="button" mat-stroked-button (click)="
+obtainEverything()
+">RELOAD IT</button>
+</div>
+
+<p *ngIf="errorMessage !== ''"
+style="padding-bottom:6px; color: red;">{{errorMessage}}</p>
+
+</div>
+<ul>
+    <!-- <li *ngFor="let coursePack of condensedCourseList">
+
+            {{coursePack[0].code }}
+
+            <ul *ngFor="let crs of coursePack">
+                <li>{{crs.code}}-{{crs.sectionCode}}</li>
+            </ul>
+
+        </li> -->
+</ul>
+<div>
+
+    <div class="row">
+
+        <div class="card" *ngFor="let coursePack of condensedCourseList"
+            [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'max(35%, 177px)' : 'max(177px, 20%)'">
+            <div class="card-header" [style.background-color]=" 
+            constants.levelColors[whatLevel(coursePack[0].code)]
+            " (click)="
+            addToCanShowDescriptions(coursePack[0].code)
+            ">
+                <div style="position: relative">
+                    {{coursePack[0].code}}
+
+                    <div>
+                        <div class="brq-bumper" style="color: white;"
+                        
+                        *ngFor="let br of 
+                    [whatBreadths2(coursePack[0].breadths)]
+                    ">
+
+                            <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
+                            
+                                [style.height.%]="100/br.length" class="brq-square">
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="session-bumper">
+                        <div *ngIf="isThisCourseOfferedInThisTerm('F', coursePack)" class="session-square"
+                            [style.background-color]="'LightSalmon'">
+                            <div class="fsy"
+                            matTooltip="offered in fall"
+                            matTooltipPosition="left"
+                            >
+                                F
+
+                            </div>
+                        </div>
+
+                        <div *ngIf="isThisCourseOfferedInThisTerm('S', coursePack)" class="session-square"
+                            [style.background-color]="'LightBlue'">
+                            <div class="fsy"
+                            matTooltip="offered in winter"
+                            matTooltipPosition="left">
+                                S
+                            </div>
+                        </div>
+
+                        <div *ngIf="isThisCourseOfferedInThisTerm('Y', coursePack)" class="session-square"
+                            [style.background-color]="'MediumOrchid'">
+                            <div class="fsy"
+                            matTooltip="offered year-wide"
+                            matTooltipPosition="left"
+                            >
+                                Y
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" (click)="openCourseDialog(coursePack)">
+                <p [innerHTML]="coursePack[0].name">
+                </p>
+                <div *ngIf="checkCanShowDescription(coursePack[0].code)" style="text-align: left">
+                    <p>
+                        {{getDesc(coursePack[0])}}
+
+                    </p>
+
+                    <div *ngIf="!isNullOrEmpty(getPrq(coursePack[0]))">
+                        <div class="loud-header"
+                        matTooltip="You must pass these courses before
+                        taking this one"
+                            matTooltipPosition="left"
+                            matTooltipShowDelay="200"
+                        >Prerequisite</div>
+                        <p [innerHTML]="getPrq(coursePack[0])"></p>
+                    </div>
+
+                    <div *ngIf="!isNullOrEmpty(getCrq(coursePack[0])
+)">
+                        <div class="loud-header"
+                        matTooltip="You must take or have passed these courses before
+                        taking this one"
+                            matTooltipPosition="left"
+                            matTooltipShowDelay="200"
+                        
+                        >Corequisite</div>
+                        <p [innerHTML]="getCrq(coursePack[0])">
+                        </p>
+                    </div>
+
+                    <div *ngIf="!isNullOrEmpty(getExc(coursePack[0]))">
+                        <div class="loud-header"
+                        matTooltip="You can't recieve credit for this course if you've passed
+                        or are taking any of these concurrently"
+                            matTooltipPosition="left"
+                            matTooltipShowDelay="200"
+                        
+                        >Exclusion</div>
+                        <p [innerHTML]="getExc(coursePack[0])">
+                        </p>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
