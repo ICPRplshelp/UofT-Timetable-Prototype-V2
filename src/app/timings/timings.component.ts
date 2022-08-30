@@ -1,10 +1,8 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ArrayDataSource } from '@angular/cdk/collections';
-import { temporaryAllocator } from '@angular/compiler/src/render3/view/util';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Course, CourseSections, MeetingTime, Section } from '../shared/course-interfaces';
-import { UtilitiesService } from '../shared/utilities.service';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Course, Instructor, MeetingTime, Note, Note2, Section} from '../shared/course-interfaces';
+import {UtilitiesService} from '../shared/utilities.service';
 
 @Component({
   selector: 'app-timings',
@@ -45,27 +43,29 @@ export class TimingsComponent implements OnInit {
 
   getDayColor(dayOfWeek: string): string {
     let dayOfWeek2 = parseInt(dayOfWeek);
-      if(dayOfWeek2 === NaN){
-        dayOfWeek2 = 7;
-      }
-
+    if(isNaN(dayOfWeek2) || dayOfWeek2 === -1){
+      dayOfWeek2 = this.util.dayColors.length - 1;
+    }
+    // console.log("temp will be", dayOfWeek2, "and is", this.util.dayColors[dayOfWeek2]);
+    // if (temp === undefined){
+    //   temp = "gray";
+    // }
     return this.util.dayColors[dayOfWeek2];
   }
 
   getDayColoredText(dayOfWeekT: string): string {
     let dayOfWeek: number = parseInt(dayOfWeekT);
-    if(dayOfWeek === NaN){
-      dayOfWeek = 7;
+    if(isNaN(dayOfWeek) || dayOfWeek === -1){
+      dayOfWeek = this.util.dayColorText.length - 1;
     }
     return this.util.dayColorText[dayOfWeek];
   }
 
   getDayBrightenedColors(dayOfWeekT: string): string {
     let dayOfWeek: number = parseInt(dayOfWeekT);
-    if(dayOfWeek === NaN){
-      dayOfWeek = 7;
+    if(isNaN(dayOfWeek) || dayOfWeek === -1){
+      dayOfWeek = this.util.dayBrightenedColors.length - 1;
     }
-    
     return this.util.dayBrightenedColors[dayOfWeek];
   }
 
@@ -75,9 +75,10 @@ export class TimingsComponent implements OnInit {
   // with a millisofday return HH:MM timecode in 24 hour format
   getTimeCode(millisTemp: string): string {
     let millis = parseInt(millisTemp);
-    if(millis === NaN){
+    if(isNaN(millis) || millis === -1){
       return "NA";
     }
+
     let date = new Date(millis);
     let hours = date.getHours() + 5;
     let minutes = date.getMinutes();
@@ -98,18 +99,7 @@ export class TimingsComponent implements OnInit {
   }
 
   getDeliveryMode(sec: Section): string {
-    const sdm = sec.deliveryModes;
-    if(sdm === null || sdm === undefined){
-      return "";
-    }
-    const sdm2 = sdm.deliveryModes;
-    if(Array.isArray(sdm2)){
-      if(sdm2.length !== 0)
-        return sdm2[0].mode;
-      else return "";
-    }
-    
-    return sdm2.mode;
+    return sec.deliveryModes[0].mode;
   }
 
   getIcon(sec: Section): string {
@@ -144,19 +134,25 @@ export class TimingsComponent implements OnInit {
 
   }
 
-  ensureNotes(notes: any): string{
-    if(notes === null || notes === undefined){
+  ensureNotes(notes: Note2[]): string{
+    let finalStr = "";
+    notes.forEach(nt => {
+      let nContent = this._ensureIndividualNote(nt);
+      finalStr += nContent;
+    });
+    return finalStr;
+  }
+
+  private _ensureIndividualNote(notes: Note2): string {
+    if (notes === null || notes === undefined) {
       return "";
     }
-    let cand1 = notes.notes;
-    if(cand1 === null || cand1 === undefined){
+    let content = notes.content;
+    if (content !== null) {
+      return content;
+    } else {
       return "";
     }
-    let cand3 = cand1.content;
-    if(cand3 === null || cand3 === undefined){
-      return "";
-    }
-    return cand3;
   }
 
   /**
@@ -198,8 +194,8 @@ export class TimingsComponent implements OnInit {
 
   getDayCode(dayOfWeekT: string){
     let dayOfWeek: number = parseInt(dayOfWeekT);
-    if(dayOfWeek === NaN){
-      dayOfWeek = 6;
+    if(isNaN(dayOfWeek)){
+      dayOfWeek = 7;
     }
     return this.days[dayOfWeek];
   }
@@ -216,17 +212,26 @@ export class TimingsComponent implements OnInit {
    */
   groupMeetings(mets2: MeetingTime[][]): MeetingTime[][] {
     if(mets2.length === 0){
-      return [];
+      return [[{
+        start: {day: "", millisofday: "-1"},
+        end: {day: "", millisofday: "-1"},
+        building: {buildingCode: "", buildingRoomNumber: "", buildingUrl: "", buildingName: ""},
+        sessionCode: "10000",
+        repetition: "WEEKLY",
+        repetitionTime: "ONCE_A_WEEK",
+      }]];
     }
     let array = mets2;
-    let temp = array[0].map((_, colIndex) => array.map(row => row[colIndex]));
     // console.log(temp);
-    return temp;
+    return array[0].map((_, colIndex) => array.map(row => row[colIndex]));
     // return array[0].map((col, i) => array.map(row => row[i]));
 
 
 
   }
+
+
+  
 
 
   getRidOfDuplicateLocations(mtt: MeetingTime[]): MeetingTime[] {
@@ -245,19 +250,18 @@ export class TimingsComponent implements OnInit {
   }
 
   ensureSchedule(ses: Section): MeetingTime[][]{
-    let meetingTimes = ses.meetingTimes;
-    if(meetingTimes === null || meetingTimes === undefined){
-      return [];
+    let meetingTimes2 = ses.meetingTimes;
+    // console.log(meetingTimes2);
+    if(meetingTimes2 === null || meetingTimes2 === undefined){
+      meetingTimes2 = [];
     }
-    let meetingTimes2 = meetingTimes.meetingTimes;
-    if(Array.isArray(meetingTimes2)){
-      meetingTimes2.sort((a, b) => {
+    meetingTimes2.sort((a, b) => {
         let aStart = parseInt(a.start.day);
-        if(aStart === NaN){
+        if(isNaN(aStart)){
           aStart = 0;
         }
         let bStart = parseInt(b.start.day);
-        if(bStart == NaN){
+        if(isNaN(bStart)){
           bStart = 0;
         }
         if(aStart < bStart){
@@ -268,17 +272,12 @@ export class TimingsComponent implements OnInit {
 
         let ams = parseInt(a.start.millisofday);
         let bms = parseInt(b.start.millisofday);
-        if(ams === NaN) ams = 0;
-        if(bms === NaN) bms = 0;
+        if(isNaN(ams)) ams = 0;
+        if(isNaN(bms)) bms = 0;
         return ams - bms;  // if bms is higher, it is negative
       
       })
-
-
       return this.splitMeetingTimes(meetingTimes2);
-    } else {
-      return [[meetingTimes2]];
-    }
   }
 
   splitMeetingTimes(meets: MeetingTime[]): MeetingTime[][]{
@@ -297,13 +296,8 @@ export class TimingsComponent implements OnInit {
   }
 
 
-  ensureCourseFormat(cs: CourseSections): Section[] {
-    const tempSec = cs.sections;
-    if(Array.isArray(tempSec)){
-      return tempSec;
-    } else {
-      return [tempSec];
-    }
+  ensureCourseFormat(cs: Section[]): Section[] {
+    return cs;
   }
 
   sortSections(secs: Section[]): Section[]{
@@ -314,12 +308,12 @@ export class TimingsComponent implements OnInit {
   }
 
 
-  ensureInstructorsFromElement(element: any): any[] {
+  ensureInstructorsFromElement(element: Section): Instructor[] {
     if(element.instructors === null || element.instructors === undefined){
       return [];
     }
-    let ei = element.instructors.instructors;
-    return this.ensureInstructors(ei);
+    return element.instructors;
+
   }
 
   /**

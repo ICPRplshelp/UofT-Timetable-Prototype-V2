@@ -27,7 +27,14 @@
         padding: 0 10%;
     }
   }
-
+  .online-bumper{
+    float: left;
+    position: absolute;
+    top: 0;
+    margin: 0 auto;
+    padding: 4px 8px;
+    transform: scale(1.1);
+  }
 
 // create the class that does some horizontal padding only if the screen is too wide
 .anti-wide {
@@ -56,7 +63,7 @@
   
   .card-header {
 
-    // padding: 33px 0px;
+    padding: 33px 0px;
     padding-top: 33px;
     text-align: center;
    //  border-right-color: #19177c;
@@ -66,7 +73,7 @@
     background: #19177c;
     color: #fff;
     font-weight: bold;
-    font-size: 30px !important;
+    font-size: 32px !important;
     position: relative;
   }
   
@@ -117,14 +124,12 @@
   // F/S/Y RELATED STUFF
 
   .session-bumper{
-    // make this a flexbox that positions elements on the bottom left of the div
-    padding-top: 10px;
+    float: left;
     display: flex;
-    flex-direction: row;
+    position: absolute;
+    bottom: 0;
     justify-content: flex-start;
-    align-items: flex-end;
-    // margin-bottom: 10px;
-
+    margin: 0 auto;
   }
   
   .session-square {
@@ -132,7 +137,7 @@
     // border-width: 2px;
     // border-color: black;
     min-width: 20px;
-    min-height: 10px;
+    min-height: 7px;
   }
 
   .fsy {
@@ -151,20 +156,15 @@
 // BRQ RELATED STUFF
 
 .brq-bumper{
-
-    
-
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    bottom: 0;
-    justify-content: flex-start;
-    margin: 0 auto;
-    height: 91px;
-
-
-  }
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  justify-content: flex-start;
+  margin: 0 auto;
+  height: 100%;
+}
   .flexit01 {
     display: flex;
     flex-wrap: wrap;

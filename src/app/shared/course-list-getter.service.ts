@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { Course, TTBBase } from './course-interfaces';
+import { PageableCourses, Course } from './course-interfaces';
 import { switchMap } from "rxjs/operators";
 
 
@@ -21,14 +21,14 @@ export class CourseListGetterService {
    * I need the entire TTB
    * @returns {Observable<any>} an observable of the HTTP GET request
    */
-  getTTBResponse(): Observable<TTBBase> {
-    return this.http.get<TTBBase>(this.pathToCourseList);
+  getTTBResponse(): Observable<PageableCourses> {
+    return this.http.get<PageableCourses>(this.pathToCourseList);
   }
 
 
-  getSpecificTTBResponse(crsDes: string): Observable<TTBBase> {
+  getSpecificTTBResponse(crsDes: string): Observable<PageableCourses> {
     const linkToCourse = `api/courses${crsDes.toUpperCase()}.json`;
-    return this.http.get<TTBBase>(linkToCourse);
+    return this.http.get<PageableCourses>(linkToCourse);
   }
 
   /**
