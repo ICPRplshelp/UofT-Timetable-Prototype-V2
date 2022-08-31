@@ -179,7 +179,7 @@
         sectionCode: string;
         campus: string;
         sessions: string[];
-        sections: Section[];
+        sections?: Section[];
         duration?: string;
         cmCourseInfo: CmCourseInfo;
         created: string;
@@ -192,8 +192,8 @@
         title?: string;
         maxCredit: string;
         minCredit: string;
-        breadths: Breadth[];
-        notes: Note2[];
+        breadths?: Breadth[];
+        notes?: Note2[];
         cancelInd: string;
         fullyOnline: string;
     }

@@ -53,15 +53,15 @@ export class CourseListComponent implements OnInit {
                 temp = data;
             },
             (err) => {
-                console.log(err);
+                // console.log(err);
                 this.errorMessage = "First three letters of a course only!";
             },
             () => {
                 courseListCandidate = temp.courses;
                 this.courseList = courseListCandidate;
-                console.log("Successfully constructed the course list");
+                // console.log("Successfully constructed the course list");
                 this.condensedCourseList = this.crsGetter.condenseCourses(courseListCandidate);
-                console.log(this.condensedCourseList);
+                // console.log(this.condensedCourseList);
                 this.errorMessage = "";
                 this.lastSearchQuery = this.courseFilter;
                 this.condensedCourseList.sort((cl1, cl2) => {
@@ -104,7 +104,7 @@ export class CourseListComponent implements OnInit {
     addToCanShowDescriptions(crsCode: string): void {
         this.canShow[crsCode] = this.canShow[crsCode] !== true;
 
-        console.log(this.canShow);
+        // console.log(this.canShow);
     }
 
     isNullOrEmpty(text: string): boolean {
@@ -126,11 +126,15 @@ export class CourseListComponent implements OnInit {
         if (desc === null || desc === undefined) {
             return "A description was not provided for this course.";
         }
-        return desc;
+        return this.stripWrappingPs(desc);
     }
 
     getPrq(crs: Course) {
         return crs.cmCourseInfo.prerequisitesText;
+    }
+
+    getRec(crs: Course){
+        return crs.cmCourseInfo.recommendedPreparation;
     }
 
 
@@ -144,9 +148,9 @@ export class CourseListComponent implements OnInit {
     }
 
 
-    whatBreadths2(brStuffTemp: Breadth[]): number[] {
+    whatBreadths2(brStuffTemp?: Breadth[]): number[] {
         if(brStuffTemp === null || brStuffTemp === undefined){
-            return [];
+            return [0];
         }
         let breadthsSoFar: number[] = [];
         for (let br of brStuffTemp) {
@@ -161,7 +165,7 @@ export class CourseListComponent implements OnInit {
                     return ;
                 }
                 for (let num of [1, 2, 3, 4, 5]) {
-                    if (bt.code.includes(num.toString())) {
+                    if (bt.code.includes(num.toString()) && breadthsSoFar.includes(num)) {
                         breadthsSoFar.push(num);
                     }
                 }
@@ -175,7 +179,7 @@ export class CourseListComponent implements OnInit {
 
     openCourseDialog(coursePack: Course[]): void {
         if (coursePack.length === 0) {
-            console.log("No meetings!!!");
+            // console.log("No meetings!!!");
             return;
         }
 
@@ -214,6 +218,9 @@ export class CourseListComponent implements OnInit {
 
     hasOnline(crs: Course) {
         let secs = crs.sections;
+        if(secs === null || secs === undefined){
+            secs = [];
+        }
         for (let sec of secs) {
             let deliv = this.getDeliveryMode(sec);
             if (sec.name.startsWith("LEC") && this.onlineModes.includes(deliv)) {
@@ -226,6 +233,28 @@ export class CourseListComponent implements OnInit {
 
     getDeliveryMode(sec: Section): string {
         return sec.deliveryModes[0].mode
+    }
+
+    /**
+     * If text starts with <p> and ends with </p> then
+     * remove that.
+     * @param text HTML text.
+     */
+    stripWrappingPs(text: string): string{
+        text = text.trim();
+
+        while(text.endsWith("<br />")){
+            text = text.slice(0, text.length - 6);
+            text = text.trim();
+        }
+        while(text.startsWith("<p>") && text.endsWith("</p>")){
+            text = text.slice(3, text.length - 4);
+            text = text.trim()
+        }
+
+        return text;
+
+
     }
 
 

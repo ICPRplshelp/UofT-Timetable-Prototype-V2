@@ -44,6 +44,11 @@
     padding: 0 50px;
  }
 
+ .card-description{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+ }
   
  .pad-it {
     padding: 2px 20px;

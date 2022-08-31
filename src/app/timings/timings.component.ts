@@ -134,9 +134,15 @@ export class TimingsComponent implements OnInit {
 
   }
 
-  ensureNotes(notes: Note2[]): string{
+  ensureNotes(notes?: Note2[]): string{
+    if(notes === null || notes === undefined){
+      return "";
+    }
     let finalStr = "";
     notes.forEach(nt => {
+      if(nt === null || nt === undefined){
+        return;
+      }
       let nContent = this._ensureIndividualNote(nt);
       finalStr += nContent;
     });
@@ -296,7 +302,10 @@ export class TimingsComponent implements OnInit {
   }
 
 
-  ensureCourseFormat(cs: Section[]): Section[] {
+  ensureCourseFormat(cs?: Section[]): Section[] {
+    if(cs === null || cs === undefined){
+      return [];
+    }
     return cs;
   }
 

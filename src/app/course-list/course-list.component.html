@@ -107,32 +107,42 @@ obtainEverything()
             <div class="card-body" (click)="openCourseDialog(coursePack)">
                 <p [innerHTML]="coursePack[0].name">
                 </p>
-                <div *ngIf="checkCanShowDescription(coursePack[0].code)" style="text-align: left">
-                    <p>
+                <div class="card-description"
+                *ngIf="checkCanShowDescription(coursePack[0].code)" style="text-align: left">
+                    <div>
                         {{getDesc(coursePack[0])}}
 
-                    </p>
+                    </div>
 
                     <div *ngIf="!isNullOrEmpty(getPrq(coursePack[0]))">
                         <div class="loud-header" matTooltip="You must pass these courses before
                         taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Prerequisite</div>
-                        <p [innerHTML]="getPrq(coursePack[0])"></p>
+                        <div [innerHTML]="stripWrappingPs(getPrq(coursePack[0]))"></div>
+                    </div>
+
+                    <div *ngIf="!isNullOrEmpty(getRec(coursePack[0]))">
+                        <div class="loud-header" 
+                        matTooltip="You are recommended, but are not required, to take these courses before this one"
+                        matTooltipPosition="left">
+                            Recommended preparation
+                        </div>
+                        <div [innerHTML]="stripWrappingPs(getRec(coursePack[0]))"></div>
                     </div>
 
                     <div *ngIf="!isNullOrEmpty(getCrq(coursePack[0])
 )">
                         <div class="loud-header" matTooltip="You must take these course concurrently or have passed these courses before
                         taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Corequisite</div>
-                        <p [innerHTML]="getCrq(coursePack[0])">
-                        </p>
+                        <div [innerHTML]="stripWrappingPs(getCrq(coursePack[0]))">
+                        </div>
                     </div>
 
                     <div *ngIf="!isNullOrEmpty(getExc(coursePack[0]))">
                         <div class="loud-header" matTooltip="You can't recieve credit for this course if you've passed
                         or are taking any of these concurrently" matTooltipPosition="left" matTooltipShowDelay="200">
                             Exclusion</div>
-                        <p [innerHTML]="getExc(coursePack[0])">
-                        </p>
+                        <div [innerHTML]="stripWrappingPs(getExc(coursePack[0]))">
+                        </div>
                     </div>
                 </div>
 
