@@ -41,65 +41,27 @@
         content: string;
     }
 
-    export interface Post {
+
+    export interface IndividualControl {
         code: string;
         name: string;
     }
 
-    export interface Subject {
-        code: string;
-        name: string;
-    }
-
-    export interface SubjectPost {
-        code: string;
-        name: string;
-    }
-
-    export interface TypeOfProgram {
-        code: string;
-        name: string;
-    }
-
-    export interface Designation {
-        code: string;
-        name: string;
-    }
-
-    export interface PrimaryOrg {
-        code: string;
-        name: string;
-    }
-
-    export interface AssociatedOrg {
-        code: string;
-        name: string;
-    }
-
-    export interface SecondOrg {
-        code: string;
-        name: string;
-    }
-
-    export interface AdminOrg {
-        code: string;
-        name: string;
-    }
 
     export interface EnrolmentControl {
-        yearOfStudy: string;
-        post: Post;
-        subject: Subject;
-        subjectPost: SubjectPost;
-        typeOfProgram: TypeOfProgram;
-        designation: Designation;
-        primaryOrg: PrimaryOrg;
-        associatedOrg: AssociatedOrg;
-        secondOrg: SecondOrg;
-        adminOrg: AdminOrg;
-        collaborativeOrgGroupCode: string;
-        quantity: string;
-        sequence: string;
+        yearOfStudy?: string;
+        post?: IndividualControl;
+        subject?: IndividualControl;
+        subjectPost?: IndividualControl;
+        typeOfProgram?: IndividualControl;
+        designation?: IndividualControl;
+        primaryOrg?: IndividualControl;
+        associatedOrg?: IndividualControl;
+        secondOrg?: IndividualControl;
+        adminOrg?: IndividualControl;
+        collaborativeOrgGroupCode?: string;
+        quantity?: string;
+        sequence?: string;
     }
 
     export interface Section {

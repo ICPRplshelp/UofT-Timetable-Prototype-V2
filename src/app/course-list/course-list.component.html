@@ -49,66 +49,66 @@ obtainEverything()
             " (click)="
             addToCanShowDescriptions(coursePack[0].code)
             ">
-            <div>
-                <div class="brq-bumper" style="color: white;" *ngFor="let br of 
-            [whatBreadths2(coursePack[0].breadths)]
-            ">
+                <div
+                >
+                    <div class="brq-bumper" style="color: white;" *ngFor="let br of 
+            [whatBreadths2(coursePack[0].breadths)]">
 
-                    <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
-                        [style.height.%]="100/br.length" class="brq-square"
-                        >
-                    </div>
-
-                </div>
-            </div>
-
-            <div *ngIf="oneHasOnline(coursePack)" class="online-bumper">
-                <mat-icon [matTooltipShowDelay]="200" matTooltipPosition="left"
-                    matTooltip="Has online lectures">wifi
-                </mat-icon>
-            </div>
-
-            <div class="session-bumper">
-                <div *ngIf="isThisCourseOfferedInThisTerm('F', coursePack)" class="session-square"
-                    [style.background-color]="'LightSalmon'">
-                    <div class="fsy" matTooltip="offered in fall" matTooltipPosition="left">
-                        F
+                        <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
+                            [style.height.%]="100/br.length" class="brq-square"
+                            
+                            >
+                        </div>
 
                     </div>
                 </div>
 
-                <div *ngIf="isThisCourseOfferedInThisTerm('S', coursePack)" class="session-square"
-                    [style.background-color]="'LightBlue'">
-                    <div class="fsy" matTooltip="offered in winter" matTooltipPosition="left">
-                        S
-                    </div>
+                <div *ngIf="oneHasOnline(coursePack)" class="online-bumper">
+                    <mat-icon [matTooltipShowDelay]="200" matTooltipPosition="left" matTooltip="Has online lectures">
+                        wifi
+                    </mat-icon>
                 </div>
 
-                <div *ngIf="isThisCourseOfferedInThisTerm('Y', coursePack)" class="session-square"
-                    [style.background-color]="'MediumOrchid'"
-                    style="min-width: 40px;">
-                    <div class="fsy" matTooltip="offered year-wide" matTooltipPosition="left">
-                        Y
-                    </div>
-                </div>
+                <div class="session-bumper">
+                    <div *ngIf="isThisCourseOfferedInThisTerm('F', coursePack)" class="session-square"
+                        [style.background-color]="'LightSalmon'">
+                        <div class="fsy" matTooltip="offered in fall" matTooltipPosition="left">
+                            F
 
-            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="isThisCourseOfferedInThisTerm('S', coursePack)" class="session-square"
+                        [style.background-color]="'LightBlue'">
+                        <div class="fsy" matTooltip="offered in winter" matTooltipPosition="left">
+                            S
+                        </div>
+                    </div>
+
+                    <div *ngIf="isThisCourseOfferedInThisTerm('Y', coursePack)" class="session-square"
+                        [style.background-color]="'MediumOrchid'" style="min-width: 40px;">
+                        <div class="fsy" matTooltip="offered year-wide" matTooltipPosition="left">
+                            Y
+                        </div>
+                    </div>
+
+                </div>
                 <div style="position: relative; padding:4px 0px;">
                     {{coursePack[0].code}}
 
-                    
-
-                    
 
 
-                    
+
+
+
+
                 </div>
             </div>
             <div class="card-body" (click)="openCourseDialog(coursePack)">
                 <p [innerHTML]="coursePack[0].name">
                 </p>
-                <div class="card-description"
-                *ngIf="checkCanShowDescription(coursePack[0].code)" style="text-align: left">
+                <div class="card-description" *ngIf="checkCanShowDescription(coursePack[0].code)"
+                    style="text-align: left">
                     <div>
                         {{getDesc(coursePack[0])}}
 
@@ -121,9 +121,9 @@ obtainEverything()
                     </div>
 
                     <div *ngIf="!isNullOrEmpty(getRec(coursePack[0]))">
-                        <div class="loud-header" 
-                        matTooltip="You are recommended, but are not required, to take these courses before this one"
-                        matTooltipPosition="left">
+                        <div class="loud-header"
+                            matTooltip="You are recommended, but are not required, to take these courses before this one"
+                            matTooltipPosition="left">
                             Recommended preparation
                         </div>
                         <div [innerHTML]="stripWrappingPs(getRec(coursePack[0]))"></div>

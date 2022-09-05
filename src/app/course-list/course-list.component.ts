@@ -165,7 +165,7 @@ export class CourseListComponent implements OnInit {
                     return ;
                 }
                 for (let num of [1, 2, 3, 4, 5]) {
-                    if (bt.code.includes(num.toString()) && breadthsSoFar.includes(num)) {
+                    if (bt.code.includes(num.toString()) && !breadthsSoFar.includes(num)) {
                         breadthsSoFar.push(num);
                     }
                 }
