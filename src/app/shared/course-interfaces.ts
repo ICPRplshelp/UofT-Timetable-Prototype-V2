@@ -1,10 +1,5 @@
 
-    export interface Start {
-        day: string;
-        millisofday: string;
-    }
-
-    export interface End {
+    export interface DayTimeOfWeek {
         day: string;
         millisofday: string;
     }
@@ -17,8 +12,8 @@
     }
 
     export interface MeetingTime {
-        start: Start;
-        end: End;
+        start: DayTimeOfWeek;
+        end: DayTimeOfWeek;
         building: Building;
         sessionCode: string;
         repetition: string;
@@ -35,7 +30,7 @@
         mode: string;
     }
 
-    export interface Note {
+    export interface SectionNote {
         name: string;
         type: string;
         content: string;
@@ -49,19 +44,19 @@
 
 
     export interface EnrolmentControl {
-        yearOfStudy?: string;
-        post?: IndividualControl;
-        subject?: IndividualControl;
-        subjectPost?: IndividualControl;
-        typeOfProgram?: IndividualControl;
-        designation?: IndividualControl;
-        primaryOrg?: IndividualControl;
-        associatedOrg?: IndividualControl;
-        secondOrg?: IndividualControl;
-        adminOrg?: IndividualControl;
-        collaborativeOrgGroupCode?: string;
-        quantity?: string;
-        sequence?: string;
+        yearOfStudy: string;
+        post: IndividualControl;
+        subject: IndividualControl;
+        subjectPost: IndividualControl;
+        typeOfProgram: IndividualControl;
+        designation: IndividualControl;
+        primaryOrg: IndividualControl;
+        associatedOrg: IndividualControl;
+        secondOrg: IndividualControl;
+        adminOrg: IndividualControl;
+        collaborativeOrgGroupCode: string;
+        quantity: string;
+        sequence: string;
     }
 
     export interface Section {
@@ -74,7 +69,7 @@
         instructors: Instructor[];
         currentEnrolment: string;
         maxEnrolment: string;
-        subTitle?: any;
+        subTitle?: string;
         cancelInd: string;
         waitlistInd: string;
         deliveryModes: DeliveryMode[];
@@ -82,23 +77,29 @@
         enrolmentInd: string;
         tbaInd: string;
         openLimitInd: string;
-        notes: Note[];
+        notes: SectionNote[];
         enrolmentControls: EnrolmentControl[];
+        linkedMeetingSections: LinkedMeetingSection[];
+    }
+
+    export interface LinkedMeetingSection {
+        teachMethod: string;
+        sectionNumber: string;
     }
 
     export interface CmCourseInfo {
-        description: string;
-        title: string;
+        description?: string;
+        title?: string;
         levelOfInstruction: string;
-        prerequisitesText: string;
-        corequisitesText?: any;
-        exclusionsText: string;
-        recommendedPreparation: string;
+        prerequisitesText?: string;
+        corequisitesText?: string;
+        exclusionsText?: string;
+        recommendedPreparation?: string;
         note?: any;
         division: string;
-        breadthRequirements: string[];
-        distributionRequirements: string[];
-        publicationSections: string[];
+        breadthRequirements?: string[];
+        distributionRequirements?: string[];
+        publicationSections?: string[];
     }
 
     export interface Faculty {
@@ -124,10 +125,10 @@
 
     export interface Breadth {
         org: Org;
-        breadthTypes: BreadthType[];
+        breadthTypes?: BreadthType[];
     }
 
-    export interface Note2 {
+    export interface CourseNote {
         name: string;
         type: string;
         content: string;
@@ -155,7 +156,7 @@
         maxCredit: string;
         minCredit: string;
         breadths?: Breadth[];
-        notes?: Note2[];
+        notes?: CourseNote[];
         cancelInd: string;
         fullyOnline: string;
     }

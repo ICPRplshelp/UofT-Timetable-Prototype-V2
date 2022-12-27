@@ -145,6 +145,12 @@
                                                     </ul>
                                                 </div>
                                             </div>
+
+                                            <div *ngIf="getNotes(element) !== ''">
+                                                <strong>Notes</strong>
+                                                <p [innerHTML]="getNotes(element)"></p>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

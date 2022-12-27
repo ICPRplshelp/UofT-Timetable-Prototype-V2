@@ -129,22 +129,32 @@ export class CourseListComponent implements OnInit {
         return this.stripWrappingPs(desc);
     }
 
+
+    emptyIfUndef(citem: string | undefined | null): string {
+        if (citem === undefined || citem === null){
+            return "";
+        }
+        else {
+            return citem;
+        }
+    }
+
     getPrq(crs: Course) {
-        return crs.cmCourseInfo.prerequisitesText;
+        return this.emptyIfUndef(crs.cmCourseInfo.prerequisitesText);
     }
 
     getRec(crs: Course){
-        return crs.cmCourseInfo.recommendedPreparation;
+        return this.emptyIfUndef(crs.cmCourseInfo.recommendedPreparation);
     }
 
 
     getCrq(crs: Course) {
-        return crs.cmCourseInfo.corequisitesText;
+        return this.emptyIfUndef(crs.cmCourseInfo.corequisitesText);
     }
 
 
     getExc(crs: Course) {
-        return crs.cmCourseInfo.exclusionsText;
+        return this.emptyIfUndef(crs.cmCourseInfo.exclusionsText);
     }
 
 

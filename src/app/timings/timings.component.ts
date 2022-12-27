@@ -13,8 +13,8 @@ import {
   IndividualControl,
   Instructor,
   MeetingTime,
-  Note,
-  Note2,
+  SectionNote,
+  CourseNote,
   Section,
 } from '../shared/course-interfaces';
 import { UtilitiesService } from '../shared/utilities.service';
@@ -154,7 +154,7 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  ensureNotes(notes?: Note2[]): string {
+  ensureNotes(notes?: CourseNote[]): string {
     if (notes === null || notes === undefined) {
       return '';
     }
@@ -169,7 +169,7 @@ export class TimingsComponent implements OnInit {
     return finalStr;
   }
 
-  private _ensureIndividualNote(notes: Note2): string {
+  private _ensureIndividualNote(notes: CourseNote): string {
     if (notes === null || notes === undefined) {
       return '';
     }
@@ -292,7 +292,6 @@ export class TimingsComponent implements OnInit {
       } else if (aStart > bStart) {
         return 1;
       }
-
       let ams = parseInt(a.start.millisofday);
       let bms = parseInt(b.start.millisofday);
       if (isNaN(ams)) ams = 0;
@@ -478,6 +477,25 @@ export class TimingsComponent implements OnInit {
     }
     // console.log(sec.teachMethod);
     return sec.teachMethod.trim() === "LEC";
+  }
+
+  // return notes form a section
+  getNotes(sec: Section): string {
+    
+    if(sec === null || sec === undefined){
+      return "";
+    }
+    if(sec.notes === null || sec.notes === undefined){
+      return "";
+    }
+    console.log(sec.notes);
+    let ns = "";
+    for(let sn of sec.notes){
+      if(sn.content !== null && sn.content !== undefined)
+        ns += sn.content;
+    }
+    
+    return ns;
 
   }
 
