@@ -2,7 +2,12 @@
 
     <h1 class="title-text"> UofT Course list </h1>
     <p> Search for the first three letters of any course code.
-        All UofT undergraduate courses are supported. </p>
+        All UofT undergraduate courses are supported. 
+    
+
+    </p>
+
+        
 
 
         <a href="https://ttb.utoronto.ca/">Source of course information</a>
@@ -19,6 +24,15 @@
             <mat-error *ngIf="courseFilter.length >= 4">
                 This search can't be more specific than the first three letters of a course
             </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" *ngIf="sessionsList.length >= 2">
+            <mat-label>Session</mat-label>
+            <mat-select [(value)]="currentSession">
+                <mat-option *ngFor="let sesNum of sessionsList" [value]="sesNum">
+                    {{sesNum}}
+                </mat-option>
+            </mat-select>
         </mat-form-field>
 
         <button id="reloadit" matTooltip="Reload all courses" matTooltipPosition="right" type="button"
@@ -120,7 +134,8 @@ obtainEverything()
                     <div *ngIf="!isNullOrEmpty(getPrq(coursePack[0]))">
                         <div class="loud-header" matTooltip="You must pass these courses before
                         taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Prerequisite</div>
-                        <div [innerHTML]="stripWrappingPs(getPrq(coursePack[0]))"></div>
+                        <div [innerHTML]="addSpacesBetweenSlashes(
+                        stripWrappingPs(getPrq(coursePack[0])))"></div>
                     </div>
 
                     <div *ngIf="!isNullOrEmpty(getRec(coursePack[0]))">
@@ -129,14 +144,16 @@ obtainEverything()
                             matTooltipPosition="left">
                             Recommended preparation
                         </div>
-                        <div [innerHTML]="stripWrappingPs(getRec(coursePack[0]))"></div>
+                        <div [innerHTML]="addSpacesBetweenSlashes(
+                            stripWrappingPs(getRec(coursePack[0])))"></div>
                     </div>
 
                     <div *ngIf="!isNullOrEmpty(getCrq(coursePack[0])
 )">
                         <div class="loud-header" matTooltip="You must take these course concurrently or have passed these courses before
                         taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Corequisite</div>
-                        <div [innerHTML]="stripWrappingPs(getCrq(coursePack[0]))">
+                        <div [innerHTML]="addSpacesBetweenSlashes(
+                        stripWrappingPs(getCrq(coursePack[0])))">
                         </div>
                     </div>
 
@@ -144,7 +161,8 @@ obtainEverything()
                         <div class="loud-header" matTooltip="You can't recieve credit for this course if you've passed
                         or are taking any of these concurrently" matTooltipPosition="left" matTooltipShowDelay="200">
                             Exclusion</div>
-                        <div [innerHTML]="stripWrappingPs(getExc(coursePack[0]))">
+                        <div [innerHTML]="addSpacesBetweenSlashes(
+                        stripWrappingPs(getExc(coursePack[0])))">
                         </div>
                     </div>
                 </div>

@@ -22,6 +22,23 @@ export class CourseListComponent implements OnInit {
 
     }
 
+    sessionsList: string[] = ["Fall-Winter 2022-2023"];
+    private _currentSession = this.sessionsList[this.sessionsList.length - 1];
+    
+    public get currentSession() {
+        return this._currentSession;
+    }
+    public set currentSession(value: string) {
+        this._currentSession = value;
+    }
+
+    sessionToUrl(ses: string): string {
+        switch(ses){
+            case 'Fall-Winter 2022-2023': return '20229';
+            default: return '20229';
+        }
+    }
+
     brDescs: string[] = ["No A&S breadths fullfilled",
         "BR=1", "BR=2", "BR=3", "BR=4", "BR=5"];
 
@@ -243,6 +260,13 @@ export class CourseListComponent implements OnInit {
 
     getDeliveryMode(sec: Section): string {
         return sec.deliveryModes[0].mode
+    }
+
+    addSpacesBetweenSlashes(text: string): string {
+
+        text = text.replace(/([^\s></])\/([^\s></])/g, "$1 / $2");
+        return text;
+
     }
 
     /**

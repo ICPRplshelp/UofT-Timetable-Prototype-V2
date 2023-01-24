@@ -8,21 +8,35 @@ export class UtilitiesService {
 
   is24hour: boolean = false;
 
+  // brColors: string[] = [
+  //   '#474545',  // no breath requirement
+  //   '#d71a1a',  // br1
+  //   '#34e7ff',
+  //   '#ffd300',
+  //   '#0ddc09',
+  //   '#bb4bff'   // br5
+  // ];
+
   brColors: string[] = [
-    '#474545',  // no breath requirement
-    '#d71a1a',  // br1
-    '#34e7ff',
-    '#ffd300',
-    '#0ddc09',
-    '#bb4bff'   // br5
-  ];
+    '#474545',
+    '#d71a1a',
+    '#55E6CA',
+    '#f7c959',
+    '#B6E364',
+    '#af4aed',
+
+  ]
+
 
   levelColors: string[] = [
     '#444444',  // 0-level
-    '#02ad23',  // 100-level
+    '#6F9E00',
+    //  '#02ad23',  // 100-level
     '#3694ff',
     '#9436ff',
-    '#f53d00',  // 400-level
+    '#D93D00',
+    // '#E02D00',
+    // '#f53d00',  // 400-level
     '#5454e8',  // 500-level
     "#78630e", // 600-level,
     "#85462c" // 700-level
@@ -35,7 +49,7 @@ export class UtilitiesService {
   ]
 
   dayColors: string[] = [
-    'DarkRed',  // sat/su [5] 8B0000
+    '#7B68EE',  // sat/su [5] 8B0000
     'Coral',  // mon [0] FF7F50
     'bisque',  // tues [1] FFE4C4
     '#67e09b',  // wed [2] 67e09b

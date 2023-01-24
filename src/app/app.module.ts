@@ -17,6 +17,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatInputModule} from '@angular/material/input';
 import { TimingsComponent } from './timings/timings.component';
 import {MatIconModule} from '@angular/material/icon';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import {MatIconModule} from '@angular/material/icon';
   imports: [
     BrowserModule,
     FormsModule,
+    MatSelectModule,
     MatInputModule,
     MatIconModule,
     MatTableModule,

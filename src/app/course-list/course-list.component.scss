@@ -173,7 +173,8 @@
   .flexit01 {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    padding-top: 20px;
+    gap: 20px;
     align-content: space-between;
     align-items: center;
     // place the elements in this class at the horizontal center of the screen
