@@ -21,9 +21,10 @@ export class CourseListComponent implements OnInit {
         this.obtainEverything();
 
     }
-
-    sessionsList: string[] = ["Fall-Winter 2022-2023"];
-    private _currentSession = this.sessionsList[this.sessionsList.length - 1];
+    lastSessionQuery: string = "";
+    sessionsList: string[] = ["Fall-Winter 2022-2023",
+"Summer 2023"];
+    private _currentSession = this.sessionsList[0];
     
     public get currentSession() {
         return this._currentSession;
@@ -35,6 +36,7 @@ export class CourseListComponent implements OnInit {
     sessionToUrl(ses: string): string {
         switch(ses){
             case 'Fall-Winter 2022-2023': return '20229';
+            case 'Summer 2023': return '20235';
             default: return '20229';
         }
     }
@@ -62,36 +64,42 @@ export class CourseListComponent implements OnInit {
     obtainEverything(): void {
         let temp: PageableCourses;
         let courseListCandidate: Course[];
-        if (this.courseFilter === this.lastSearchQuery) {
+        if (this.courseFilter === this.lastSearchQuery
+            && this.lastSessionQuery === this.currentSession) {
             return;
         }
-        this.crsGetter.getSpecificTTBResponse(this.courseFilter).subscribe(
-            (data) => {
-                temp = data;
-            },
-            (err) => {
-                // console.log(err);
-                this.errorMessage = "First three letters of a course only!";
-            },
-            () => {
-                courseListCandidate = temp.courses;
-                this.courseList = courseListCandidate;
-                // console.log("Successfully constructed the course list");
-                this.condensedCourseList = this.crsGetter.condenseCourses(courseListCandidate);
-                // console.log(this.condensedCourseList);
-                this.errorMessage = "";
-                this.lastSearchQuery = this.courseFilter;
-                this.condensedCourseList.sort((cl1, cl2) => {
-                    let cr1 = cl1[0];
-                    let cr2 = cl2[0];
-                    let code1 = cr1.code;
-                    let code2 = cr2.code;
-                    // for both strings above - move the last character to the first
-                    code1 = code1.substring(code1.length - 1) + code1.substring(0, code1.length - 1);
-                    code2 = code2.substring(code2.length - 1) + code2.substring(0, code2.length - 1);
-                    return code1.localeCompare(code2);
-                });
+        this.crsGetter.getSpecificTTBResponse(this.courseFilter, 
+            this.sessionToUrl(this.currentSession)
+            ).subscribe({
+                next: (data) => {
+                    temp = data;
+                },
+                error: (err) => {
+                    // console.log(err);
+                    this.errorMessage = "First three letters of a course only!";
+                },
+                complete: () => {
+                    courseListCandidate = temp.courses;
+                    this.courseList = courseListCandidate;
+                    // console.log("Successfully constructed the course list");
+                    this.condensedCourseList = this.crsGetter.condenseCourses(courseListCandidate);
+                    // console.log(this.condensedCourseList);
+                    this.errorMessage = "";
+                    this.lastSearchQuery = this.courseFilter;
+                    this.lastSessionQuery = this.currentSession;
+                    this.condensedCourseList.sort((cl1, cl2) => {
+                        let cr1 = cl1[0];
+                        let cr2 = cl2[0];
+                        let code1 = cr1.code;
+                        let code2 = cr2.code;
+                        // for both strings above - move the last character to the first
+                        code1 = code1.substring(code1.length - 1) + code1.substring(0, code1.length - 1);
+                        code2 = code2.substring(code2.length - 1) + code2.substring(0, code2.length - 1);
+                        return code1.localeCompare(code2);
+                    });
+                }
             }
+            
         );
     }
 

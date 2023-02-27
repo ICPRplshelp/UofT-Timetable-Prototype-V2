@@ -254,6 +254,11 @@ tr.example-element-row:not(.example-expanded-row):active {
   height: 104px;
 }
 
+.smol {
+  font-variant: small-caps;
+  display: inline-block;
+}
+
 .example-element-symbol {
   font-weight: bold;
   font-size: 40px;

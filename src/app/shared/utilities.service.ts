@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class UtilitiesService {
 
 
-  is24hour: boolean = false;
+  is24hour: boolean = true;
 
   // brColors: string[] = [
   //   '#474545',  // no breath requirement
@@ -43,14 +43,14 @@ export class UtilitiesService {
   ]
 
   tableSessionColors: string[] = [
-    '#ffd3a4',  // fall
-    '#a6f1ff',  // winter
-    '#d5abff'   // year
+    '#ffd3a4',  // fall ffd3a4 FFD9C3
+    '#A6F1FF',  // winter a6f1ff
+    '#d5abff'   // year d5abff D5B8FF d5abff
   ]
 
   dayColors: string[] = [
     '#7B68EE',  // sat/su [5] 8B0000
-    'Coral',  // mon [0] FF7F50
+    '#ff9f64',  // mon [0] FF7F50 ff9f64
     'bisque',  // tues [1] FFE4C4
     '#67e09b',  // wed [2] 67e09b
     'DodgerBlue',  // thurs [3] 1E90FF
@@ -60,7 +60,7 @@ export class UtilitiesService {
   ]
   dayBrightenedColors: string[] = [
     '#cc1818',
-    '#ff9f64',
+    '#FFB43F',
     '#ffebd3',
     '#81e8b4',
     '#26acff',

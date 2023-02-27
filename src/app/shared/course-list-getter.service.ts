@@ -26,8 +26,8 @@ export class CourseListGetterService {
   }
 
 
-  getSpecificTTBResponse(crsDes: string): Observable<PageableCourses> {
-    const linkToCourse = `api/20229/courses${crsDes.toUpperCase()}.json`;
+  getSpecificTTBResponse(crsDes: string, session: string): Observable<PageableCourses> {
+    const linkToCourse = `api/${session}/courses${crsDes.toUpperCase()}.json`;
     return this.http.get<PageableCourses>(linkToCourse);
   }
 

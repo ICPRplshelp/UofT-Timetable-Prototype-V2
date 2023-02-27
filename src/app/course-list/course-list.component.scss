@@ -180,6 +180,20 @@
     // place the elements in this class at the horizontal center of the screen
     justify-content: center;
 }
+
+.flexit02 {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  // padding-top: 20px;
+  gap: 5px;
+  align-items: center;
+  // place the elements in this class at the horizontal center of the screen
+  justify-content: center;
+}
+
+
   .brq-square {
     //border-style: solid;
     // border-width: 2px;

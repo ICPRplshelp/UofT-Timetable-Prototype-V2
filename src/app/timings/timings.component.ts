@@ -45,7 +45,7 @@ export class TimingsComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<TimingsComponent>,
     @Inject(MAT_DIALOG_DATA) data: { courses: Course[] },
-    private util: UtilitiesService
+    public util: UtilitiesService
   ) {
     this.storedCourses = data.courses;
   }
@@ -109,14 +109,49 @@ export class TimingsComponent implements OnInit {
       minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
       minsStr = ':' + minsStr;
     }
-    if (this.util.is24hour) {
-      let ampm = hours >= 12 ? 'PM' : 'AM';
+
+      return hours + minsStr;
+    
+  }
+
+  getTimeCode12(millisTemp: string): string{
+    let millis = parseInt(millisTemp);
+    if (isNaN(millis) || millis === -1) {
+      return 'NA';
+    }
+
+    let date = new Date(millis);
+    let hours = date.getHours() + 5;
+    let minutes = date.getMinutes();
+    let minsStr = '';
+    if (minutes >= 1) {
+      minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
+      minsStr = ':' + minsStr;
+    }
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
 
-      return hours + minsStr + ampm;
-    } else {
       return hours + minsStr;
+    
+    
+  }
+  /**
+   * 
+   * @param millisTemp millis
+   * Returns AM, PM, or nothing
+   */
+  ampm(millisTemp: string): string {
+    let millis = parseInt(millisTemp);
+    if (isNaN(millis) || millis === -1) {
+      return '';
+    }
+
+    let date = new Date(millis);
+    let hours = date.getHours() + 5;
+    if(hours >= 12){
+      return 'pm';
+    } else {
+      return 'am';
     }
   }
 
@@ -488,7 +523,7 @@ export class TimingsComponent implements OnInit {
     if(sec.notes === null || sec.notes === undefined){
       return "";
     }
-    console.log(sec.notes);
+    // console.log(sec.notes);
     let ns = "";
     for(let sn of sec.notes){
       if(sn.content !== null && sn.content !== undefined)
