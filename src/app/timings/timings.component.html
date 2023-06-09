@@ -1,8 +1,9 @@
-<mat-dialog-content class="mat-typography">
-    <div class="v-pad-it">
-        <div class="flexith">
+<mat-dialog-content class="mat-typography" [style]="smallScreen ? 'max-height:95%;' : ''">
+    <div class="v-pad-it" >
+        <div class="flexith" [style.padding]="smallScreen ? '' : '24px'">
+            
             <div class="margin-it" *ngFor="let crs of storedCourses">
-                <div class="pad-it">
+                <div class="pad-it" >
                     <div>
 
                         <table mat-table [dataSource]="
@@ -12,9 +13,9 @@
 
                             <!-- Lec column -->
                             <ng-container matColumnDef="lec">
-                                <th mat-header-cell *matHeaderCellDef> LEC </th>
-                                <td mat-cell *matCellDef="let element">
-                                    {{ element.name }}
+                                <th mat-header-cell *matHeaderCellDef [style]="smallScreen ? 'padding-left: 15px;' : ''"> LEC </th>
+                                <td mat-cell *matCellDef="let element" [style]="smallScreen ? 'padding-left: 15px;' : ''">
+                                    {{ shortenLecNameIfSmall(element.name) }}
                                 </td>
                             </ng-container>
 
@@ -40,7 +41,8 @@
                                                     class="r-chip" [style.min-height]="24"
                                                     [style.background-color]="getDayColor(meets[0].start.day)"
                                                     [style.color]="getDayColoredText(meets[0].start.day)">
-                                                    <div class="meeting-day"
+                                                    
+                                                    <div class="meeting-day" [style.width.px]="getDayCode(meets[0].start.day).length * 10 + 15"
                                                         [style.background-color]="getDayBrightenedColors(meets[0].start.day)">
                                                         <div class="vert-center">
                                                             {{ getDayCode(meets[0].start.day) }}
@@ -124,7 +126,7 @@
 
                                             <div>
                                                 <strong>Enrolled</strong>
-                                                <p>{{element.currentEnrolment}}/{{element.maxEnrolment}}</p>
+                                                <p>{{getCurrentlyEnrolled(element)}}/{{getCapacity(element)}}</p>
 
                                             </div>    
 
@@ -217,9 +219,13 @@
                 </div>
 
             </div>
+            
         </div>
-
+        
     </div>
-
+    
 
 </mat-dialog-content>
+<mat-dialog-actions align="end" *ngIf="smallScreen">
+    <button id="closer" style="margin-top: 24px;"  mat-button mat-dialog-close="">Close</button>
+</mat-dialog-actions>

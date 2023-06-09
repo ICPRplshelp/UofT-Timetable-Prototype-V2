@@ -41,13 +41,22 @@ export class TimingsComponent implements OnInit {
   displayedColumns: string[] = ['lec', 'ins', 'time', 'delivery'];
   displayedColumnsExpanded: string[] = [...this.displayedColumns];
   expandedElement: Section | null = null;
-
+  smallScreen: boolean;
+  smallScreenVal: string = '';
   constructor(
     private dialogRef: MatDialogRef<TimingsComponent>,
-    @Inject(MAT_DIALOG_DATA) data: { courses: Course[] },
+    @Inject(MAT_DIALOG_DATA) data: { courses: Course[] , smallScreen: boolean},
     public util: UtilitiesService
   ) {
     this.storedCourses = data.courses;
+    this.smallScreen = data.smallScreen;
+    if(!this.smallScreen){
+      this.smallScreenVal = "padding: 42px";
+    }
+    else {
+      this.days = ['U', 'M', 'T', 'W', 'R', 'F', 'S', '⠀'];
+    }
+    // console.log("Small screen?", data.smallScreen);
   }
 
   getTableColor(crs: Course): string {
@@ -92,7 +101,7 @@ export class TimingsComponent implements OnInit {
     return this.util.dayBrightenedColors[dayOfWeek];
   }
 
-  days: string[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', ''];
+  days: string[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', '⠀⠀'];
 
   // with a millisofday return HH:MM timecode in 24 hour format
   getTimeCode(millisTemp: string): string {
@@ -148,16 +157,30 @@ export class TimingsComponent implements OnInit {
 
     let date = new Date(millis);
     let hours = date.getHours() + 5;
-    if(hours >= 12){
-      return 'pm';
+    if(hours >= 20){
+      return 'p';
+    } else if (hours <= 10){
+      return '';
     } else {
-      return 'am';
+      return '';
     }
   }
 
   getDeliveryMode(sec: Section): string {
-    return sec.deliveryModes[0].mode;
-  }
+    if(sec === null || sec === undefined){
+        return "INPER";
+    }
+    if(sec.deliveryModes === null || sec.deliveryModes === undefined){
+        return "INPER";
+    }
+    if(sec.deliveryModes[0] === null || sec.deliveryModes[0] === undefined){
+        return "INPER";
+    }
+    if(sec.deliveryModes[0].mode === null || sec.deliveryModes[0].mode === undefined){
+        return "INPER";
+    }
+    return sec.deliveryModes[0].mode
+}
 
   getIcon(sec: Section): string {
     return this.getSyncIcon(this.getDeliveryMode(sec));
@@ -172,6 +195,8 @@ export class TimingsComponent implements OnInit {
         return 'In person';
       case 'SYNIF':
         return 'Online synchronous (with in-person assessments)';
+      case 'HYBR':
+        return 'Hybrid';
       case 'SYNC':
         return 'Online synchronous';
       case 'ONL':
@@ -224,6 +249,7 @@ export class TimingsComponent implements OnInit {
     const inper = 'group';
     const sync = 'wifi';
     const syncif = 'wifi group';
+    const hybridDelivery = 'wifi group';
     const async = 'wifi_off';
     const asyncif = 'wifi_off group';
 
@@ -234,6 +260,8 @@ export class TimingsComponent implements OnInit {
         return inper;
       case 'SYNIF':
         return syncif;
+      case 'HYBR':
+        return hybridDelivery;
       case 'SYNC':
         return sync;
       case 'ONL':
@@ -358,9 +386,53 @@ export class TimingsComponent implements OnInit {
     return cs;
   }
 
+  convertLecSessionName(lname: string): string {
+    if(lname.startsWith("LEC") && lname[3] === '2'){
+      return lname.slice(0, 3) + 'S' + lname.slice(4);
+    } else return lname;
+  }
+
+
   sortSections(secs: Section[]): Section[] {
-    secs.sort((a, b) => a.name.localeCompare(b.name));
+
+    if(this.util.hideSpecial){
+      secs = secs.filter(sec => sec.name[3] !== '2');
+    }
+
+    secs.sort((a, b) => {
+      const aname = this.convertLecSessionName(a.name);
+      const bname = this.convertLecSessionName(b.name);
+      return aname.localeCompare(bname);
+    });
     return secs;
+  }
+
+  shortenLecNameIfSmall(lecSessionName: string): string {
+    if(this.smallScreen){
+      return lecSessionName[0] + lecSessionName.slice(3);
+    }
+    else return lecSessionName;
+  }
+
+  getCurrentlyEnrolled(element: Section): number {
+    if(element.currentEnrolment !== null &&
+      element.currentEnrolment !== undefined &&
+      element.currentWaitlist !== null &&
+      element.currentWaitlist !== undefined
+      )
+    return parseInt(element.currentEnrolment) + parseInt(element.currentWaitlist);
+    else if(element.currentEnrolment !== null &&
+      element.currentEnrolment !== undefined)
+      return parseInt(element.currentEnrolment);
+      else return 0;
+  }
+
+  getCapacity(element: Section): number {
+    if(element.maxEnrolment !== null && element.maxEnrolment !== undefined){
+      return parseInt(element.maxEnrolment);
+    } else {
+      return 0;
+    }
   }
 
   ensureInstructorsFromElement(element: Section): Instructor[] {
@@ -452,6 +524,9 @@ export class TimingsComponent implements OnInit {
     if(ectr === null || ectr === undefined){
       return [];
     }
+    if(ectr.quantity === "0"){
+      return [];
+    }
     const tl: string[] = [];
     const controlItems: (IndividualControl | undefined)[] = [
       ectr.primaryOrg,
@@ -466,7 +541,9 @@ export class TimingsComponent implements OnInit {
     ];
     const tl2: IndividualControl[] = [];
     for(let item of controlItems){
-      if(item !== undefined && !this.controlIsUniversal(item)){
+      if(item !== undefined && !this.controlIsUniversal(item)
+      ){
+        
         tl2.push(item);
       }
     }

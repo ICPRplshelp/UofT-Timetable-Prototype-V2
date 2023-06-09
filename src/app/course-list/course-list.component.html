@@ -4,12 +4,21 @@
     <div class="flexit02">
     <p> Search for the first three letters of any course code.
         All UofT undergraduate courses are supported. 
-    
+        
 
     </p>
 
-    <div>
-        <mat-checkbox color="primary" [(ngModel)]="constants.is24hour">24 Hour Time</mat-checkbox>
+    <ul class="forceleft">
+        <li>
+        Tap on the <strong>colored</strong> component of a card to expand or contract the course description. 
+        </li><li>Tap on the <strong>white</strong> component of a card to bring up its timings. 
+        </li><li>Breadths are represented as the color strip on the right (Red=BR1, Blue=BR2, Yellow=BR3, Green=BR4, Purple=BR5). 
+        </li><li><strong>Data may be outdated!</strong></li>
+    </ul>
+
+    <div class="flex-gap">
+        <mat-checkbox color="primary" [(ngModel)]="constants.is24hour" matTooltip="When OFF, display 12-hour time, with a 'p' from 8pm to 11pm" matTooltipPosition="above">24 Hour Time</mat-checkbox>
+        <mat-checkbox color="primary" [(ngModel)]="constants.hideSpecial" matTooltip="Hide LEC2000-LEC2999 sections" matTooltipPosition="above">Hide special</mat-checkbox>
     </div>
 
         
@@ -71,13 +80,14 @@ obtainEverything()
             " (click)="
             addToCanShowDescriptions(coursePack[0].code)
             ">
-                <div
+                <div 
                 >
                     <div class="brq-bumper" style="color: white;" *ngFor="let br of 
-            [whatBreadths2(coursePack[0].breadths)]">
+            [whatBreadths2(coursePack[0].breadths)]" >
 
                         <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
                             [style.height.%]="100/br.length" class="brq-square"
+                            
                             
                             >
                         </div>
@@ -112,6 +122,12 @@ obtainEverything()
                         <div class="fsy" matTooltip="offered year-wide" matTooltipPosition="left">
                             Y
                         </div>
+                    </div>
+
+                    <div class="session-square" *ngFor="let hrs of [calculateHourCommitment(coursePack)]">
+                        <div class="hour-commitment-card" matTooltipPosition="right" [matTooltip]="'Time: ' + hrs + 'h/week'" >
+                            {{strMultiply("•", hrs, "")}}
+                        </div>    
                     </div>
 
                 </div>
@@ -168,6 +184,14 @@ obtainEverything()
                             Exclusion</div>
                         <div [innerHTML]="addSpacesBetweenSlashes(
                         stripWrappingPs(getExc(coursePack[0])))">
+                        </div>
+                    </div>
+
+                    <div *ngIf="ensureList(coursePack[0].cmCourseInfo.breadthRequirements).length !== 0">
+                        <div class="loud-header" matTooltip="This course fullfills these breadth requirements, credits split among them" matTooltipPosition="left" matTooltipShowDelay="200">
+                            Breadths</div>
+                        <div *ngFor="let brq of ensureList(coursePack[0].cmCourseInfo.breadthRequirements)">
+                            {{brq}}
                         </div>
                     </div>
                 </div>

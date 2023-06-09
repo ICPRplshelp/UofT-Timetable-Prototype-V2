@@ -1,5 +1,5 @@
 table {
-    // width: 100%;
+    width: 100%;
   }
   
   .pad-it {
@@ -80,8 +80,10 @@ table {
   .meeting-day {
     padding: 0px 0px;
      // position: relative;
-     width: 35px;
+     // width: 35px;
      padding: 2px 0px;
+     // padding-left: 7px;
+     // padding-right: 7px;
      // padding: 2px 5px;
   
   }
@@ -140,7 +142,7 @@ table {
     display: flex;
     // flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    // justify-content: center;
   }
 
   // create a flexbox that groups elements horizontally, and none of them are allowed to line wrap
@@ -255,7 +257,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .smol {
-  font-variant: small-caps;
+  // font-variant: small-caps;
   display: inline-block;
 }
 
@@ -271,4 +273,11 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .example-element-description-attribution {
   opacity: 0.5;
+}
+
+
+:host ::ng-deep .mat-dialog-content {
+  padding: 0;
+  margin: -24px;
+  /* other CSS properties */
 }

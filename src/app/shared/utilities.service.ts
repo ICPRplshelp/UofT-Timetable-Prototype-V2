@@ -7,6 +7,7 @@ export class UtilitiesService {
 
 
   is24hour: boolean = true;
+  hideSpecial: boolean = false;
 
   // brColors: string[] = [
   //   '#474545',  // no breath requirement
@@ -24,7 +25,6 @@ export class UtilitiesService {
     '#f7c959',
     '#B6E364',
     '#af4aed',
-
   ]
 
 

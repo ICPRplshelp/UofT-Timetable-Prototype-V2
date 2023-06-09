@@ -155,6 +155,18 @@
     // add 5x padding
     padding: 4px 5px;
   }
+  .hour-commitment-card {
+    // mix-blend-mode: overlay;
+    opacity: 50%;
+    font-size: 23px;
+    // color: #96ff3a;
+    // make it bold
+    font-weight: bold;
+    // margin-left: 2px;
+    // add 5x padding
+    padding: 4px 6px;
+    letter-spacing: 2px;
+  }
 
 
 
@@ -173,7 +185,7 @@
   .flexit01 {
     display: flex;
     flex-wrap: wrap;
-    padding-top: 20px;
+    padding-top: 10px;
     gap: 20px;
     align-content: space-between;
     align-items: center;
@@ -187,10 +199,15 @@
   flex-wrap: wrap;
   flex-direction: column;
   // padding-top: 20px;
-  gap: 5px;
+  gap: 3px;
   align-items: center;
   // place the elements in this class at the horizontal center of the screen
   justify-content: center;
+}
+
+.flex-gap {
+  display: flex;
+  gap: 10px;
 }
 
 
@@ -216,6 +233,11 @@
     // min-height: 97px;
   }
 
+.forceleft {
+  text-align: left;
+}
+
+
   .center {
     text-align: center;
 }
@@ -228,4 +250,20 @@
   font-size: 30px;
   font-weight: bold;
   padding: 15px;
+}
+
+
+.full-screen-dialog {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.custom-dialog-container {
+  /* CSS properties */
+  padding: 0px;
 }
