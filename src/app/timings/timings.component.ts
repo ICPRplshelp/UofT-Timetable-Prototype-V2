@@ -1,22 +1,16 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { Component, Inject, OnInit, Input } from '@angular/core';
+import {animate, state, style, transition, trigger,} from '@angular/animations';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   Course,
+  CourseNote,
   EnrolmentControl,
   IndividualControl,
   Instructor,
   MeetingTime,
-  SectionNote,
-  CourseNote,
   Section,
 } from '../shared/course-interfaces';
-import { UtilitiesService } from '../shared/utilities.service';
+import {UtilitiesService} from '../shared/utilities.service';
+import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
 
 /**
  * Inputs:
@@ -29,8 +23,8 @@ import { UtilitiesService } from '../shared/utilities.service';
   styleUrls: ['./timings.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
       transition(
         'expanded <=> collapsed',
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
@@ -50,11 +44,10 @@ export class TimingsComponent implements OnInit {
   smallScreenVal: string = '';
 
 
-
   constructor(
-    public util: UtilitiesService
+    public util: UtilitiesService,
+    private clTimingsSharer: ClTimingsSharerService
   ) {
-
 
     // console.log("Small screen?", data.smallScreen);
   }
@@ -119,11 +112,11 @@ export class TimingsComponent implements OnInit {
       minsStr = ':' + minsStr;
     }
 
-      return hours + minsStr;
+    return hours + minsStr;
 
   }
 
-  getTimeCode12(millisTemp: string): string{
+  getTimeCode12(millisTemp: string): string {
     let millis = parseInt(millisTemp);
     if (isNaN(millis) || millis === -1) {
       return 'NA';
@@ -137,13 +130,14 @@ export class TimingsComponent implements OnInit {
       minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
       minsStr = ':' + minsStr;
     }
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
 
-      return hours + minsStr;
+    return hours + minsStr;
 
 
   }
+
   /**
    *
    * @param millisTemp millis
@@ -157,9 +151,9 @@ export class TimingsComponent implements OnInit {
 
     let date = new Date(millis);
     let hours = date.getHours() + 5;
-    if(hours >= 20){
+    if (hours >= 20) {
       return 'p';
-    } else if (hours <= 10){
+    } else if (hours <= 10) {
       return '';
     } else {
       return '';
@@ -167,20 +161,20 @@ export class TimingsComponent implements OnInit {
   }
 
   getDeliveryMode(sec: Section): string {
-    if(sec === null || sec === undefined){
-        return "INPER";
+    if (sec === null || sec === undefined) {
+      return "INPER";
     }
-    if(sec.deliveryModes === null || sec.deliveryModes === undefined){
-        return "INPER";
+    if (sec.deliveryModes === null || sec.deliveryModes === undefined) {
+      return "INPER";
     }
-    if(sec.deliveryModes[0] === null || sec.deliveryModes[0] === undefined){
-        return "INPER";
+    if (sec.deliveryModes[0] === null || sec.deliveryModes[0] === undefined) {
+      return "INPER";
     }
-    if(sec.deliveryModes[0].mode === null || sec.deliveryModes[0].mode === undefined){
-        return "INPER";
+    if (sec.deliveryModes[0].mode === null || sec.deliveryModes[0].mode === undefined) {
+      return "INPER";
     }
     return sec.deliveryModes[0].mode
-}
+  }
 
   getIcon(sec: Section): string {
     return this.getSyncIcon(this.getDeliveryMode(sec));
@@ -301,8 +295,8 @@ export class TimingsComponent implements OnInit {
       return [
         [
           {
-            start: { day: '', millisofday: '-1' },
-            end: { day: '', millisofday: '-1' },
+            start: {day: '', millisofday: '-1'},
+            end: {day: '', millisofday: '-1'},
             building: {
               buildingCode: '',
               buildingRoomNumber: '',
@@ -387,7 +381,7 @@ export class TimingsComponent implements OnInit {
   }
 
   convertLecSessionName(lname: string): string {
-    if(lname.startsWith("LEC") && lname[3] === '2'){
+    if (lname.startsWith("LEC") && lname[3] === '2') {
       return lname.slice(0, 3) + 'S' + lname.slice(4);
     } else return lname;
   }
@@ -395,7 +389,7 @@ export class TimingsComponent implements OnInit {
 
   sortSections(secs: Section[]): Section[] {
 
-    if(this.util.hideSpecial){
+    if (this.util.hideSpecial) {
       secs = secs.filter(sec => sec.name[3] !== '2');
     }
 
@@ -408,27 +402,26 @@ export class TimingsComponent implements OnInit {
   }
 
   shortenLecNameIfSmall(lecSessionName: string): string {
-    if(this.smallScreen){
+    if (this.smallScreen) {
       return lecSessionName[0] + lecSessionName.slice(3);
-    }
-    else return lecSessionName;
+    } else return lecSessionName;
   }
 
   getCurrentlyEnrolled(element: Section): number {
-    if(element.currentEnrolment !== null &&
+    if (element.currentEnrolment !== null &&
       element.currentEnrolment !== undefined &&
       element.currentWaitlist !== null &&
       element.currentWaitlist !== undefined
-      )
-    return parseInt(element.currentEnrolment) + parseInt(element.currentWaitlist);
-    else if(element.currentEnrolment !== null &&
+    )
+      return parseInt(element.currentEnrolment) + parseInt(element.currentWaitlist);
+    else if (element.currentEnrolment !== null &&
       element.currentEnrolment !== undefined)
       return parseInt(element.currentEnrolment);
-      else return 0;
+    else return 0;
   }
 
   getCapacity(element: Section): number {
-    if(element.maxEnrolment !== null && element.maxEnrolment !== undefined){
+    if (element.maxEnrolment !== null && element.maxEnrolment !== undefined) {
       return parseInt(element.maxEnrolment);
     } else {
       return 0;
@@ -449,7 +442,7 @@ export class TimingsComponent implements OnInit {
    * @returns whether the control is universal
    */
   controlIsUniversal(ctrl?: IndividualControl | null): boolean {
-    if(ctrl === undefined || ctrl === null){
+    if (ctrl === undefined || ctrl === null) {
       return true;
     }
 
@@ -469,16 +462,16 @@ export class TimingsComponent implements OnInit {
 
 
   uListEmpty<T>(li: T[] | undefined): T[] {
-    if(li === undefined) return [];
+    if (li === undefined) return [];
     else return li;
   }
 
 
   ensureEnrolmentControls(sec: Section | null | undefined): EnrolmentControl[] {
-    if(sec === null || sec === undefined){
+    if (sec === null || sec === undefined) {
       return [];
     } else {
-      if(sec.enrolmentControls === undefined){
+      if (sec.enrolmentControls === undefined) {
         return [];
       }
       return sec.enrolmentControls.filter(item => this.controlToReadable(
@@ -488,20 +481,18 @@ export class TimingsComponent implements OnInit {
   }
 
   createEnrolmentControlsReadable(sec: Section | null | undefined): string[] {
-    if(sec === null || sec === undefined){
+    if (sec === null || sec === undefined) {
       return ["See notes"];
     }
-    if(sec.enrolmentControls === null || sec.enrolmentControls === undefined){
+    if (sec.enrolmentControls === null || sec.enrolmentControls === undefined) {
       return ["See notes"];
     }
-    if(sec.enrolmentControls.length === 0){
+    if (sec.enrolmentControls.length === 0) {
       return ["See notes"];
-    }
-    else {
-      let temp1 =  [...new Set(sec.enrolmentControls.map(item => this.controlToReadable(
+    } else {
+      let temp1 = [...new Set(sec.enrolmentControls.map(item => this.controlToReadable(
         item
       ).trim()).filter(item => item !== ""))];
-
 
 
       return temp1;
@@ -510,10 +501,12 @@ export class TimingsComponent implements OnInit {
 
   dupeFas(tl: string[]): string[] {
     let fasCount = 0;
-    tl.forEach(item => {if(item.includes("Arts and Science")){
-      fasCount++;
-    }});
-    if(fasCount >= 2){
+    tl.forEach(item => {
+      if (item.includes("Arts and Science")) {
+        fasCount++;
+      }
+    });
+    if (fasCount >= 2) {
       return tl.filter(item => item.trim() !== 'Faculty of Arts and Science');
     } else {
       return tl;
@@ -529,11 +522,11 @@ export class TimingsComponent implements OnInit {
    * @returns a list of individual controls, sorted in a specific way,
    * that does not contain anything that would be deemed universal.
    */
-  createReadableControls(ectr: EnrolmentControl | null | undefined): IndividualControl[]{
-    if(ectr === null || ectr === undefined){
+  createReadableControls(ectr: EnrolmentControl | null | undefined): IndividualControl[] {
+    if (ectr === null || ectr === undefined) {
       return [];
     }
-    if(ectr.quantity === "0"){
+    if (ectr.quantity === "0") {
       return [];
     }
     const tl: string[] = [];
@@ -549,9 +542,9 @@ export class TimingsComponent implements OnInit {
       ectr.designation
     ];
     const tl2: IndividualControl[] = [];
-    for(let item of controlItems){
-      if(item !== undefined && !this.controlIsUniversal(item)
-      ){
+    for (let item of controlItems) {
+      if (item !== undefined && !this.controlIsUniversal(item)
+      ) {
 
         tl2.push(item);
       }
@@ -569,35 +562,35 @@ export class TimingsComponent implements OnInit {
   }
 
   individualControlListToString(indv: IndividualControl[],
-    ectr?: EnrolmentControl | null | undefined
-    ): string[] {
+                                ectr?: EnrolmentControl | null | undefined
+  ): string[] {
 
 
     const temp = indv.map(item => item.name);
     const temp2: string[] = [];
-      if(ectr !== null && ectr !== undefined){
-        if((ectr.yearOfStudy !== null && ectr.yearOfStudy !== undefined)
+    if (ectr !== null && ectr !== undefined) {
+      if ((ectr.yearOfStudy !== null && ectr.yearOfStudy !== undefined)
         && ectr.yearOfStudy.trim() !== '*'
-          ){
-          temp2.push(`Year ${ectr.yearOfStudy?.trim()}`);
-        }
+      ) {
+        temp2.push(`Year ${ectr.yearOfStudy?.trim()}`);
       }
+    }
 
 
-    return [...temp2 , ...temp];
+    return [...temp2, ...temp];
   }
 
   joinWithEndash(items: string[]): string {
     return items.join(" – ");
   }
 
-  sectionIsLecture(sec: Section): boolean{
+  sectionIsLecture(sec: Section): boolean {
     // console.log(sec);
-    if(sec === null || sec === undefined){
+    if (sec === null || sec === undefined) {
       return false;
     }
     // console.log(sec.teachMethod);
-    if(sec.teachMethod === undefined || sec.teachMethod === null){
+    if (sec.teachMethod === undefined || sec.teachMethod === null) {
       return false;
     }
     return sec.teachMethod.trim() === "LEC";
@@ -606,16 +599,16 @@ export class TimingsComponent implements OnInit {
   // return notes form a section
   getNotes(sec: Section): string {
 
-    if(sec === null || sec === undefined){
+    if (sec === null || sec === undefined) {
       return "";
     }
-    if(sec.notes === null || sec.notes === undefined){
+    if (sec.notes === null || sec.notes === undefined) {
       return "";
     }
     // console.log(sec.notes);
     let ns = "";
-    for(let sn of sec.notes){
-      if(sn.content !== null && sn.content !== undefined)
+    for (let sn of sec.notes) {
+      if (sn.content !== null && sn.content !== undefined)
         ns += sn.content;
     }
 
@@ -624,11 +617,10 @@ export class TimingsComponent implements OnInit {
   }
 
 
-  cutOutUndefined(cand: string | null | undefined): string{
-    if(cand === null || cand === undefined || cand.trim() === ""){
+  cutOutUndefined(cand: string | null | undefined): string {
+    if (cand === null || cand === undefined || cand.trim() === "") {
       return "None";
-    }
-    else return cand;
+    } else return cand;
   }
 
   /**
@@ -652,11 +644,21 @@ export class TimingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(!this.smallScreen){
+    if (!this.smallScreen) {
       this.smallScreenVal = "padding: 42px";
-    }
-    else {
+    } else {
       this.days = ['U', 'M', 'T', 'W', 'R', 'F', 'S', '⠀'];
     }
+    this.clTimingsSharer.getData().subscribe({
+      next: data => {
+        this.storedCourses = data;
+      },
+      error: err =>  {},
+      complete: () => {
+        console.log("I've gotten the courses.");
+      }
+    });
+
+
   }
 }

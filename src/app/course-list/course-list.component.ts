@@ -1,9 +1,10 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {Breadth, Course, PageableCourses, Section,} from '../shared/course-interfaces';
 import {CourseListGetterService} from '../shared/course-list-getter.service';
 import {UtilitiesService} from '../shared/utilities.service';
 import {DialogHolderComponent} from "../dialog-holder/dialog-holder.component";
+import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
 
 @Component({
   selector: 'app-course-list',
@@ -14,7 +15,8 @@ export class CourseListComponent implements OnInit {
   constructor(
     private crsGetter: CourseListGetterService,
     public constants: UtilitiesService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private clTimingsSharer: ClTimingsSharerService
   ) {
   }
 
@@ -361,16 +363,18 @@ export class CourseListComponent implements OnInit {
     if (breadthsSoFar.length === 0) return [0];
     return breadthsSoFar;
   }
-
   useDialog: boolean = false;
 
+
   selectCourse(coursePack: Course[]): void {
+    this.clTimingsSharer.setData(coursePack);
     if (this.useDialog) {
       this.openCourseDialogPage(coursePack);
     } else {
 
     }
   }
+
 
   private openCourseDialogPage(coursePack: Course[]) {
     if (coursePack.length === 0) {
