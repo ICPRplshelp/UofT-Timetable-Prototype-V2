@@ -367,10 +367,11 @@ export class CourseListComponent implements OnInit {
 
 
   selectCourse(coursePack: Course[]): void {
-    this.clTimingsSharer.setData(coursePack);
+
     if (this.useDialog) {
       this.openCourseDialogPage(coursePack);
     } else {
+      this.clTimingsSharer.setData(coursePack);
 
     }
   }
