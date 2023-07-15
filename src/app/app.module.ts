@@ -18,13 +18,15 @@ import {MatInputModule} from '@angular/material/input';
 import { TimingsComponent } from './timings/timings.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
+import { DialogHolderComponent } from './dialog-holder/dialog-holder.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CourseListComponent,
-    TimingsComponent
+    TimingsComponent,
+    DialogHolderComponent
   ],
   imports: [
     BrowserModule,

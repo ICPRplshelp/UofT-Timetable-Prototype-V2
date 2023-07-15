@@ -5,8 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit, Input } from '@angular/core';
 import {
   Course,
   EnrolmentControl,
@@ -19,6 +18,11 @@ import {
 } from '../shared/course-interfaces';
 import { UtilitiesService } from '../shared/utilities.service';
 
+/**
+ * Inputs:
+ * storedCourses: Course[]; // all F/S/Y offerings of that course
+ * smallScreen: boolean;  // whether the screen is small, to compress things.
+ */
 @Component({
   selector: 'app-timings',
   templateUrl: './timings.component.html',
@@ -37,25 +41,21 @@ import { UtilitiesService } from '../shared/utilities.service';
 export class TimingsComponent implements OnInit {
   // , "ins", "time", "delivery"
 
-  storedCourses: Course[] = [];
+  @Input() storedCourses: Course[] = [];
+  @Input() smallScreen: boolean = false;
+
   displayedColumns: string[] = ['lec', 'ins', 'time', 'delivery'];
   displayedColumnsExpanded: string[] = [...this.displayedColumns];
   expandedElement: Section | null = null;
-  smallScreen: boolean;
   smallScreenVal: string = '';
+
+
+
   constructor(
-    private dialogRef: MatDialogRef<TimingsComponent>,
-    @Inject(MAT_DIALOG_DATA) data: { courses: Course[] , smallScreen: boolean},
     public util: UtilitiesService
   ) {
-    this.storedCourses = data.courses;
-    this.smallScreen = data.smallScreen;
-    if(!this.smallScreen){
-      this.smallScreenVal = "padding: 42px";
-    }
-    else {
-      this.days = ['U', 'M', 'T', 'W', 'R', 'F', 'S', '⠀'];
-    }
+
+
     // console.log("Small screen?", data.smallScreen);
   }
 
@@ -120,7 +120,7 @@ export class TimingsComponent implements OnInit {
     }
 
       return hours + minsStr;
-    
+
   }
 
   getTimeCode12(millisTemp: string): string{
@@ -141,11 +141,11 @@ export class TimingsComponent implements OnInit {
       hours = hours ? hours : 12; // the hour '0' should be '12'
 
       return hours + minsStr;
-    
-    
+
+
   }
   /**
-   * 
+   *
    * @param millisTemp millis
    * Returns AM, PM, or nothing
    */
@@ -468,10 +468,19 @@ export class TimingsComponent implements OnInit {
   }
 
 
+  uListEmpty<T>(li: T[] | undefined): T[] {
+    if(li === undefined) return [];
+    else return li;
+  }
+
+
   ensureEnrolmentControls(sec: Section | null | undefined): EnrolmentControl[] {
     if(sec === null || sec === undefined){
       return [];
     } else {
+      if(sec.enrolmentControls === undefined){
+        return [];
+      }
       return sec.enrolmentControls.filter(item => this.controlToReadable(
         item
       ).trim() !== "");
@@ -543,7 +552,7 @@ export class TimingsComponent implements OnInit {
     for(let item of controlItems){
       if(item !== undefined && !this.controlIsUniversal(item)
       ){
-        
+
         tl2.push(item);
       }
     }
@@ -588,12 +597,15 @@ export class TimingsComponent implements OnInit {
       return false;
     }
     // console.log(sec.teachMethod);
+    if(sec.teachMethod === undefined || sec.teachMethod === null){
+      return false;
+    }
     return sec.teachMethod.trim() === "LEC";
   }
 
   // return notes form a section
   getNotes(sec: Section): string {
-    
+
     if(sec === null || sec === undefined){
       return "";
     }
@@ -606,7 +618,7 @@ export class TimingsComponent implements OnInit {
       if(sn.content !== null && sn.content !== undefined)
         ns += sn.content;
     }
-    
+
     return ns;
 
   }
@@ -639,5 +651,12 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(!this.smallScreen){
+      this.smallScreenVal = "padding: 42px";
+    }
+    else {
+      this.days = ['U', 'M', 'T', 'W', 'R', 'F', 'S', '⠀'];
+    }
+  }
 }

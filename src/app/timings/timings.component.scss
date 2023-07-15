@@ -1,13 +1,13 @@
 table {
     width: 100%;
   }
-  
+
   .pad-it {
     padding: 10px 0px 20px 0px;
     // width: 100%;
     // border: 1px solid #4CAF50;
   }
-  
+
   .r-chip {
     outline: #000000;
     outline-width: 2px;
@@ -26,26 +26,26 @@ table {
     text-align: center;
     border: 5px black;
     overflow: hidden;
-    
-  
+
+
   }
-  
+
   .meeting-day-color {
-  
+
   }
-  
-  
+
+
   .width-limiter {
     max-width: 88px;
   }
-  
+
   .intro-content {
     // width: 300px;
     // height: 300px;
     width: 15px;
     position: relative;
     padding: 2px 10px;
-  
+
   }
   .intro-content::before {
     content: "";
@@ -60,23 +60,23 @@ table {
     background-color: rgba(176, 176, 176, 0.68);
     mix-blend-mode: overlay;
   }
-  
+
   .shield{
     position: relative;
     alignment: left;
     padding-right: 4px;
     // color: #fff;
-  
+
   }
-  
-  
+
+
   .inner-chip{
     padding: 2px 4px;
     color: white;
     display:flex;
     background-color: #202225;
   }
-  
+
   .meeting-day {
     padding: 0px 0px;
      // position: relative;
@@ -85,11 +85,11 @@ table {
      // padding-left: 7px;
      // padding-right: 7px;
      // padding: 2px 5px;
-  
+
   }
-  
-  
-  
+
+
+
   //.meeting-day::before{
   //  // position: absolute;
   //  // height: 100%;
@@ -97,47 +97,47 @@ table {
   //  // background-color: rgba(10, 10, 10, 0.4);
   //  // mix-blend-mode: overlay;
   //}
-  
+
   .vert-centered-element {
     margin: 0;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
   }
-  
+
   .meeting-time {
     padding: 2px 0px;
     // padding-right: 4px;
     display: inline-block;
     white-space: nowrap;
   }
-  
+
   .assigned-room {
     padding: 2px 5px;
     display: inline-block;
     white-space: nowrap;
     font-stretch: extra-condensed;
   }
-  
-  
+
+
   .bold-it{
     font-weight: bold;
   }
-  
+
   .flexit {
     display:flex;
     flex-direction:column;
   }
-  
+
   .margin-it {
     margin-left: 15px;
     margin-right: 15px;
   }
-  
+
   .v-pad-it {
     padding-bottom: 15px;
   }
-  
+
   .flexith {
     display: flex;
     // flex-direction: row;
@@ -152,49 +152,49 @@ table {
     flex-wrap: nowrap;
     gap: 6px;
   }
-  
-  
+
+
   //.mat-column-instructor {
   //  flex: 0 0 10%;
   //}
   //.mat-column-time {
   //  flex: 0 0 10%;
   //}
-  
+
   .mat-row {
     height: auto;
   }
-  
+
   .mat-cell {
     padding: 8px 8px 8px 0;
   }
-  
+
   .width-textArea {
     min-width: 50px;
     word-wrap: break-word;
   }
-  
+
   .ind-tbl {
     // width: 400px;
   }
-  
+
   .center-it {
     margin: auto;
     // text-align: center;
   }
-  
+
   .allow-wrap {
     white-space: wrap;
     max-width: 80px;
   }
-  
+
   .center-it-2 {
     display: flex;
     justify-content: center;
   }
-  
+
   .vert-center {
-  
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -206,8 +206,8 @@ table {
     // -ms-transform: translate(-50%, -50%);
     // transform: translate(-50%, -50%);
   }
-  
-  a { color: inherit; } 
+
+  a { color: inherit; }
 
   .flexit01 {
     display: flex;
@@ -276,8 +276,3 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 
-:host ::ng-deep .mat-dialog-content {
-  padding: 0;
-  margin: -24px;
-  /* other CSS properties */
-}

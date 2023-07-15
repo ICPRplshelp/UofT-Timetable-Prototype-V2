@@ -1,0 +1,5 @@
+.side-by-side {
+  display: flex;
+  flex-direction: row; /* or row-reverse, depending on your preference */
+  justify-content: space-between; /* or other value like flex-start, flex-end, center, etc. */
+}
