@@ -363,15 +363,15 @@ export class CourseListComponent implements OnInit {
     if (breadthsSoFar.length === 0) return [0];
     return breadthsSoFar;
   }
-  useDialog: boolean = false;
+  useDialog: boolean = true;
 
 
   selectCourse(coursePack: Course[]): void {
-
+    this.clTimingsSharer.setData(coursePack);
     if (this.useDialog) {
       this.openCourseDialogPage(coursePack);
     } else {
-      this.clTimingsSharer.setData(coursePack);
+
 
     }
   }
