@@ -1,10 +1,12 @@
 <!-- CTRL+ALT+T to surround with div -->
-<div class="side-by-side">
+<div class="side-by-side" >
 
-  <app-course-list>
+  <app-course-list class="left-div">
   </app-course-list>
 
-<!--  <app-timings class="right-div ">-->
-<!--  </app-timings>-->
+  <div class="right-div"><app-timetable [sectionCode]="'F'">
+
+  </app-timetable ></div>
+
 
 </div>

@@ -10,17 +10,26 @@
             <table mat-table [dataSource]="
                         sortSections(ensureCourseFormat(crs.sections))
                         " multiTemplateDataRows class="mat-elevation-z8" [ngClass]="{accent:true}"
-                   [style.background-color]="getTableColor(crs)"
+              [style.background-color]="getTableColor(crs)">
 
-            >
+              <ng-container matColumnDef="sel">
+                <th mat-header-cell *matHeaderCellDef> SEL</th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-checkbox
+                                                    [checked]="checkSectionEnrolled(element, crs)"
+                                                    color="primary"
+                                                    (change)="onCheckboxChange($event, element, crs)"
+                                            >
+
+                                            </mat-checkbox>
+                </td>
+              </ng-container>
 
               <!-- Lec column -->
               <ng-container matColumnDef="lec">
                 <th mat-header-cell *matHeaderCellDef [style]="smallScreen ? 'padding-left: 15px;' : ''"> LEC</th>
                 <td mat-cell *matCellDef="let element"
-                    [style]="(smallScreen ? 'padding-left: 15px;' : '') + (element.cancelInd === 'Y' ? 'text-decoration: line-through;' : '')"
-
-                >
+                  [style]="(smallScreen ? 'padding-left: 15px;' : '') + (element.cancelInd === 'Y' ? 'text-decoration: line-through;' : '')">
                   {{ shortenLecNameIfSmall(element.name) }}
                 </td>
               </ng-container>
@@ -43,13 +52,12 @@
                   <div class="flexit">
                     <div>
                       <div class="flexit">
-                        <div *ngFor="let meets of groupMeetings(ensureSchedule(element))"
-                             class="r-chip" [style.min-height]="24"
-                             [style.background-color]="getDayColor(meets[0].start.day)"
-                             [style.color]="getDayColoredText(meets[0].start.day)">
+                        <div *ngFor="let meets of groupMeetings(ensureSchedule(element))" class="r-chip"
+                          [style.min-height]="24" [style.background-color]="getDayColor(meets[0].start.day)"
+                          [style.color]="getDayColoredText(meets[0].start.day)">
 
                           <div class="meeting-day" [style.width.px]="getDayCode(meets[0].start.day).length * 10 + 15"
-                               [style.background-color]="getDayBrightenedColors(meets[0].start.day)">
+                            [style.background-color]="getDayBrightenedColors(meets[0].start.day)">
                             <div class="vert-center">
                               {{ getDayCode(meets[0].start.day) }}
                             </div>
@@ -74,8 +82,7 @@
                           <div class="assigned-room">
                             <div class="flex-horizontal-nowrap">
                               <div *ngFor="let mt4 of getRidOfDuplicateLocations(meets)">
-                                <a [attr.href]="mt4.building.buildingUrl"
-                                   target="_blank">
+                                <a [attr.href]="mt4.building.buildingUrl" target="_blank">
                                   {{ mt4.building.buildingCode }} {{
                                   mt4.building.buildingRoomNumber }}</a>
                               </div>
@@ -111,7 +118,7 @@
                 <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
                 <td mat-cell *matCellDef="let element">
                   <button mat-icon-button aria-label="expand row"
-                          (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                    (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
                     <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
                     <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
                   </button>
@@ -121,11 +128,11 @@
 
               <ng-container matColumnDef="expandedDetail">
                 <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsExpanded.length"
-                    style="padding-bottom: 0px; padding-top: 0px;">
+                  style="padding-bottom: 0px; padding-top: 0px;">
 
 
                   <div class="example-element-detail"
-                       [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
 
                     <div class="flexit">
 
@@ -143,19 +150,15 @@
 
                       </div>
 
-                      <div style="width: 340px;"
-                           *ngIf="sectionIsLecture(element)"
-                      >
+                      <div style="width: 340px;" *ngIf="sectionIsLecture(element)">
                         <!-- Things start here. Extra div just in case. -->
                         <!-- Enrollment control -->
-                        <strong
-                        >Enrollment controls ({{cutOutUndefined(element.enrolmentInd)}})</strong>
+                        <strong>Enrollment controls ({{cutOutUndefined(element.enrolmentInd)}})</strong>
 
 
                         <div>
                           <ul>
-                            <li
-                              *ngFor="let ctrl of dupeFas(createEnrolmentControlsReadable(element))">
+                            <li *ngFor="let ctrl of dupeFas(createEnrolmentControlsReadable(element))">
                               {{ctrl}}
                             </li>
                           </ul>
@@ -187,9 +190,12 @@
 
 
               <tr mat-header-row *matHeaderRowDef="displayedColumnsExpanded"></tr>
-              <tr mat-row *matRowDef="let element; columns: displayedColumnsExpanded;"
-                  class="example-element-row" [class.example-expanded-row]="expandedElement === element"
-                  (click)="expandedElement = expandedElement === element ? null : element">
+              <tr mat-row *matRowDef="let element; columns: displayedColumnsExpanded;" class="example-element-row"
+                [class.example-expanded-row]="expandedElement === element"
+                
+                >
+                <!-- (click)="expandedElement = expandedElement === element ? null : element" -->
+                <!-- PLACE THIS ABOVE TODO -->
               </tr>
               <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row">
               </tr>
@@ -223,6 +229,3 @@
 
   </div>
 </div>
-
-
-

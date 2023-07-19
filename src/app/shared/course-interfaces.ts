@@ -1,6 +1,6 @@
 
     export interface DayTimeOfWeek {
-        day: string;
+        day: string;  // "0" for sun, "1" for mon, and so on
         millisofday: string;
     }
 

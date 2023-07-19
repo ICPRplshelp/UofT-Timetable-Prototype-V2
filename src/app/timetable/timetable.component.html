@@ -1,0 +1,23 @@
+<p>timetable works!</p>
+<table class="timetableSchedule" style="width:100%">
+    <thead>
+        <tr>
+            <th class="hour-cell">
+                -
+            </th>
+            <th class="day-of-week" *ngFor="let tstr of generateDateStrings()">
+                {{tstr}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let tRowInfo of generateAllTableRows()">
+            <td> {{tRowInfo.hourText}} </td>
+            <td *ngFor="let tCell of filterOccupiedCells(tRowInfo.cells)"
+                [attr.rowspan]="calculateRowSpan(tCell)"
+            >
+            
+            </td>
+        </tr>
+    </tbody>
+</table>

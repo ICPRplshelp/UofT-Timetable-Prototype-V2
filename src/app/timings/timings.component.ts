@@ -11,6 +11,9 @@ import {
 } from '../shared/course-interfaces';
 import {UtilitiesService} from '../shared/utilities.service';
 import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
+import { SelectedCoursesService } from '../selected-courses.service';
+import { SectionSelection } from '../selectedclasses';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 /**
  * Inputs:
@@ -38,7 +41,7 @@ export class TimingsComponent implements OnInit {
   @Input() storedCourses: Course[] = [];
   @Input() smallScreen: boolean = false;
 
-  displayedColumns: string[] = ['lec', 'ins', 'time', 'delivery'];
+  displayedColumns: string[] = ['sel', 'lec', 'ins', 'time', 'delivery'];
   displayedColumnsExpanded: string[] = [...this.displayedColumns];
   expandedElement: Section | null = null;
   smallScreenVal: string = '';
@@ -46,7 +49,8 @@ export class TimingsComponent implements OnInit {
 
   constructor(
     public util: UtilitiesService,
-    private clTimingsSharer: ClTimingsSharerService
+    private clTimingsSharer: ClTimingsSharerService,
+    private selectedCoursesService: SelectedCoursesService
   ) {
 
     // console.log("Small screen?", data.smallScreen);
@@ -661,4 +665,34 @@ export class TimingsComponent implements OnInit {
 
 
   }
+
+
+  // code that interacts with the service
+  addSectionToPlan(sec: Section, curCrs: Course): void {
+    this.selectedCoursesService.addSection(
+      new SectionSelection(sec, this.storedCourses, curCrs));
+  }
+
+  removeSectionFromPlan(sec: Section, curCrs: Course): void {
+    this.selectedCoursesService.removeSection(
+      new SectionSelection(sec, this.storedCourses, curCrs)
+    )
+  }
+
+  checkSectionEnrolled(sec: Section, curCrs: Course): boolean {
+    return this.selectedCoursesService.checkEnrolled(
+      new SectionSelection(sec, this.storedCourses, curCrs)
+    );
+  }
+
+  onCheckboxChange($event: MatCheckboxChange, sec: Section, curCrs: Course): void {
+    // [ ] -> [C]
+    if($event.checked){
+      this.addSectionToPlan(sec, curCrs);
+    } else {
+      // [C] -> [ ]
+      this.removeSectionFromPlan(sec, curCrs);
+    }
+  }
+
 }
