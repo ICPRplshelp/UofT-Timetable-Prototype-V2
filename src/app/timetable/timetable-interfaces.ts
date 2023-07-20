@@ -38,7 +38,7 @@ export class CourseTableCell implements TableCell {
         return false;
     }
     isOccupied(): boolean {
-        return true;
+        return false;
     }
 
     displayedCourse: CourseDisplay;
@@ -53,13 +53,13 @@ export class ConflictingCourseTableCell implements TableCell {
         return false;
     }
     isOccupied(): boolean {
-        return true;
+        return false;
     }
 
     displayedCourses: CourseDisplay[];
 
     constructor(cd: CourseDisplay[]) {
-        console.log("Detected conflict");
+        // console.log("Detected conflict");
         this.displayedCourses = cd;
     }
 
@@ -88,7 +88,7 @@ export class ConflictingCourseTableCell implements TableCell {
     getLatest(): number {
         let highest = 0;
         for(let displayedCourse of this.displayedCourses){
-            const val = displayedCourse.startTimeMins;
+            const val = displayedCourse.endTimeMins;
             if(val > highest) {
                 highest = val;
             }
@@ -108,6 +108,30 @@ export class CourseDisplay {
   buildingCode: string;
   buildingNumber: string;
   deliveryMode: string;
+  sessionCode: string;
+  ss: SectionSelection;
+  
+  hideDuringFall(): boolean {
+    if(this.sessionCode.endsWith("1")){
+      return true;
+    }
+    return false;
+  }
+
+  hideDuringWinter(): boolean {
+    if(this.sessionCode.endsWith("9")){
+      return true;
+    }
+    return false;
+  }
+
+  getCourseCodeNoSuffix(): string {
+    if(this.courseCode.match(/[A-Z]{3}[A-D\d]\d{2}[HY]/)){
+      return this.courseCode.slice(0, 6);
+    } else {
+      return this.courseCode.slice(0, 7);
+    }
+  }
 
   constructor(mt: MeetingTime, ss: SectionSelection) {
     this.courseCode = ss.targetCourse.code;
@@ -120,6 +144,8 @@ export class CourseDisplay {
     this.buildingCode = mt.building.buildingCode;
     this.buildingNumber = mt.building.buildingRoomNumber;
     this.deliveryMode = ss.sectionSelected.deliveryModes[0]?.mode ?? 'INPER';
+    this.sessionCode = mt.sessionCode;
+    this.ss = ss;
   }
 
   conflicts(other: CourseDisplay): boolean {
@@ -155,66 +181,58 @@ function millisToMinutes(milliseconds: number | string): number {
  * AI generated code. If this breaks, blame this one.
  */
 export class ConflictGrouper {
-  courseDisplays: CourseDisplay[];
+  // courseDisplays: CourseDisplay[];
 
-  constructor(courseDisplays: CourseDisplay[]) {
-    this.courseDisplays = courseDisplays;
-  }
-
-  private findConflicts(courseDisplay: CourseDisplay): CourseDisplay[] {
-    return this.courseDisplays.filter((otherCourseDisplay) =>
-      courseDisplay.conflicts(otherCourseDisplay)
-    );
-  }
-
-  private groupConflicts(): PotentialConflicts {
-    const potentialConflicts: PotentialConflicts = {
-      conflictGroups: [],
-      notConflicting: [],
-    };
-  
-    const visited = new Set<CourseDisplay>();
-    for (const courseDisplay of this.courseDisplays) {
-      if (visited.has(courseDisplay)) continue;
-  
-      const queue: CourseDisplay[] = [courseDisplay];
-      const conflictGroup: CourseDisplay[] = [];
-  
-      while (queue.length > 0) {
-        const currentCourse = queue.pop()!;
-        if (visited.has(currentCourse)) continue;
-  
-        visited.add(currentCourse);
-        conflictGroup.push(currentCourse);
-  
-        const conflicts = this.findConflicts(currentCourse);
-        for (const conflictCourse of conflicts) {
-          if (!visited.has(conflictCourse)) {
-            queue.push(conflictCourse);
-          }
+  /**
+   * 
+   * @param courseDisplays a list of course displays for that day. This mutuates the array's order, beware!
+   * @returns 
+   */
+  groupConflictingInSameDay(courseDisplays: CourseDisplay[]): PotentialConflicts {
+    // console.log("Attempting to group conflicts");
+    const conflictGroups: CourseDisplay[][] = [];
+    const notConflicting: CourseDisplay[] = [];
+    courseDisplays.sort((item1, item2) => {
+      return item1.startTimeMins - item2.startTimeMins;
+    });
+    // courseDisplays is now sorted by ascending start times
+    // let conflictState: boolean = false;
+    let courseDisplayBucket: CourseDisplay[] = [];
+    let earliestStartTime = -5;
+    let latestEndTime = -4;
+    for(let cd of courseDisplays){
+      // assert cd.startTimeMins >= earliestStartTime
+      if(cd.startTimeMins >= latestEndTime){
+        // no conflict
+        // move things from bucket to correct list
+        if(courseDisplayBucket.length >= 2){
+          conflictGroups.push(courseDisplayBucket);
+        } else if (courseDisplayBucket.length === 1){
+          notConflicting.push(courseDisplayBucket[0]);
         }
-      }
-  
-      if (conflictGroup.length > 1) {
-        // Sort the conflictGroup by startTimeMins
-        conflictGroup.sort((a, b) => a.startTimeMins - b.startTimeMins);
-        potentialConflicts.conflictGroups.push(conflictGroup);
+        // reset the course display bucket
+        earliestStartTime = cd.startTimeMins;
+        latestEndTime = cd.endTimeMins;
+        courseDisplayBucket = [cd];
+        // conflictState = false;
       } else {
-        // Check if the course is non-conflicting
-        const nonConflictingCourse = conflictGroup[0];
-        potentialConflicts.notConflicting.push(nonConflictingCourse);
+        // conflict
+        // assert courseDisplayBucket.length >= 1
+        latestEndTime = Math.max(latestEndTime, cd.endTimeMins);
+        courseDisplayBucket.push(cd);
+        // conflictState = true;
       }
     }
-  
-    return potentialConflicts;
-  }
-
-  groupConflictingInSameDay(): PotentialConflicts {
-    console.log("Attempting to group conflicts");
-    return this.groupConflicts();
+    // cleanup on the end of the loop
+    if(courseDisplayBucket.length === 1){
+      notConflicting.push(courseDisplayBucket[0]);
+    } else if (courseDisplayBucket.length >= 2){
+      conflictGroups.push(courseDisplayBucket);
+    }
+    return {conflictGroups: conflictGroups, notConflicting: notConflicting};
   }
 }
 
 // Usage:
-// const grouper = new ConflictGrouper(courseDisplays);
-// const potentialConflicts = grouper.groupConflictingInSameDay();
+// const grouper = new ConflictGrouper();
+// const potentialConflicts = grouper.groupConflictingInSameDay(courseDisplays);

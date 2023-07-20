@@ -1,0 +1,53 @@
+.inside-timetable {
+    
+}
+
+
+div.inside-timetable table,
+div.inside-timetable th,
+div.inside-timetable td {
+    border: 2px solid rgb(176, 176, 176);
+    border-collapse: collapse;
+  }
+
+
+
+
+.timetable-table {
+    // border: 2px solid rgb(176, 176, 176);
+}
+
+.hour-cell {
+   //  border: 2px solid rgb(176, 176, 176);
+   width: 60px;
+   // height: 80px;
+   padding: 5px;
+   
+}
+
+.tt-cell {
+    top: 0%;
+    position: absolute;
+    height: 100%;
+    width: 100.2%;
+    // margin: 0 auto; /* Set the left and right margins to "auto" */
+    left: -0.3px;
+    // background-color:blueviolet;
+}
+
+.meeting-cell {
+    width: 75px;
+    max-width: 75px;
+    min-width: 75px;
+    position: relative;
+}
+
+.day-of-week {
+    width: 75px;
+    background-color: #EEEEEE !important; 
+}
+
+.center-text {
+    text-align: center;
+}
+

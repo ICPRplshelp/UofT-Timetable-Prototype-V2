@@ -1,8 +1,10 @@
-<p>timetable works!</p>
+<h1 
+class="center-text"><strong>Timetable ({{sectionCode}} term)</strong></h1>
+<div class="inside-timetable">
 <table class="timetableSchedule" style="width:100%">
     <thead>
         <tr>
-            <th class="hour-cell">
+            <th class="top-left-cell">
                 -
             </th>
             <th class="day-of-week" *ngFor="let tstr of generateDateStrings()">
@@ -12,12 +14,25 @@
     </thead>
     <tbody>
         <tr *ngFor="let tRowInfo of generateAllTableRows()">
-            <td> {{tRowInfo.hourText}} </td>
-            <td *ngFor="let tCell of filterOccupiedCells(tRowInfo.cells)"
-                [attr.rowspan]="calculateRowSpan(tCell)"
-            >
-            
-            </td>
+            <td class="hour-cell" [style.height]="hourHeight + 'px'"> {{tRowInfo.hourText}} </td>
+            <ng-container *ngFor="let tCell of filterOccupiedCells(tRowInfo.cells)">
+                <td class="meeting-cell"
+                 [attr.rowspan]="calculateRowSpan(tCell)"
+                 [style.max-height]="hourHeight*calculateRowSpan(tCell)"
+                 >
+
+                    <ng-container *ngIf="isCourseTableCell(tCell)">
+                        <app-timetable-cell class="tt-cell"
+                            [displayedCell]="forceCourseTablecell(tCell).displayedCourse"></app-timetable-cell>
+                    </ng-container>
+
+                    <ng-container *ngIf="isConflictCell(tCell)">
+                        <app-conflict-timetable-cell class="tt-cell"
+                            [displayedCells]="forceCourseConflictCell(tCell)"></app-conflict-timetable-cell>
+                    </ng-container>
+                </td>
+            </ng-container>
         </tr>
     </tbody>
 </table>
+</div>

@@ -1,5 +1,5 @@
 <mat-dialog-content class="mat-typography" [style]="smallScreen ? 'max-height:95%;' : ''">
-    <app-timings [storedCourses]="storedCourses" [smallScreen]="smallScreen"></app-timings>
+    <app-timings [hideCourseCode]="true" [storedCourses]="storedCourses" [smallScreen]="smallScreen"></app-timings>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="smallScreen">
   <button id="closer" style="margin-top: 24px;"  mat-button mat-dialog-close="">Close</button>

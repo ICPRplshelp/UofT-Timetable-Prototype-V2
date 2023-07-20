@@ -11,6 +11,7 @@ import {
 import { Subscription } from 'rxjs';
 import { EmptyCell } from '../shared/simplified-interfaces';
 import { SelectedCoursesService } from '../selected-courses.service';
+import { UtilitiesService } from '../shared/utilities.service';
 
 type TableRow = {
   hourText: string;
@@ -26,6 +27,14 @@ type TableRow = {
   styleUrls: ['./timetable.component.scss'],
 })
 export class TimetableComponent implements OnInit {
+
+
+  private _hourHeight: number = 60;
+  get hourHeight() {
+    return this._hourHeight * (this.minutesPerCell /60)
+  }
+
+
   readonly DAYS_IN_WEEK = [
     'SUNDAY',
     'MONDAY',
@@ -35,15 +44,20 @@ export class TimetableComponent implements OnInit {
     'FRIDAY',
     'SATURDAY',
   ];
-  readonly FIRST_DAY = 0; // 1 for monday-
-  readonly LAST_DAY = 7; // 6 for -friday
+  readonly FIRST_DAY = 1; // 1 for monday-
+  readonly LAST_DAY = 6; // 6 for -friday
   readonly WEEKS_IN_DAY = this.DAYS_IN_WEEK.length;
   readonly HOURS_IN_DAY = 24;
-  readonly MINUTES_PER_CELL = 30;
+  minutesPerCell = 60;
   readonly emptyCell = new EmptyCell();
   readonly occupiedCell = new OccupiedTableCell();
-  readonly startHour = 0;
-  readonly endHour = 24; // exclusive. 23 = last slot is 22
+  
+  readonly MIN_START_HOUR = 9;
+  readonly MIN_END_HOUR = 16;
+
+  startHour = 9;
+  endHour = 16; // exclusive. 23 = last slot is 22
+
 
   
 
@@ -64,13 +78,13 @@ export class TimetableComponent implements OnInit {
     const acc: string[] = [];
     while (curMin < endMin) {
       acc.push(`${Math.floor(curMin / 60)}:${getTensAndOnesPlace(curMin % 60)}`);
-      curMin += this.MINUTES_PER_CELL;
+      curMin += this.minutesPerCell;
     }
     return acc;
   }
 
   cellsPerHour(): number {
-    return Math.ceil(60 / this.MINUTES_PER_CELL);
+    return Math.ceil(60 / this.minutesPerCell);
   }
 
   /**
@@ -79,10 +93,10 @@ export class TimetableComponent implements OnInit {
    * @returns How many cells could fit into that minute, rounded up.
    */
   cellsTakenFromMinutes(mins: number) {
-    return Math.ceil(mins / this.MINUTES_PER_CELL);
+    return Math.ceil(mins / this.minutesPerCell);
   }
 
-  readonly conflictGrouper = new ConflictGrouper([]);
+  readonly conflictGrouper = new ConflictGrouper();
 
   // TableCell
   rawTable: TableCell[][] = this._buildEmptyCalendar();
@@ -94,6 +108,7 @@ export class TimetableComponent implements OnInit {
   generateAllTableRows(): TableRow[] {
     const timeStrings = this.generateTimeStrings();
     const listAccum: TableRow[] = [];
+    const cellOffset = this.cellsTakenFromMinutes(this.startHour * 60);
     for (
       let i = 0;
       i < Math.min(timeStrings.length, this.finalTable.length);
@@ -101,14 +116,15 @@ export class TimetableComponent implements OnInit {
     ) {
       listAccum.push({
         hourText: timeStrings[i],
-        cells: this.finalTable[i],
+        cells: this.finalTable[i + cellOffset].slice(this.FIRST_DAY, this.LAST_DAY),
       });
     }
     return listAccum;
   }
 
   filterOccupiedCells(tableRows: TableCell[]): TableCell[] {
-    return tableRows.filter((item) => item.isOccupied);
+    
+    return tableRows.filter((item) => this.calculateRowSpan(item) !== 0);
   }
   
   private subscription: Subscription | undefined = undefined;
@@ -116,8 +132,9 @@ export class TimetableComponent implements OnInit {
 
   @Input() sectionCode: string = "F";  // the sessioncode is always initinalized
   // via input BEFORE ngOnInit is called. Can either be F or S
-
-  constructor(private selectedCourseService: SelectedCoursesService){
+  yearSectionCode: string = "Y";
+  constructor(private selectedCourseService: SelectedCoursesService,
+    private utilities: UtilitiesService){
     
   }
 
@@ -125,12 +142,28 @@ export class TimetableComponent implements OnInit {
     this.subscription = this.selectedCourseService.methodCalled$.subscribe(() => {
       const potentialTableCells: CourseDisplay[] = [];
       // sessionCode is used here
-      const relevantSections = this.selectedCourseService.addedSections.filter(item => item.targetCourse.sectionCode === this.sectionCode);
+      const relevantSections = this.selectedCourseService.addedSections.filter(item => item.targetCourse.sectionCode === this.sectionCode || item.targetCourse.sectionCode === this.yearSectionCode);
       for(let rs of relevantSections){
         for(let mt of rs.sectionSelected?.meetingTimes ?? []){
           potentialTableCells.push(new CourseDisplay(mt, rs));
         }
       }
+      let earliestStart = this.MIN_START_HOUR;
+      let latestEnd = this.MIN_END_HOUR;
+
+      let hasHalfHourStartOrEnds = false;
+      for(let cd of potentialTableCells){
+        if(cd.startTimeMins % 60 === 30 || cd.endTimeMins % 60 === 30){
+          hasHalfHourStartOrEnds = true;
+        }
+        const se = Math.floor(cd.startTimeMins / 60);
+        const ee = Math.ceil(cd.endTimeMins / 60);
+        earliestStart = Math.min(se, earliestStart);
+        latestEnd = Math.max(ee, latestEnd);
+      }
+      this.startHour = earliestStart;
+      this.endHour = latestEnd;
+      this.minutesPerCell = hasHalfHourStartOrEnds ? 30 : 60;
       this._rebuildTimetable(potentialTableCells);
     })
   }
@@ -139,10 +172,15 @@ export class TimetableComponent implements OnInit {
       this.subscription.unsubscribe();
   }
 
+  
+
   /**
    * Rebuilds the entire table. With the correct arguments, this method does everything you could imagine.
    */
   _rebuildTimetable(potentialTableCells: CourseDisplay[]): void {
+
+    
+
     // clean up the table
     this.rawTable = this._buildEmptyCalendar();
     /**
@@ -153,8 +191,8 @@ export class TimetableComponent implements OnInit {
     }
 
     this.finalTable = transpose(this.rawTable);
-    // console.log(this.finalTable);
-    // console.log(this.rawTable);
+    // // // console.log(this.finalTable);
+    // // console.log(this.rawTable);
   }
 
   /**
@@ -168,11 +206,19 @@ export class TimetableComponent implements OnInit {
     } else if (tc instanceof ConflictingCourseTableCell) {
       return this.cellsTakenFromMinutes(tc.getLatest() - tc.getEarliest());
     } else if (tc instanceof CourseTableCell){
-      // console.log(tc.displayedCourse.endTimeMins - tc.displayedCourse.startTimeMins);
+      // // // console.log(tc.displayedCourse.endTimeMins - tc.displayedCourse.startTimeMins);
       return this.cellsTakenFromMinutes(tc.displayedCourse.endTimeMins - tc.displayedCourse.startTimeMins);
     }
     return 1;
 
+  }
+
+  private _hideThisTerm(cd: CourseDisplay): boolean {
+    if(this.sectionCode === "F"){
+      return cd.hideDuringFall();
+    } else {
+      return cd.hideDuringWinter();
+    }
   }
 
   private _processSingleDay(
@@ -180,16 +226,17 @@ export class TimetableComponent implements OnInit {
     potentialTableCells: CourseDisplay[]
   ): void {
     const displaysForThatDay = potentialTableCells.filter(
-      (item) => item.dayOfWeek === i
+      (item) => item.dayOfWeek === i && (!this._hideThisTerm(item))
     );
-    this.conflictGrouper.courseDisplays = displaysForThatDay;
-    const ptc = this.conflictGrouper.groupConflictingInSameDay();
+    const ptc = this.conflictGrouper.groupConflictingInSameDay(displaysForThatDay);
+    // // // console.log("ptc", ptc);
     // ptc.conflictGroups;  // CourseTableCell or ConflictingCourseTableCell
     // ptc.notConflicting;
     for (let conf of ptc.conflictGroups) {
       const c2 = new ConflictingCourseTableCell(conf);
       const startTime = c2.getEarliest();
       const endTime = c2.getLatest();
+      // // console.log("Trying to mold conf:", c2, startTime, endTime);
       this._moldIntoTable(i, c2, startTime, endTime);
     }
     for (let ccell of ptc.notConflicting) {
@@ -209,7 +256,7 @@ export class TimetableComponent implements OnInit {
     const startCell = this.cellsTakenFromMinutes(startTime);
     const endCell = this.cellsTakenFromMinutes(endTime);
     const cellLength = endCell - startCell;
-    // console.log(dayId, cellLength);
+    // // console.log(dayId, cellLength);
     if (cellLength === 0) return false;
     setNextElementsToValue<TableCell>(
       this.rawTable[dayId],
@@ -233,6 +280,23 @@ export class TimetableComponent implements OnInit {
       () => new EmptyTableCell()
     );
   }
+
+  isCourseTableCell(tc: TableCell): boolean {
+    return tc instanceof CourseTableCell;
+  }
+
+  isConflictCell(tc: TableCell): boolean {
+    return tc instanceof ConflictingCourseTableCell;
+  }
+
+  forceCourseTablecell(tc: TableCell): CourseTableCell {
+    return (tc as CourseTableCell);
+  }
+
+  forceCourseConflictCell(tc: TableCell): ConflictingCourseTableCell {
+    return (tc as ConflictingCourseTableCell);
+  }
+
 }
 
 /**

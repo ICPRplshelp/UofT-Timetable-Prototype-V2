@@ -1,0 +1,19 @@
+<div class="light-green-background" *ngIf="displayedCell !== undefined" (click)="onClickCourse(displayedCell)"
+    [style.background-color]="getColor(displayedCell)">
+    <div class="course-store">
+        <div class="text-within">
+            <div><strong>{{ displayedCell.courseCode }} </strong></div>
+            <div>
+                <div> {{displayedCell.sectionCode }}</div>
+                <!-- getCourseCodeNoSuffix() -->
+                <!-- <div>{{ minutesToTimestamp(this.displayedCell.startTimeMins) }}-{{minutesToTimestamp(this.displayedCell.endTimeMins)}}</div> -->
+                <div *ngIf="!isOnline(displayedCell)">
+                    {{this.displayedCell.buildingCode}} {{this.displayedCell.buildingNumber}}
+                </div>
+                <div *ngIf="isOnline(displayedCell)">
+                    ONLINE
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

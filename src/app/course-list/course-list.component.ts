@@ -5,6 +5,7 @@ import {CourseListGetterService} from '../shared/course-list-getter.service';
 import {UtilitiesService} from '../shared/utilities.service';
 import {DialogHolderComponent} from "../dialog-holder/dialog-holder.component";
 import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
+import { SelectedCoursesService } from '../selected-courses.service';
 
 @Component({
   selector: 'app-course-list',
@@ -16,7 +17,8 @@ export class CourseListComponent implements OnInit {
     private crsGetter: CourseListGetterService,
     public constants: UtilitiesService,
     public dialog: MatDialog,
-    private clTimingsSharer: ClTimingsSharerService
+    private clTimingsSharer: ClTimingsSharerService,
+    private selectedCourseService: SelectedCoursesService
   ) {
   }
 
@@ -46,6 +48,8 @@ export class CourseListComponent implements OnInit {
 
   public set currentSession(value: string) {
     this._currentSession = value;
+    this.selectedCourseService.clearSections();
+    this.clTimingsSharer.setData([]);
   }
 
   sessionToUrl(ses: string): string {
@@ -363,12 +367,11 @@ export class CourseListComponent implements OnInit {
     if (breadthsSoFar.length === 0) return [0];
     return breadthsSoFar;
   }
-  useDialog: boolean = true;
 
 
   selectCourse(coursePack: Course[]): void {
     this.clTimingsSharer.setData(coursePack);
-    if (this.useDialog) {
+    if (!this.constants.enableTimetableBuilder) {
       this.openCourseDialogPage(coursePack);
     } else {
 

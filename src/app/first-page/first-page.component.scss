@@ -1,0 +1,50 @@
+.side-by-side {
+    display: flex;
+    flex-direction: row;
+    /* or row-reverse, depending on your preference */
+    justify-content: space-between;
+    /* or other value like flex-start, flex-end, center, etc. */
+}
+
+
+.single-div {
+    width: 100%;
+}
+
+.left-div {
+    // flex: 10;
+    width: 40%;
+    // flex: 3;
+    height: 100vh;
+    overflow: scroll;
+    resize: horizontal;
+}
+
+.mid-div {
+    // flex: 10;
+    width: 25%;
+    // flex: 3;
+    height: 100vh;
+    overflow: scroll;
+    resize: horizontal;
+}
+
+.right-div {
+
+    flex: 5;
+
+    height: 100vh;
+    overflow: scroll;
+    // resize: both;
+}
+
+.flex-container-page1 {
+    display: flex;
+    gap: 10px; /* Adjust this value to control the gap between elements */
+    justify-content: center;
+    flex-wrap: wrap;
+}
+  
+  .flex-item-page1 {
+    padding: 5px;
+  }

@@ -1,0 +1,21 @@
+<!-- CTRL+ALT+T to surround with div -->
+<div class="side-by-side">
+
+    <app-course-list 
+
+    [ngClass]="{'left-div': constants.enableTimetableBuilder, 'single-div': !constants.enableTimetableBuilder}"
+
+    >
+    </app-course-list>
+    <app-timings class="mid-div" *ngIf="constants.enableTimetableBuilder" [smallScreen]="true">
+    </app-timings>
+
+    <div class="right-div" *ngIf="constants.enableTimetableBuilder">
+        <div class="flex-container-page1">
+        <app-timetable class="flex-item-page1" [sectionCode]="'F'"></app-timetable>
+        <app-timetable class="flex-item-page1" [sectionCode]="'S'"></app-timetable>
+    </div>
+    </div>
+
+
+</div>
