@@ -32,6 +32,9 @@ export class CourseListComponent implements OnInit {
   ngOnInit(): void {
     this.obtainEverything();
     this.checkScreenSize();
+    if(this.isSmallScreen){
+      this.constants.enableTimetableBuilder = false;
+    }
   }
 
   lastSessionQuery: string = '';

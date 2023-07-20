@@ -74,7 +74,7 @@ obtainEverything()
 </ul>
 <div>
 
-    <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder"  >
+    <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder && !isSmallScreen"  >
 
         <div class="card" *ngFor="let coursePack of condensedCourseList"
             [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'max(35%, 177px)' : 'max(177px, 20%)'">

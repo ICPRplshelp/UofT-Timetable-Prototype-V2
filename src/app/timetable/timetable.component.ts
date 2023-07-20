@@ -36,13 +36,13 @@ export class TimetableComponent implements OnInit {
 
 
   readonly DAYS_IN_WEEK = [
-    'SUNDAY',
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
+    'SUN',
+    'MON',
+    'TUE',
+    'WED',
+    'THU',
+    'FRI',
+    'SAT',
   ];
   readonly FIRST_DAY = 1; // 1 for monday-
   readonly LAST_DAY = 6; // 6 for -friday

@@ -7,7 +7,9 @@
 
     >
     </app-course-list>
-    <app-timings class="mid-div" *ngIf="constants.enableTimetableBuilder" [smallScreen]="true">
+    <app-timings class="mid-div" 
+    style="margin-left: -5px;"
+    *ngIf="constants.enableTimetableBuilder" [smallScreen]="true">
     </app-timings>
 
     <div class="right-div" *ngIf="constants.enableTimetableBuilder">

@@ -15,8 +15,9 @@
 
               <ng-container matColumnDef="sel">
                 <th mat-header-cell *matHeaderCellDef> SEL</th>
-                <td mat-cell *matCellDef="let element">
-                  <mat-checkbox [disabled]="element.cancelInd === 'Y' " [checked]="checkSectionEnrolled(element, crs)"
+                <td mat-cell *matCellDef="let element" >
+                  <mat-checkbox 
+                  [disabled]="element.cancelInd === 'Y' " [checked]="checkSectionEnrolled(element, crs)"
                     color="primary" (change)="onCheckboxChange($event, element, crs)">
 
                   </mat-checkbox>

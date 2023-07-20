@@ -19,7 +19,7 @@ div.inside-timetable td {
 
 .hour-cell {
    //  border: 2px solid rgb(176, 176, 176);
-   width: 60px;
+   width: 55px;
    // height: 80px;
    padding: 5px;
    
@@ -36,14 +36,14 @@ div.inside-timetable td {
 }
 
 .meeting-cell {
-    width: 75px;
-    max-width: 75px;
-    min-width: 75px;
+    width: 72px;
+    max-width: 72px;
+    min-width: 72px;
     position: relative;
 }
 
 .day-of-week {
-    width: 75px;
+    width: 55px;
     background-color: #EEEEEE !important; 
 }
 
