@@ -9,6 +9,7 @@ export class UtilitiesService {
   is24hour: boolean = true;
   hideSpecial: boolean = false;
   enableTimetableBuilder: boolean = true;
+  oneSectionAtATime: boolean = true;
   // brColors: string[] = [
   //   '#474545',  // no breath requirement
   //   '#d71a1a',  // br1
@@ -87,10 +88,10 @@ export class UtilitiesService {
     '#6E4DBC',
     '#1C996F',
     '#D1543B',
-    '#C94973',
+    '#AC3EBD',
     '#D48A35',
     '#3CABB5',
-    '#48ce00',
+    '#47C900',
     '#d32295',
     '#2d89d3',
     '#6b4a32',

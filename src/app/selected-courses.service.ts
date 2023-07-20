@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SectionSelection } from './selectedclasses';
 import { Subject } from 'rxjs';
 import { MeetingTime } from './shared/course-interfaces';
+import { UtilitiesService } from './shared/utilities.service';
 
 export type ConflictInfo = {
   sectionSelection: SectionSelection;
@@ -26,7 +27,15 @@ export class SelectedCoursesService {
    */
   clearSections(): void {
     this.addedSections = [];
-    this._requestUpdateTimetable();
+    this.requestUpdateTimetable();
+  }
+
+  addOrRemoveSection(sectionSelection: SectionSelection): void{
+    if(this.addedSections.some((item) => item.equals(sectionSelection))){
+      this.removeSection(sectionSelection);
+    } else {
+      this.addSection(sectionSelection);
+    }
   }
 
   /**
@@ -36,7 +45,25 @@ export class SelectedCoursesService {
     if (this.addedSections.every((item) => !item.equals(sectionSelection))) {
       // branch if sectionSelection isn't added already
       this.addedSections.push(sectionSelection);
-      this._requestUpdateTimetable();
+
+      if(this.util.oneSectionAtATime){
+        console.log("OneSecAtATime");
+        this.addedSections = this.addedSections.filter((sec) => {
+          // inside, true if to remove
+          console.log(sec.targetCourse.code, sectionSelection.targetCourse.code);
+          console.log(sec.targetCourse.sectionCode, sectionSelection.targetCourse.code);
+          console.log(sec.sectionSelected.teachMethod, sectionSelection.sectionSelected.teachMethod);
+
+          return !(
+            sec.targetCourse.code === sectionSelection.targetCourse.code &&
+            sec.targetCourse.sectionCode === sectionSelection.targetCourse.sectionCode &&
+            sec.sectionSelected.teachMethod === sectionSelection.sectionSelected.teachMethod
+          ) || (sec.sectionSelected.name === sectionSelection.sectionSelected.name)
+        });
+      }
+
+
+      this.requestUpdateTimetable();
       return true;
     } else {
       console.log('Section already added!');
@@ -55,7 +82,7 @@ export class SelectedCoursesService {
       return false;
     } else {
       this.addedSections.splice(idx, 1);
-      this._requestUpdateTimetable();
+      this.requestUpdateTimetable();
       return true;
     }
   }
@@ -70,7 +97,7 @@ export class SelectedCoursesService {
     return idx !== -1;
   }
 
-  _requestUpdateTimetable(): void {
+  requestUpdateTimetable(): void {
     this._reloadEnrolledList();
     this.methodCallSource.next();
   }
@@ -139,7 +166,7 @@ export class SelectedCoursesService {
     return null;
   }
 
-  constructor() {}
+  constructor(private util: UtilitiesService) {}
 }
 
 function convertArrayToMap<T>(arr: T[], map: Map<T, number>): void {

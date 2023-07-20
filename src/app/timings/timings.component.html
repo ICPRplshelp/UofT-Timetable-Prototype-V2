@@ -26,10 +26,10 @@
 
               <!-- Lec column -->
               <ng-container matColumnDef="lec">
-                <th mat-header-cell *matHeaderCellDef [style]="smallScreen ? 'padding-left: 15px;' : ''"> LEC</th>
+                <th mat-header-cell *matHeaderCellDef [style]="(padLecs()) ? 'padding-left: 15px;' : ''"> LEC</th>
                 <td mat-cell *matCellDef="let element"
                   (click)="expandedElement = expandedElement === element ? null : element"
-                  [style]="(smallScreen ? 'padding-left: 15px;' : '') + (element.cancelInd === 'Y' ? 'text-decoration: line-through;' : '')">
+                  [style]="((padLecs()) ? 'padding-left: 15px;' : '') + (element.cancelInd === 'Y' ? 'text-decoration: line-through;' : '')">
                   {{ shortenLecNameIfSmall(element.name) }}
                 </td>
               </ng-container>
@@ -80,10 +80,7 @@
                                       {{getTimeCode(meets[0].start.millisofday)}}-{{getTimeCode(meets[0].end.millisofday)}}
                                     </div>
                                     <div *ngIf="!util.is24hour">
-                                      {{getTimeCode12(meets[0].start.millisofday)}}
-                                      <div class="smol">{{ampm(meets[0].start.millisofday)}}</div>
-                                      -{{getTimeCode12(meets[0].end.millisofday)}}
-                                      <div class="smol">{{ampm(meets[0].end.millisofday)}}</div>
+                                      {{getTimeCode12(meets[0].start.millisofday)}}{{ampm(meets[0].start.millisofday)}}-{{getTimeCode12(meets[0].end.millisofday)}}{{ampm(meets[0].end.millisofday)}}
                                     </div>
                                   </div>
                                 </div>

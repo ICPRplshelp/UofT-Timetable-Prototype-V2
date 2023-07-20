@@ -29,6 +29,16 @@ export class CourseListComponent implements OnInit {
     this.isSmallScreen = window.innerWidth < 768; // Adjust the value as per your definition of a small screen
   }
 
+  get enableTTB() {
+    return this.constants.enableTimetableBuilder;
+  }
+
+  set enableTTB(val: boolean) {
+    
+
+    this.constants.enableTimetableBuilder = val;
+  }
+
   ngOnInit(): void {
     this.obtainEverything();
     this.checkScreenSize();
@@ -51,8 +61,7 @@ export class CourseListComponent implements OnInit {
 
   public set currentSession(value: string) {
     this._currentSession = value;
-    this.selectedCourseService.clearSections();
-    this.clTimingsSharer.setData([]);
+    
   }
 
   sessionToUrl(ses: string): string {
@@ -100,6 +109,10 @@ export class CourseListComponent implements OnInit {
       this.lastSessionQuery === this.currentSession
     ) {
       return;
+    }
+    if(this.lastSessionQuery !== this.currentSession){
+      this.selectedCourseService.clearSections();
+      this.clTimingsSharer.setData([]);
     }
     this.crsGetter
       .getSpecificTTBResponse(

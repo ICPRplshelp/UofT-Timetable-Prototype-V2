@@ -39,6 +39,8 @@ export class SectionSelection {
     return conditions.every((item) => Boolean(item));
   }
 
+  
+
   /**
    * 
    * @param otherDay the other day of the meeting to check

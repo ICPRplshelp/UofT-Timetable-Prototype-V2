@@ -165,7 +165,8 @@ export class TimetableComponent implements OnInit {
       this.endHour = latestEnd;
       this.minutesPerCell = hasHalfHourStartOrEnds ? 30 : 60;
       this._rebuildTimetable(potentialTableCells);
-    })
+    });
+    this.selectedCourseService.requestUpdateTimetable();
   }
   ngOnDestroy() {
     if(this.subscription !== undefined)

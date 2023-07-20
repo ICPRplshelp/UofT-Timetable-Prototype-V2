@@ -51,6 +51,10 @@ export class TimingsComponent implements OnInit {
   @Input() smallScreen: boolean = false;
   @Input() hideCourseCode: boolean = false;
 
+  padLecs(): boolean{ 
+    return this.smallScreen && !this.util.enableTimetableBuilder;
+  }
+
   displayedColumns: string[] = this.util.enableTimetableBuilder
     ? ['sel', 'lec', 'ins', 'time', 'delivery']
     : ['lec', 'ins', 'time', 'delivery'];
@@ -146,7 +150,7 @@ export class TimingsComponent implements OnInit {
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
 
-    return hours + minsStr;
+    return (hours + minsStr).trim();
   }
 
   /**
@@ -671,6 +675,12 @@ export class TimingsComponent implements OnInit {
     });
   }
 
+
+  addOrRemoveSectionFromPlan(sec: Section, curCrs: Course): void {
+    this.selectedCoursesService.addOrRemoveSection(
+      new SectionSelection(sec, this.storedCourses, curCrs)
+    );
+  }
   // code that interacts with the service
   addSectionToPlan(sec: Section, curCrs: Course): void {
     this.selectedCoursesService.addSection(
@@ -690,11 +700,17 @@ export class TimingsComponent implements OnInit {
     );
   }
 
+
+
   onCheckboxChange(
     $event: MatCheckboxChange,
     sec: Section,
     curCrs: Course
   ): void {
+    
+    this.addOrRemoveSectionFromPlan(sec, curCrs);
+    return;
+
     // [ ] -> [C]
     if ($event.checked) {
       this.addSectionToPlan(sec, curCrs);
@@ -702,6 +718,9 @@ export class TimingsComponent implements OnInit {
       // [C] -> [ ]
       this.removeSectionFromPlan(sec, curCrs);
     }
+
+
+
   }
 
   get curCourseCode(): string {
