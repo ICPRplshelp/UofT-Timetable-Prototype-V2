@@ -1,14 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import {
-  Breadth,
-  Course,
-  PageableCourses,
-  Section,
-} from '../shared/course-interfaces';
-import { CourseListGetterService } from '../shared/course-list-getter.service';
-import { UtilitiesService } from '../shared/utilities.service';
-import { TimingsComponent } from '../timings/timings.component';
+import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {Breadth, Course, PageableCourses, Section,} from '../shared/course-interfaces';
+import {CourseListGetterService} from '../shared/course-list-getter.service';
+import {UtilitiesService} from '../shared/utilities.service';
+import {DialogHolderComponent} from "../dialog-holder/dialog-holder.component";
+import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
+import { SelectedCoursesService } from '../selected-courses.service';
 
 @Component({
   selector: 'app-course-list',
@@ -19,8 +16,11 @@ export class CourseListComponent implements OnInit {
   constructor(
     private crsGetter: CourseListGetterService,
     public constants: UtilitiesService,
-    public dialog: MatDialog
-  ) {}
+    public dialog: MatDialog,
+    private clTimingsSharer: ClTimingsSharerService,
+    private selectedCourseService: SelectedCoursesService
+  ) {
+  }
 
   isSmallScreen: boolean = false;
 
@@ -33,19 +33,23 @@ export class CourseListComponent implements OnInit {
     this.obtainEverything();
     this.checkScreenSize();
   }
+
   lastSessionQuery: string = '';
   sessionsList: string[] = [
     'Fall-Winter 2022-2023',
     'Summer 2023',
     'Fall-Winter 2023-2024',
   ];
-  private _currentSession = this.sessionsList[2];
+  private _currentSession = this.sessionsList[this.sessionsList.length - 1];
 
   public get currentSession() {
     return this._currentSession;
   }
+
   public set currentSession(value: string) {
     this._currentSession = value;
+    this.selectedCourseService.clearSections();
+    this.clTimingsSharer.setData([]);
   }
 
   sessionToUrl(ses: string): string {
@@ -164,14 +168,11 @@ export class CourseListComponent implements OnInit {
 
 
   ensureList<T>(li: T[] | undefined | null): T[] {
-    if(li === undefined || li === null){
-        return [];
+    if (li === undefined || li === null) {
+      return [];
     }
     return li;
   }
-
-
-  
 
 
   /**
@@ -200,8 +201,8 @@ export class CourseListComponent implements OnInit {
     };
     let totMax = 0;
     for (let crs of coursePack) {
-        
-        
+
+
       const lecList: number[] = [];
       const tutList: number[] = [];
       const praList: number[] = [];
@@ -219,7 +220,7 @@ export class CourseListComponent implements OnInit {
           if (endTime === null || endTime === undefined) continue;
           let day = met?.start?.day;
           if (day === null || day === undefined) continue;
-          const startEndDayTemp = { startTime, endTime, day };
+          const startEndDayTemp = {startTime, endTime, day};
           if (seenTimes.some((x) => compareTimeCells(x, startEndDayTemp))) {
             continue;
           } else {
@@ -227,19 +228,22 @@ export class CourseListComponent implements OnInit {
             maxAcc += (parseInt(endTime) - parseInt(startTime)) / 3600000;
           }
 
-          
+
+        }
+        if (ses?.teachMethod === undefined || ses?.teachMethod === null) {
+          continue;
         }
         switch (ses?.teachMethod.trim().toUpperCase()) {
-            case 'LEC':
-              lecList.push(maxAcc);
-              break;
-            case 'TUT':
-              tutList.push(maxAcc);
-              break;
-            case 'PRA':
-              praList.push(maxAcc);
-              break;
-          }
+          case 'LEC':
+            lecList.push(maxAcc);
+            break;
+          case 'TUT':
+            tutList.push(maxAcc);
+            break;
+          case 'PRA':
+            praList.push(maxAcc);
+            break;
+        }
       }
       // console.log(lecList, tutList, praList, crs.code);
       totMax = this.calculateMode(lecList) + this.calculateMode(tutList) + this.calculateMode(praList);
@@ -256,7 +260,7 @@ export class CourseListComponent implements OnInit {
 
   calculateMode(numbers: number[]): number {
     const frequencyMap: Map<number, number> = new Map();
-  
+
     // Count the frequency of each number
     for (const number of numbers) {
       if (frequencyMap.has(number)) {
@@ -265,10 +269,10 @@ export class CourseListComponent implements OnInit {
         frequencyMap.set(number, 1);
       }
     }
-  
+
     let mode: number | undefined;
     let maxFrequency = 0;
-  
+
     // Find the number with the highest frequency
     for (const [number, frequency] of frequencyMap.entries()) {
       if (frequency > maxFrequency) {
@@ -276,12 +280,10 @@ export class CourseListComponent implements OnInit {
         maxFrequency = frequency;
       }
     }
-    if(mode !== undefined)
-        return mode;
+    if (mode !== undefined)
+      return mode;
     else return 0;
   }
-  
-
 
 
   addToCanShowDescriptions(crsCode: string): void {
@@ -366,7 +368,19 @@ export class CourseListComponent implements OnInit {
     return breadthsSoFar;
   }
 
-  openCourseDialog(coursePack: Course[]): void {
+
+  selectCourse(coursePack: Course[]): void {
+    this.clTimingsSharer.setData(coursePack);
+    if (!this.constants.enableTimetableBuilder) {
+      this.openCourseDialogPage(coursePack);
+    } else {
+
+
+    }
+  }
+
+
+  private openCourseDialogPage(coursePack: Course[]) {
     if (coursePack.length === 0) {
       // console.log("No meetings!!!");
       return;
@@ -385,13 +399,15 @@ export class CourseListComponent implements OnInit {
     // dialogConfig.width = '100%'; // Set the dialog width to 100% of the screen
     // dialogConfig.height = '100%'; // Set the dialog height to 100% of the screen
     // dialogConfig.panelClass = 'full-screen-dialog'; // Apply a custom CSS class to the dialog
+
     dialogConfig.data = {
       courses: coursePack,
       smallScreen: this.isSmallScreen,
     };
     // dialogConfig.panelClass = 'custom-dialog-container';
-    const dialogRef = this.dialog.open(TimingsComponent, dialogConfig);
+    const dialogRef = this.dialog.open(DialogHolderComponent, dialogConfig);
   }
+
 
   whatLevel(crsCode: string): number {
     let thirdChar = crsCode[3];

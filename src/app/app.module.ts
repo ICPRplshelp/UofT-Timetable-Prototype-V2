@@ -18,13 +18,23 @@ import {MatInputModule} from '@angular/material/input';
 import { TimingsComponent } from './timings/timings.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
+import { DialogHolderComponent } from './dialog-holder/dialog-holder.component';
+import { TimetableComponent } from './timetable/timetable.component';
+import { TimetableCellComponent } from './timetable/timetable-cell/timetable-cell.component';
+import { ConflictTimetableCellComponent } from './timetable/conflict-timetable-cell/conflict-timetable-cell.component';
+import { FirstPageComponent } from './first-page/first-page.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CourseListComponent,
-    TimingsComponent
+    TimingsComponent,
+    DialogHolderComponent,
+    TimetableComponent,
+    TimetableCellComponent,
+    ConflictTimetableCellComponent,
+    FirstPageComponent
   ],
   imports: [
     BrowserModule,

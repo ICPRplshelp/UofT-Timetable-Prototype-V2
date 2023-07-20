@@ -1,0 +1,40 @@
+.flex-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color:burlywood;
+    
+    
+}
+
+.flex-item {
+    flex: 1 1 100px; /* flex-grow flex-shrink flex-basis */
+    min-width: 0; /* Ensure items won't be wider than their content */
+    flex-shrink: 1;
+    // position: absolute;
+    // width: 50%;
+    // top: 30%;
+    // border: 2px solid rgb(176, 176, 176);
+    /* Other styles for the items */
+  }
+
+  .cell-within {
+    position: absolute;
+    
+    // bottom: 75%;
+
+
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(3px, 1fr)); /* This will create equal-width columns */
+    gap: 0px; /* Adjust the value to control the horizontal spacing between items */
+  }
+  
+  .grid-item {
+    /* Optionally, you can add some styling to the items */
+    // background-color: #f0f0f0;
+    padding: 0px;
+    overflow: hidden;
+  }

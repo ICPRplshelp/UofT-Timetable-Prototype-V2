@@ -1,6 +1,6 @@
 
     export interface DayTimeOfWeek {
-        day: string;
+        day: string;  // "0" for sun, "1" for mon, and so on
         millisofday: string;
     }
 
@@ -62,24 +62,24 @@
     export interface Section {
         name: string;
         type: string;
-        teachMethod: string;
+        teachMethod?: string;
         sectionNumber: string;
-        meetingTimes: MeetingTime[];
+        meetingTimes?: MeetingTime[];
         firstMeeting?: any;
-        instructors: Instructor[];
-        currentEnrolment: string;
-        maxEnrolment: string;
+        instructors?: Instructor[];
+        currentEnrolment?: string;
+        maxEnrolment?: string;
         subTitle?: string;
-        cancelInd: string;
-        waitlistInd: string;
+        cancelInd?: string;
+        waitlistInd?: string;
         deliveryModes: DeliveryMode[];
-        currentWaitlist: string;
-        enrolmentInd: string;
-        tbaInd: string;
-        openLimitInd: string;
-        notes: SectionNote[];
-        enrolmentControls: EnrolmentControl[];
-        linkedMeetingSections: LinkedMeetingSection[];
+        currentWaitlist?: string;
+        enrolmentInd?: string;
+        tbaInd?: string;
+        openLimitInd?: string;
+        notes?: SectionNote[];
+        enrolmentControls?: EnrolmentControl[];
+        linkedMeetingSections?: LinkedMeetingSection[];
     }
 
     export interface LinkedMeetingSection {

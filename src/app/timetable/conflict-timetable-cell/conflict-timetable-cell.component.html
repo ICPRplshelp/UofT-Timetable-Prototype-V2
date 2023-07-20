@@ -1,0 +1,17 @@
+<div class="grid-container">
+    <div class="grid-item" *ngFor="let dc of displayedCells.displayedCourses">
+        <div class="cell-holder">
+
+            
+            <app-timetable-cell class="cell-within" [displayedCell]="dc"
+            [style.height]="toPercent(calculateHeight(dc.endTimeMins - dc.startTimeMins))"
+            [style.top]="toPercent(calculatePos(dc.startTimeMins))"
+            [style.width]="toPercent(1/displayedCells.displayedCourses.length)"
+            >
+            </app-timetable-cell>
+            
+
+
+        </div>
+    </div>
+</div>
