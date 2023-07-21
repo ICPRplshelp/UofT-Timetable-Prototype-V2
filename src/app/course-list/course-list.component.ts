@@ -2,10 +2,19 @@ import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/co
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {Breadth, Course, PageableCourses, Section,} from '../shared/course-interfaces';
 import {CourseListGetterService} from '../shared/course-list-getter.service';
-import {UtilitiesService} from '../shared/utilities.service';
+import {SessionInfo, UtilitiesService} from '../shared/utilities.service';
 import {DialogHolderComponent} from "../dialog-holder/dialog-holder.component";
 import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
 import { SelectedCoursesService } from '../selected-courses.service';
+import { Subscription } from 'rxjs';
+import { ExporterService } from '../shared/exporter.service';
+
+
+
+
+
+
+
 
 @Component({
   selector: 'app-course-list',
@@ -13,14 +22,26 @@ import { SelectedCoursesService } from '../selected-courses.service';
   styleUrls: ['./course-list.component.scss'],
 })
 export class CourseListComponent implements OnInit {
+
+
+  private functionSubscription: Subscription;
+
   constructor(
-    private crsGetter: CourseListGetterService,
+    public crsGetter: CourseListGetterService,
     public constants: UtilitiesService,
     public dialog: MatDialog,
     private clTimingsSharer: ClTimingsSharerService,
-    private selectedCourseService: SelectedCoursesService
+    private selectedCourseService: SelectedCoursesService,
+    private exporterService: ExporterService
   ) {
+    this.functionSubscription = this.exporterService.getFunctionTriggerObservable().subscribe((session) => {
+      // Call the function you want to trigger in the component.
+      this.currentSession = this.urlToSession(session);
+      this.obtainEverything(false);
+    });
   }
+
+  importJsonFunction = (input: string) => {this.exporterService.importCoursesFromString(input)};
 
   isSmallScreen: boolean = false;
 
@@ -48,11 +69,14 @@ export class CourseListComponent implements OnInit {
   }
 
   lastSessionQuery: string = '';
-  sessionsList: string[] = [
-    'Fall-Winter 2022-2023',
-    'Summer 2023',
-    'Fall-Winter 2023-2024',
-  ];
+
+
+  get allSessions(): SessionInfo[] {
+    return this.constants.allSessions;
+  }
+  get sessionsList(): string[] {
+    return this.allSessions.map((item) => item.sessionName);
+  }
   private _currentSession = this.sessionsList[this.sessionsList.length - 1];
 
   public get currentSession() {
@@ -61,20 +85,23 @@ export class CourseListComponent implements OnInit {
 
   public set currentSession(value: string) {
     this._currentSession = value;
-    
+
   }
 
   sessionToUrl(ses: string): string {
-    switch (ses) {
-      case 'Fall-Winter 2022-2023':
-        return '20229';
-      case 'Summer 2023':
-        return '20235';
-      case 'Fall-Winter 2023-2024':
-        return '20239';
-      default:
-        return '20229';
+    const candLink = this.allSessions.find((ss) => ss.sessionName === ses)?.sessionUrl;
+    if(candLink === undefined){
+      return this.allSessions[0].sessionUrl;
     }
+    return candLink;
+  }
+
+  urlToSession(urlSes: string): string {
+    const candLink = this.allSessions.find((ss) => ss.sessionUrl === urlSes)?.sessionName;
+    if(candLink === undefined){
+      return this.allSessions[0].sessionName;
+    }
+    return candLink;
   }
 
   brDescs: string[] = [
@@ -101,7 +128,7 @@ export class CourseListComponent implements OnInit {
   courseList: Course[] = [];
   condensedCourseList: Course[][] = [];
 
-  obtainEverything(): void {
+  obtainEverything(clearSections: boolean = true): void {
     let temp: PageableCourses;
     let courseListCandidate: Course[];
     if (
@@ -110,22 +137,32 @@ export class CourseListComponent implements OnInit {
     ) {
       return;
     }
-    if(this.lastSessionQuery !== this.currentSession){
+    if(this.lastSessionQuery !== "" && this.lastSessionQuery !== this.currentSession && clearSections){
       this.selectedCourseService.clearSections();
       this.clTimingsSharer.setData([]);
     }
-    this.crsGetter
+
+    if(!this.courseFilter.match(/^[a-zA-Z]{3}$/)){
+      this.errorMessage = 'First three letters of a course only!';
+      return;
+    }
+    const tempResp = this.crsGetter
       .getSpecificTTBResponse(
         this.courseFilter,
         this.sessionToUrl(this.currentSession)
-      )
-      .subscribe({
+      );
+      
+      if(tempResp === null){
+        this.errorMessage = "Invalid inputs to the course searcher";
+        return;
+      }
+      tempResp.subscribe({
         next: (data) => {
           temp = data;
         },
         error: (err) => {
           // console.log(err);
-          this.errorMessage = 'First three letters of a course only!';
+          this.errorMessage = 'This course desginator does not exist or is not offering any courses this term';
         },
         complete: () => {
           courseListCandidate = temp.courses;
@@ -137,6 +174,7 @@ export class CourseListComponent implements OnInit {
           this.errorMessage = '';
           this.lastSearchQuery = this.courseFilter;
           this.lastSessionQuery = this.currentSession;
+          this.selectedCourseService.sessionCode = this.sessionToUrl(this.currentSession);
           this.condensedCourseList.sort((cl1, cl2) => {
             let cr1 = cl1[0];
             let cr2 = cl2[0];

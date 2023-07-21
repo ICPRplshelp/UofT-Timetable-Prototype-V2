@@ -2,29 +2,51 @@
 
     <h1 class="title-text"> UofT Course list </h1>
     <div class="flexit02">
-    <p> Search for the first three letters of any course code.
+        <p> Search for the first three letters of any course code.
 
-        Most UofT undergraduate courses are supported.
+            Most UofT undergraduate courses are supported.
 
 
-    </p>
+        </p>
 
-    <ul class="forceleft">
-        <li>
-        Tap on the <strong>colored</strong> component of a card to expand or contract the course description.
-        </li><li>Tap on the <strong>white</strong> component of a card to bring up its timings.
-        </li><li>Breadths are represented as the color strip on the right (Red=BR1, Blue=BR2, Yellow=BR3, Green=BR4, Purple=BR5).
-        </li><li>View enrollment controls by clicking on the section name or instructor when a course's schedule is open.
-        </li><li><strong>Data may be outdated!</strong></li>
-    </ul>
+        <ul class="forceleft">
+            <li>
+                Tap on the <strong>colored</strong> component of a card to expand or contract the course description.
+            </li>
+            <li>Tap on the <strong>white</strong> component of a card to bring up its timings.
+            </li>
+            <li>Breadths are represented as the color strip on the right (Red=BR1, Blue=BR2, Yellow=BR3, Green=BR4,
+                Purple=BR5).
+            </li>
+            <li>View enrollment controls by clicking on the section name or instructor when a course's schedule is open.
+            </li>
+            <li>The export button can be found on the bottom of the timetable (right side).</li>
+            <li>Changing the session and reloading resets your timetable.</li>
+            <li>When importing, if the size of the set of desginators is larger than {{crsGetter.MAX_DESGINATORS}}, then your timetable may display incomplete data.</li>
+            <li><strong>Data may be outdated!</strong></li>
+            <li>For updated enrollment numbers, check out <a href="https://icprplshelp.github.io/UofT-Enrollment-Tracker/">timetable tracker</a>.</li>
+        </ul>
 
-    <div class="flex-gap">
-        <mat-checkbox color="primary" [(ngModel)]="constants.is24hour" matTooltip="When OFF, display 12-hour time, with a 'p' from 8pm to 11pm" matTooltipPosition="above">24 Hour Time</mat-checkbox>
-        <mat-checkbox color="primary" [(ngModel)]="constants.hideSpecial" matTooltip="Hide LEC2000-LEC2999 sections" matTooltipPosition="above">Hide special</mat-checkbox>
-        <mat-checkbox color="primary" [(ngModel)]="enableTTB" matTooltip="Enable the option to schedule your courses here" matTooltipPosition="above">Enable Timetable Selection</mat-checkbox>
-        <mat-checkbox color="primary" [(ngModel)]="constants.oneSectionAtATime" matTooltip="Prevents you from selecting more than one section per course" matTooltipPosition="above">No duplicate sections</mat-checkbox>
+        
+        
+        <div class="flex-gap">
+            <mat-checkbox color="primary" [(ngModel)]="constants.is24hour"
+                matTooltip="When OFF, display 12-hour time, with a 'p' from 8pm to 11pm" matTooltipPosition="above">24
+                Hour Time</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="constants.hideSpecial" matTooltip="Hide LEC2000-LEC2999 sections"
+                matTooltipPosition="above">Hide special</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="enableTTB"
+                matTooltip="Enable the option to schedule your courses here" matTooltipPosition="above">Enable Timetable
+                Selection</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="constants.oneSectionAtATime"
+                matTooltip="Prevents you from selecting more than one section per course" matTooltipPosition="above">No
+                duplicate sections</mat-checkbox>
 
-    </div>
+        </div>
+        <app-file-opener *ngIf="enableTTB"
+            [buttonPrompt]="'Import course selections'"
+            [fileProcessor]="importJsonFunction"
+        ></app-file-opener>
 
 
 
@@ -76,26 +98,21 @@ obtainEverything()
 </ul>
 <div>
 
-    <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder && !isSmallScreen"  >
+    <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder && !isSmallScreen">
 
         <div class="card" *ngFor="let coursePack of condensedCourseList"
-
             [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 375px), 82%)' : 'min(max(200px, 15%), 82%)'">
             <div class="card-header" [style.background-color]="
             constants.levelColors[whatLevel(coursePack[0].code)]
             " (click)="
             addToCanShowDescriptions(coursePack[0].code)
             ">
-                <div
-                >
+                <div>
                     <div class="brq-bumper" style="color: white;" *ngFor="let br of
-            [whatBreadths2(coursePack[0].breadths)]" >
+            [whatBreadths2(coursePack[0].breadths)]">
 
                         <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
-                            [style.height.%]="100/br.length" class="brq-square"
-
-
-                            >
+                            [style.height.%]="100/br.length" class="brq-square">
                         </div>
 
                     </div>
@@ -131,7 +148,8 @@ obtainEverything()
                     </div>
 
                     <div class="session-square" *ngFor="let hrs of [calculateHourCommitment(coursePack)]">
-                        <div class="hour-commitment-card" matTooltipPosition="right" [matTooltip]="'Time: ' + hrs + 'h/week'" >
+                        <div class="hour-commitment-card" matTooltipPosition="right"
+                            [matTooltip]="'Time: ' + hrs + 'h/week'">
                             {{strMultiply("•", hrs, "")}}
                         </div>
                     </div>
@@ -194,7 +212,9 @@ obtainEverything()
                     </div>
 
                     <div *ngIf="ensureList(coursePack[0]?.cmCourseInfo?.breadthRequirements).length !== 0">
-                        <div class="loud-header" matTooltip="This course fullfills these breadth requirements, credits split among them" matTooltipPosition="left" matTooltipShowDelay="200">
+                        <div class="loud-header"
+                            matTooltip="This course fullfills these breadth requirements, credits split among them"
+                            matTooltipPosition="left" matTooltipShowDelay="200">
                             Breadths</div>
                         <div *ngFor="let brq of ensureList(coursePack[0].cmCourseInfo.breadthRequirements)">
                             {{brq}}

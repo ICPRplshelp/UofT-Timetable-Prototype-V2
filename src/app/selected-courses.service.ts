@@ -3,6 +3,7 @@ import { SectionSelection } from './selectedclasses';
 import { Subject } from 'rxjs';
 import { MeetingTime } from './shared/course-interfaces';
 import { UtilitiesService } from './shared/utilities.service';
+import { CourseSelectionExport, FinalCourseExport } from './export-interfaces';
 
 export type ConflictInfo = {
   sectionSelection: SectionSelection;
@@ -14,7 +15,7 @@ export type ConflictInfo = {
 })
 export class SelectedCoursesService {
   addedSections: SectionSelection[] = [];
-
+  sessionCode: string = "";
   courseFMap: Map<string, string[]> = new Map<string, string[]>();
   courseSMap: Map<string, string[]> = new Map<string, string[]>();
   courseYMap: Map<string, string[]> = new Map<string, string[]>();
@@ -23,15 +24,47 @@ export class SelectedCoursesService {
   allCoursesMap: Map<string, number> = new Map<string, number>();
 
   /**
+   * 
+   * @returns The course export as a JSON that can be loaded back in.
+   */
+  buildCourseExports(): FinalCourseExport {
+    const cse: CourseSelectionExport[] = [];
+    const depts: Set<string> = new Set<string>();
+    let loopIters = 0;
+    const sections = ['F', 'S', 'Y'];
+    for (let crsMap of [this.courseFMap, this.courseSMap, this.courseYMap]) {
+      for (let kvp of crsMap.entries()) {
+        const code: string = kvp[0];
+        const dept = code.slice(0, 3);
+        const lecSections: string[] = kvp[1];
+        depts.add(dept);
+        cse.push({
+          code: code,
+          sectionCode: sections[loopIters],
+          meetings: lecSections,
+        });
+      }
+      loopIters += 1;
+    }
+    
+    return {
+      sessionCode: this.sessionCode,
+      depts: Array.from(depts),
+      courses: cse
+    };
+  }
+
+  /**
    * Resets all added sections.
    */
   clearSections(): void {
+    // console.log("Something called clearSections()");
     this.addedSections = [];
     this.requestUpdateTimetable();
   }
 
-  addOrRemoveSection(sectionSelection: SectionSelection): void{
-    if(this.addedSections.some((item) => item.equals(sectionSelection))){
+  addOrRemoveSection(sectionSelection: SectionSelection): void {
+    if (this.addedSections.some((item) => item.equals(sectionSelection))) {
       this.removeSection(sectionSelection);
     } else {
       this.addSection(sectionSelection);
@@ -46,22 +79,35 @@ export class SelectedCoursesService {
       // branch if sectionSelection isn't added already
       this.addedSections.push(sectionSelection);
 
-      if(this.util.oneSectionAtATime){
-        console.log("OneSecAtATime");
+      if (this.util.oneSectionAtATime) {
+        console.log('OneSecAtATime');
         this.addedSections = this.addedSections.filter((sec) => {
           // inside, true if to remove
-          console.log(sec.targetCourse.code, sectionSelection.targetCourse.code);
-          console.log(sec.targetCourse.sectionCode, sectionSelection.targetCourse.code);
-          console.log(sec.sectionSelected.teachMethod, sectionSelection.sectionSelected.teachMethod);
+          console.log(
+            sec.targetCourse.code,
+            sectionSelection.targetCourse.code
+          );
+          console.log(
+            sec.targetCourse.sectionCode,
+            sectionSelection.targetCourse.code
+          );
+          console.log(
+            sec.sectionSelected.teachMethod,
+            sectionSelection.sectionSelected.teachMethod
+          );
 
-          return !(
-            sec.targetCourse.code === sectionSelection.targetCourse.code &&
-            sec.targetCourse.sectionCode === sectionSelection.targetCourse.sectionCode &&
-            sec.sectionSelected.teachMethod === sectionSelection.sectionSelected.teachMethod
-          ) || (sec.sectionSelected.name === sectionSelection.sectionSelected.name)
+          return (
+            !(
+              sec.targetCourse.code === sectionSelection.targetCourse.code &&
+              sec.targetCourse.sectionCode ===
+                sectionSelection.targetCourse.sectionCode &&
+              sec.sectionSelected.teachMethod ===
+                sectionSelection.sectionSelected.teachMethod
+            ) ||
+            sec.sectionSelected.name === sectionSelection.sectionSelected.name
+          );
         });
       }
-
 
       this.requestUpdateTimetable();
       return true;
@@ -146,7 +192,7 @@ export class SelectedCoursesService {
     sesSel: SectionSelection
   ): ConflictInfo | null {
     for (let sec of this.addedSections) {
-      if(sec.equals(sesSel)){
+      if (sec.equals(sesSel)) {
         continue;
       }
       if (

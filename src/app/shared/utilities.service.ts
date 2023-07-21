@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+export type SessionInfo = {
+  sessionName: string,
+  sessionUrl: string
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,6 +24,21 @@ export class UtilitiesService {
   //   '#0ddc09',
   //   '#bb4bff'   // br5
   // ];
+
+  allSessions: SessionInfo[] = [
+    {
+      sessionName: 'Fall-Winter 2022-2023',
+      sessionUrl: '20229'
+    },
+    {
+      sessionName: 'Summer 2023',
+      sessionUrl: '20235'
+    },
+    {
+      sessionName: 'Fall-Winter 2023-2024',
+      sessionUrl: '20239'
+    },
+  ];
 
   brColors: string[] = [
     '#474545',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import { PageableCourses, Course } from './course-interfaces';
 import { switchMap } from "rxjs/operators";
@@ -26,7 +26,10 @@ export class CourseListGetterService {
   }
 
 
-  getSpecificTTBResponse(crsDes: string, session: string): Observable<PageableCourses> {
+  getSpecificTTBResponse(crsDes: string, session: string): null | Observable<PageableCourses> {
+    if(!(session.match(/^\d{5}$/) && crsDes.match(/^[a-zA-Z]{3}$/))){
+      return null;
+    }
     const linkToCourse = `api/${session}/courses${crsDes.toUpperCase()}.json`;
     return this.http.get<PageableCourses>(linkToCourse);
   }
@@ -52,6 +55,27 @@ export class CourseListGetterService {
     return newCourseListSoFar;
   }
 
-  
 
+  readonly MAX_DESGINATORS = 35;
+  /**
+   * To prevent excessive request, you can only request up to 15 desginators at a time,
+   * and the desginator list will always have duplicates removed.
+   * @param cDesList list of course desginators
+   * @param session the session I am targeting
+   * @returns observable of all combined fetches
+   */
+  getManyDesginators(cDesList: string[], session: string): null | Observable<PageableCourses[]> {
+    cDesList = Array.from(new Set<string>(cDesList)).slice(0, this.MAX_DESGINATORS);
+
+    const requestList: (Observable<PageableCourses> | null)[] = cDesList.map(cCode => {
+      return this.getSpecificTTBResponse(cCode, session)
+    });
+    const noNullRequestList: Observable<PageableCourses>[] = [];
+    for(let val of requestList){
+      if(val !== null){
+        noNullRequestList.push(val);
+      }
+    }
+    return forkJoin(noNullRequestList);
+  }
 }

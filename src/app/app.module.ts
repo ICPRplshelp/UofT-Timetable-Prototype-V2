@@ -7,6 +7,7 @@ import { CourseListComponent } from './course-list/course-list.component';
 import { FormsModule } from '@angular/forms';
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table'  
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,6 +24,7 @@ import { TimetableComponent } from './timetable/timetable.component';
 import { TimetableCellComponent } from './timetable/timetable-cell/timetable-cell.component';
 import { ConflictTimetableCellComponent } from './timetable/conflict-timetable-cell/conflict-timetable-cell.component';
 import { FirstPageComponent } from './first-page/first-page.component';
+import { FileOpenerComponent } from './shared/file-opener/file-opener.component';
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import { FirstPageComponent } from './first-page/first-page.component';
     TimetableComponent,
     TimetableCellComponent,
     ConflictTimetableCellComponent,
-    FirstPageComponent
+    FirstPageComponent,
+    FileOpenerComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,9 @@ import { FirstPageComponent } from './first-page/first-page.component';
     HttpClientModule,
     BrowserAnimationsModule,
     MatCheckboxModule,
-    MatButtonModule
+    MatButtonModule,
+    MatButtonModule,
+    MatButtonToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

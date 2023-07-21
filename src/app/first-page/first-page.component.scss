@@ -43,8 +43,41 @@
     gap: 10px; /* Adjust this value to control the gap between elements */
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 10px;
 }
   
   .flex-item-page1 {
     padding: 5px;
+  }
+
+  .center-div {
+    position: relative;
+    left: 50%;
+    top: 20px;
+    transform: translate(-50%, -50%);
+    margin-bottom: 25px;
+  }
+
+  /* Normal styles for the div elements */
+  .print-hidden {
+    display: block; /* or display: inline-block; or any other display value you use */
+  }
+
+  /* Media query for printing */
+  @media print {
+    .print-hidden {
+      display: none;
+    }
+  }
+
+  .page-break-always {
+    page-break-after: always;
+
+  }
+
+  .flex-horizontal {
+    display: flex; /* or inline-flex */
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
   }

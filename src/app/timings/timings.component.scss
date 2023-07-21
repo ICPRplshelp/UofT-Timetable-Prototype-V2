@@ -296,3 +296,10 @@ mat-checkbox ::ng-deep .mat-checkbox-inner-container {width: 23px;height: 23px;
   left: -4px;
 }
 
+.center-div-2 {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+    

@@ -51,6 +51,10 @@ export class TimingsComponent implements OnInit {
   @Input() smallScreen: boolean = false;
   @Input() hideCourseCode: boolean = false;
 
+  noCourses(): boolean {
+    return this.storedCourses.length === 0;
+  }
+
   padLecs(): boolean{ 
     return this.smallScreen && !this.util.enableTimetableBuilder;
   }

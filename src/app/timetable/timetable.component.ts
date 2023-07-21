@@ -298,6 +298,10 @@ export class TimetableComponent implements OnInit {
     return (tc as ConflictingCourseTableCell);
   }
 
+  printComponent(): void {
+    window.print();
+  }
+
 }
 
 /**
