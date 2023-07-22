@@ -80,21 +80,21 @@ export class SelectedCoursesService {
       this.addedSections.push(sectionSelection);
 
       if (this.util.oneSectionAtATime) {
-        console.log('OneSecAtATime');
+        // console.log('OneSecAtATime');
         this.addedSections = this.addedSections.filter((sec) => {
           // inside, true if to remove
-          console.log(
-            sec.targetCourse.code,
-            sectionSelection.targetCourse.code
-          );
-          console.log(
-            sec.targetCourse.sectionCode,
-            sectionSelection.targetCourse.code
-          );
-          console.log(
-            sec.sectionSelected.teachMethod,
-            sectionSelection.sectionSelected.teachMethod
-          );
+          // console.log(
+          //   sec.targetCourse.code,
+          //   sectionSelection.targetCourse.code
+          // );
+          // console.log(
+          //   sec.targetCourse.sectionCode,
+          //   sectionSelection.targetCourse.code
+          // );
+          // console.log(
+          //   sec.sectionSelected.teachMethod,
+          //   sectionSelection.sectionSelected.teachMethod
+          // );
 
           return (
             !(
@@ -112,7 +112,7 @@ export class SelectedCoursesService {
       this.requestUpdateTimetable();
       return true;
     } else {
-      console.log('Section already added!');
+      // console.log('Section already added!');
       return false; // section was already added!
     }
   }
@@ -199,7 +199,7 @@ export class SelectedCoursesService {
         sec.targetCourse.sectionCode === fys ||
         sec.targetCourse.sectionCode === this.yearCourseLetter
       ) {
-        // console.log("Testing if these conf with", dayOfWeek, startTimeMins, endTimeMins);
+        // // console.log("Testing if these conf with", dayOfWeek, startTimeMins, endTimeMins);
         let confState = sec.conflicts(dayOfWeek, startTimeMins, endTimeMins);
         if (confState !== null) {
           return {

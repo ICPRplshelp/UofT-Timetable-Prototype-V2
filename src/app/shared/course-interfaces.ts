@@ -7,7 +7,7 @@
     export interface Building {
         buildingCode: string;
         buildingRoomNumber: string;
-        buildingUrl: string;
+        buildingUrl?: string;
         buildingName?: any;
     }
 
@@ -15,9 +15,9 @@
         start: DayTimeOfWeek;
         end: DayTimeOfWeek;
         building: Building;
-        sessionCode: string;
-        repetition: string;
-        repetitionTime: string;
+        sessionCode: string;  // required for disambiguating Y courses
+        repetition?: string;
+        repetitionTime?: string;
     }
 
     export interface Instructor {
@@ -61,19 +61,23 @@
 
     export interface Section {
         name: string;
-        type: string;
-        teachMethod?: string;
+        type?: string;
         sectionNumber: string;
+        // ALL BELOW ARE NULLABLE
         meetingTimes?: MeetingTime[];
-        firstMeeting?: any;
         instructors?: Instructor[];
         currentEnrolment?: string;
         maxEnrolment?: string;
+        teachMethod?: string;  // LEC | TUT | PRA
+        // you probably don't need any of these anymore
+        currentWaitlist?: string;
+        
+        firstMeeting?: any;
         subTitle?: string;
         cancelInd?: string;
         waitlistInd?: string;
-        deliveryModes: DeliveryMode[];
-        currentWaitlist?: string;
+        deliveryModes?: DeliveryMode[];
+        
         enrolmentInd?: string;
         tbaInd?: string;
         openLimitInd?: string;
@@ -90,13 +94,13 @@
     export interface CmCourseInfo {
         description?: string;
         title?: string;
-        levelOfInstruction: string;
+        levelOfInstruction?: string;
         prerequisitesText?: string;
         corequisitesText?: string;
         exclusionsText?: string;
         recommendedPreparation?: string;
         note?: any;
-        division: string;
+        division?: string;
         breadthRequirements?: string[];
         distributionRequirements?: string[];
         publicationSections?: string[];
@@ -135,30 +139,30 @@
     }
 
     export interface Course {
-        id: string;
+        id?: string;
         name: string;
         ucName?: string;
         code: string;
-        sectionCode: string;
-        campus: string;
-        sessions: string[];
+        sectionCode: string;  // FSY
+        campus?: string;
+        sessions?: string[];
         sections?: Section[];
         duration?: string;
         cmCourseInfo: CmCourseInfo;
-        created: string;
+        created?: string;
         modified?: string;
-        lastSaved: string;
-        primaryTeachMethod: string;
-        faculty: Faculty;
+        lastSaved?: string;
+        primaryTeachMethod?: string;
+        faculty?: Faculty;
         coSec?: any;
-        department: Department;
+        department?: Department;
         title?: string;
-        maxCredit: string;
-        minCredit: string;
+        maxCredit?: string;
+        minCredit?: string;
         breadths?: Breadth[];
         notes?: CourseNote[];
-        cancelInd: string;
-        fullyOnline: string;
+        cancelInd?: string;
+        fullyOnline?: string;
     }
 
     export interface PageableCourses {

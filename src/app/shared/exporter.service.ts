@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Course, PageableCourses } from './course-interfaces';
 import { SectionSelection } from '../selectedclasses';
 import { Subject } from 'rxjs';
+import { ClTimingsSharerService } from './cl-timings-sharer.service';
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +63,11 @@ export class ExporterService {
             }
           }
         }
+        this.clTimingsSharer.setData([]);
+
+
+
+
       },
       error: (err) => {
         console.log("Something went wrong");
@@ -80,5 +86,6 @@ export class ExporterService {
 
 
   constructor(private selectedCoursesService: SelectedCoursesService,
+    private clTimingsSharer: ClTimingsSharerService,
     private crsGetterService: CourseListGetterService) {}
 }

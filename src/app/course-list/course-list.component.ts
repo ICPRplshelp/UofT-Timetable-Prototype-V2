@@ -181,13 +181,19 @@ export class CourseListComponent implements OnInit {
             let code1 = cr1.code;
             let code2 = cr2.code;
             // for both strings above - move the last character to the first
+            const th = (st: string) => (st === 'H' || st === 'Y') ? 2 : st;
             code1 =
-              code1.substring(code1.length - 1) +
+            th(code1.substring(code1.length - 1)) +
               code1.substring(0, code1.length - 1);
             code2 =
-              code2.substring(code2.length - 1) +
+            th(code2.substring(code2.length - 1)) +
               code2.substring(0, code2.length - 1);
-            return code1.localeCompare(code2);
+            const temp1 = code1.localeCompare(code2);
+            if(temp1 === 0){
+              return cr1.sectionCode.localeCompare(cr2.sectionCode);
+            } else{
+              return temp1;
+            }
           });
         },
       });

@@ -143,7 +143,7 @@ export class CourseDisplay {
     this.endTimeMins = millisToMinutes(mt.end.millisofday);
     this.buildingCode = mt.building.buildingCode;
     this.buildingNumber = mt.building.buildingRoomNumber;
-    this.deliveryMode = ss.sectionSelected.deliveryModes[0]?.mode ?? 'INPER';
+    this.deliveryMode = (ss.sectionSelected.deliveryModes ?? [])[0]?.mode ?? 'INPER';
     this.sessionCode = mt.sessionCode;
     this.ss = ss;
   }

@@ -40,17 +40,24 @@ export class CourseListGetterService {
    * @returns [[MAT135H1-F, MAT135H1-S], [MAT136H1-S]]
    */
   condenseCourses(crses: Course[]): Course[][] {
+    crses.sort((a, b) => {
+      return a.code.localeCompare(b.code);
+    });
     let newCourseListSoFar: Course[][] = [];
     let previousCourseCode = "NOT A CODE RIGHT NOW";
+    let previousCourseTitle: string | undefined = "NOT A TITLE RIGHT NOW";
     crses.forEach(c => {
       // course code + new course list so far
-      if(c.code === previousCourseCode && newCourseListSoFar.length >= 1){
+      // console.log(c.name, previousCourseTitle);
+      if(c.code === previousCourseCode && c.title === previousCourseTitle &&
+        newCourseListSoFar.length >= 1){
         let tcl = newCourseListSoFar[newCourseListSoFar.length - 1];
         tcl.push(c);
       } else {
         newCourseListSoFar.push([c]);
       }
       previousCourseCode = c.code;
+      previousCourseTitle = c.name;
     })
     return newCourseListSoFar;
   }
