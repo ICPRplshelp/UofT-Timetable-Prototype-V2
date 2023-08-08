@@ -23,6 +23,7 @@ import {
 } from '../selected-courses.service';
 import { SectionSelection, msToM } from '../selectedclasses';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { forceNum } from '../course-list/course-list.component';
 
 /**
  * Inputs:
@@ -88,8 +89,8 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  getDayColor(dayOfWeek: string): string {
-    let dayOfWeek2 = parseInt(dayOfWeek);
+  getDayColor(dayOfWeek: number): string {
+    let dayOfWeek2 = forceNum(dayOfWeek);
     if (isNaN(dayOfWeek2) || dayOfWeek2 === -1) {
       dayOfWeek2 = this.util.dayColors.length - 1;
     }
@@ -100,16 +101,16 @@ export class TimingsComponent implements OnInit {
     return this.util.dayColors[dayOfWeek2];
   }
 
-  getDayColoredText(dayOfWeekT: string): string {
-    let dayOfWeek: number = parseInt(dayOfWeekT);
+  getDayColoredText(dayOfWeekT: number): string {
+    let dayOfWeek: number = forceNum(dayOfWeekT);
     if (isNaN(dayOfWeek) || dayOfWeek === -1) {
       dayOfWeek = this.util.dayColorText.length - 1;
     }
     return this.util.dayColorText[dayOfWeek];
   }
 
-  getDayBrightenedColors(dayOfWeekT: string): string {
-    let dayOfWeek: number = parseInt(dayOfWeekT);
+  getDayBrightenedColors(dayOfWeekT: number): string {
+    let dayOfWeek: number = forceNum(dayOfWeekT);
     if (isNaN(dayOfWeek) || dayOfWeek === -1) {
       dayOfWeek = this.util.dayBrightenedColors.length - 1;
     }
@@ -119,8 +120,7 @@ export class TimingsComponent implements OnInit {
   days: string[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', '⠀⠀'];
 
   // with a millisofday return HH:MM timecode in 24 hour format
-  getTimeCode(millisTemp: string): string {
-    let millis = parseInt(millisTemp);
+  getTimeCode(millis: number): string {
     if (isNaN(millis) || millis === -1) {
       return 'NA';
     }
@@ -137,8 +137,8 @@ export class TimingsComponent implements OnInit {
     return hours + minsStr;
   }
 
-  getTimeCode12(millisTemp: string): string {
-    let millis = parseInt(millisTemp);
+  getTimeCode12(millisTemp: number): string {
+    let millis = forceNum(millisTemp);
     if (isNaN(millis) || millis === -1) {
       return 'NA';
     }
@@ -162,8 +162,7 @@ export class TimingsComponent implements OnInit {
    * @param millisTemp millis
    * Returns AM, PM, or nothing
    */
-  ampm(millisTemp: string): string {
-    let millis = parseInt(millisTemp);
+  ampm(millis: number): string {
     if (isNaN(millis) || millis === -1) {
       return '';
     }
@@ -295,8 +294,8 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  getDayCode(dayOfWeekT: string) {
-    let dayOfWeek: number = parseInt(dayOfWeekT);
+  getDayCode(dayOfWeekT: number) {
+    let dayOfWeek: number = forceNum(dayOfWeekT);
     if (isNaN(dayOfWeek)) {
       dayOfWeek = 7;
     }
@@ -358,11 +357,11 @@ export class TimingsComponent implements OnInit {
       meetingTimes2 = [];
     }
     meetingTimes2.sort((a, b) => {
-      let aStart = parseInt(a.start.day);
+      let aStart = forceNum(a.start.day);
       if (isNaN(aStart)) {
         aStart = 0;
       }
-      let bStart = parseInt(b.start.day);
+      let bStart = forceNum(b.start.day);
       if (isNaN(bStart)) {
         bStart = 0;
       }
@@ -371,8 +370,8 @@ export class TimingsComponent implements OnInit {
       } else if (aStart > bStart) {
         return 1;
       }
-      let ams = parseInt(a.start.millisofday);
-      let bms = parseInt(b.start.millisofday);
+      let ams = forceNum(a.start.millisofday);
+      let bms = forceNum(b.start.millisofday);
       if (isNaN(ams)) ams = 0;
       if (isNaN(bms)) bms = 0;
       return ams - bms; // if bms is higher, it is negative
@@ -435,19 +434,19 @@ export class TimingsComponent implements OnInit {
       element.currentWaitlist !== undefined
     )
       return (
-        parseInt(element.currentEnrolment) + parseInt(element.currentWaitlist)
+        forceNum(element.currentEnrolment) + forceNum(element.currentWaitlist)
       );
     else if (
       element.currentEnrolment !== null &&
       element.currentEnrolment !== undefined
     )
-      return parseInt(element.currentEnrolment);
+      return forceNum(element.currentEnrolment);
     else return 0;
   }
 
   getCapacity(element: Section): number {
     if (element.maxEnrolment !== null && element.maxEnrolment !== undefined) {
-      return parseInt(element.maxEnrolment);
+      return forceNum(element.maxEnrolment);
     } else {
       return 0;
     }
@@ -727,6 +726,10 @@ export class TimingsComponent implements OnInit {
 
   }
 
+  forceNum(cand: string | number): number {
+    return forceNum(cand);
+  }
+
   get curCourseCode(): string {
     if (this.storedCourses.length === 0) {
       return '';
@@ -755,7 +758,7 @@ export class TimingsComponent implements OnInit {
     const endMinute = msToM(mCol[0].end.millisofday);
     const preRe = this.selectedCoursesService.conflictsWithExisting(
       crs.sectionCode,
-      dayOfWeek,
+      forceNum(dayOfWeek),
       startMinute,
       endMinute,
       sesSel

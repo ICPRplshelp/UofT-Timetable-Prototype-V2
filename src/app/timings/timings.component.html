@@ -67,16 +67,16 @@
 
                             <div class="r-chip" [style.min-height]="24"
                             
-                              [style.background-color]="(confInfo === null) ? getDayColor(meets[0].start.day) : util.conflictColor"
-                              [style.color]="(confInfo === null) ? getDayColoredText(meets[0].start.day) : util.conflictTextColor">
+                              [style.background-color]="(confInfo === null) ? getDayColor(forceNum(meets[0].start.day)) : util.conflictColor"
+                              [style.color]="(confInfo === null) ? getDayColoredText(forceNum(meets[0].start.day)) : util.conflictTextColor">
 
                               <div class="meeting-day"
                               
                               
-                                [style.width.px]="getDayCode(meets[0].start.day).length * 10 + 15"
-                                [style.background-color]="(confInfo === null) ? getDayBrightenedColors(meets[0].start.day) : util.conflictBrightColor">
+                                [style.width.px]="getDayCode(forceNum(meets[0].start.day)).length * 10 + 15"
+                                [style.background-color]="(confInfo === null) ? getDayBrightenedColors(forceNum(meets[0].start.day)) : util.conflictBrightColor">
                                 <div class="vert-center" >
-                                  {{ getDayCode(meets[0].start.day) }}
+                                  {{ getDayCode(forceNum(meets[0].start.day)) }}
                                 </div>
                               </div>
 
@@ -84,10 +84,10 @@
                                 <div class="vert-center">
                                   <div class="flex-horizontal-nowrap">
                                     <div *ngIf="util.is24hour">
-                                      {{getTimeCode(meets[0].start.millisofday)}}-{{getTimeCode(meets[0].end.millisofday)}}
+                                      {{getTimeCode(forceNum(meets[0].start.millisofday))}}-{{getTimeCode(forceNum(meets[0].end.millisofday))}}
                                     </div>
                                     <div *ngIf="!util.is24hour">
-                                      {{getTimeCode12(meets[0].start.millisofday)}}{{ampm(meets[0].start.millisofday)}}-{{getTimeCode12(meets[0].end.millisofday)}}{{ampm(meets[0].end.millisofday)}}
+                                      {{getTimeCode12(forceNum(meets[0].start.millisofday))}}{{ampm(forceNum(meets[0].start.millisofday))}}-{{getTimeCode12(forceNum(meets[0].end.millisofday))}}{{ampm(forceNum(meets[0].end.millisofday))}}
                                     </div>
                                   </div>
                                 </div>

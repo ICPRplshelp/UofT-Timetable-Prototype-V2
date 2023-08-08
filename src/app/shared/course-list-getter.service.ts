@@ -49,7 +49,7 @@ export class CourseListGetterService {
     crses.forEach(c => {
       // course code + new course list so far
       // console.log(c.name, previousCourseTitle);
-      if(c.code === previousCourseCode && c.title === previousCourseTitle &&
+      if(c.code === previousCourseCode && c.name === previousCourseTitle &&
         newCourseListSoFar.length >= 1){
         let tcl = newCourseListSoFar[newCourseListSoFar.length - 1];
         tcl.push(c);

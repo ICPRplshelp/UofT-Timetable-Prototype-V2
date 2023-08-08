@@ -101,7 +101,7 @@ obtainEverything()
     <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder && !isSmallScreen">
 
         <div class="card" *ngFor="let coursePack of condensedCourseList"
-            [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 400px), 82%)' : 'min(max(200px, 15%), 82%)'">
+            [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 420px), 82%)' : 'min(max(200px, 15%), 82%)'">
             <div class="card-header" [style.background-color]="
             constants.levelColors[whatLevel(coursePack[0].code)]
             " (click)="

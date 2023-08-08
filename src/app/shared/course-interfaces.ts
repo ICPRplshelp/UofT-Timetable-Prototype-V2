@@ -1,7 +1,7 @@
 
     export interface DayTimeOfWeek {
-        day: string;  // "0" for sun, "1" for mon, and so on
-        millisofday: string;
+        day: string | number;  // "0" for sun, "1" for mon, and so on
+        millisofday: string | number;
     }
 
     export interface Building {
@@ -66,11 +66,11 @@
         // ALL BELOW ARE NULLABLE
         meetingTimes?: MeetingTime[];
         instructors?: Instructor[];
-        currentEnrolment?: string;
-        maxEnrolment?: string;
+        currentEnrolment?: string | number;
+        maxEnrolment?: string | number;
         teachMethod?: string;  // LEC | TUT | PRA
         // you probably don't need any of these anymore
-        currentWaitlist?: string;
+        currentWaitlist?: string | number;
         
         firstMeeting?: any;
         subTitle?: string;

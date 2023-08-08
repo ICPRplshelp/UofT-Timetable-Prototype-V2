@@ -1,3 +1,4 @@
+import { forceNum } from '../course-list/course-list.component';
 import { SectionSelection } from '../selectedclasses';
 import { Course, MeetingTime } from '../shared/course-interfaces';
 
@@ -137,7 +138,7 @@ export class CourseDisplay {
     this.courseCode = ss.targetCourse.code;
     this.sectionCode = ss.sectionSelected.name;
     this.fys = ss.targetCourse.sectionCode;
-    this.dayOfWeek = parseInt(mt.start.day);
+    this.dayOfWeek = forceNum(mt.start.day);
     // TODO: ensure program doesn't crash if millisofday isn't a number
     this.startTimeMins = millisToMinutes(mt.start.millisofday);
     this.endTimeMins = millisToMinutes(mt.end.millisofday);
@@ -171,7 +172,7 @@ function millisToMinutes(milliseconds: number | string): number {
   const millisecondsPerMinute = 60000; // 1 minute = 60,000 milliseconds
   const millisecondsAsNumber =
     typeof milliseconds === 'string'
-      ? parseInt(milliseconds, 10)
+      ? forceNum(milliseconds)
       : milliseconds;
   return Math.round(millisecondsAsNumber / millisecondsPerMinute);
 }

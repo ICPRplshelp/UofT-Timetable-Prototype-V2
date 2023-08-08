@@ -186,7 +186,7 @@ export class SelectedCoursesService {
 
   conflictsWithExisting(
     fys: string,
-    dayOfWeek: string,
+    dayOfWeek: number,
     startTimeMins: number,
     endTimeMins: number,
     sesSel: SectionSelection

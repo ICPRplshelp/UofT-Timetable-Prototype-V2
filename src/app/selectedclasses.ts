@@ -1,3 +1,4 @@
+import { forceNum } from './course-list/course-list.component';
 import { Course, MeetingTime, Section } from './shared/course-interfaces';
 
 export class SectionSelection {
@@ -48,7 +49,7 @@ export class SectionSelection {
    * @param otherEnd the othert  end time in minutes since midnight to check
    * @returns the Meeting that conflicts, or null if there are no conflicts
    */
-  conflicts(otherDay: string, otherStart: number, otherEnd: number): MeetingTime | null {
+  conflicts(otherDay: number, otherStart: number, otherEnd: number): MeetingTime | null {
     const other = {
       dayOfWeek: otherDay,
       startTimeMins: otherStart,
@@ -57,7 +58,7 @@ export class SectionSelection {
 
     for (let met1 of this.sectionSelected.meetingTimes ?? []) {
       const met = {
-        dayOfWeek: met1.start.day,
+        dayOfWeek: forceNum(met1.start.day),
         startTimeMins: msToM(met1.start.millisofday),
         endTimeMins: msToM(met1.end.millisofday)
       };

@@ -235,6 +235,8 @@ export class CourseListComponent implements OnInit {
   }
 
 
+
+
   /**
    * Do not double count: if a start-end time appears
    * the same for the same timing object thing,
@@ -245,9 +247,9 @@ export class CourseListComponent implements OnInit {
    */
   calculateHourCommitment(coursePack: Course[]): number {
     type TimeCellInfo = {
-      day: string;
-      startTime: string;
-      endTime: string;
+      day: number;
+      startTime: number;
+      endTime: number;
     };
     const compareTimeCells = (
       timeCell1: TimeCellInfo,
@@ -280,12 +282,13 @@ export class CourseListComponent implements OnInit {
           if (endTime === null || endTime === undefined) continue;
           let day = met?.start?.day;
           if (day === null || day === undefined) continue;
-          const startEndDayTemp = {startTime, endTime, day};
+          const startEndDayTemp = {startTime: forceNum(startTime), 
+            endTime: forceNum(endTime), day: forceNum(day)};
           if (seenTimes.some((x) => compareTimeCells(x, startEndDayTemp))) {
             continue;
           } else {
             seenTimes.push(startEndDayTemp);
-            maxAcc += (parseInt(endTime) - parseInt(startTime)) / 3600000;
+            maxAcc += (forceNum(endTime) - forceNum(startTime)) / 3600000;
           }
 
 
@@ -563,5 +566,14 @@ export class CourseListComponent implements OnInit {
     }
 
     return text;
+  }
+}
+
+
+export function forceNum(st: string | number): number {
+  if(typeof st === 'string'){
+    return parseInt(st);
+  } else{
+    return st;
   }
 }
