@@ -11,11 +11,13 @@ export type SessionInfo = {
 })
 export class UtilitiesService {
 
-
+  courseListOnly: boolean = false;
   is24hour: boolean = true;
   hideSpecial: boolean = false;
-  enableTimetableBuilder: boolean = true;
+  readonly enableTimetableBuilder: boolean = true;
   oneSectionAtATime: boolean = true;
+  smallScreenThreshold: number = 768;
+  displayCourseList: boolean = true;
   // brColors: string[] = [
   //   '#474545',  // no breath requirement
   //   '#d71a1a',  // br1

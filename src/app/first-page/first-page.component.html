@@ -1,15 +1,18 @@
 <!-- CTRL+ALT+T to surround with div -->
 <div class="side-by-side">
 
-    <app-course-list *ngIf="displayCourseList"
-        [ngClass]="{'left-div': constants.enableTimetableBuilder, 'single-div': !constants.enableTimetableBuilder}">
+    <app-course-list *ngIf="constants.displayCourseList"
+        [ngClass]="{'left-div': !(isSmallScreen || constants.courseListOnly), 
+        'single-div': isSmallScreen || constants.courseListOnly}">
+        (parentCourseListHider)="toggleDisplayCourseList()"
     </app-course-list>
+    
     <app-timings class="mid-div" style="margin-left: -5px;"
-        *ngIf="constants.enableTimetableBuilder && displayCourseList" [smallScreen]="true">
+        *ngIf="!constants.courseListOnly && !isSmallScreen && constants.enableTimetableBuilder && constants.displayCourseList" [smallScreen]="true">
     </app-timings>
 
-    <div class="right-div" *ngIf="constants.enableTimetableBuilder"
-        [ngStyle]="displayCourseList ? {} : {'overflow': 'auto'}">
+    <div class="right-div" *ngIf="!constants.courseListOnly && (!isSmallScreen || !constants.displayCourseList)"
+        [ngStyle]="constants.displayCourseList ? {} : {'overflow': 'auto'}">
         <div class="flex-container-page1">
             <app-timetable  *ngIf="buttonOptions.includes('F')" class="flex-item-page1 page-break-always" [sectionCode]="'F'"></app-timetable>
             <app-timetable *ngIf="buttonOptions.includes('S')"  class="flex-item-page1" [sectionCode]="'S'"></app-timetable>
@@ -17,18 +20,18 @@
         <div class="print-hidden">
             <div class="flex-horizontal">
             <button mat-raised-button style="max-height: 36px;"
-            matTooltip="Hides everything but the tables here. Use this for printing; the buttons you see here won't appear in the print dialog" matTooltipPosition="below"
+            matTooltip="Hides or displays everything but the tables here. Use this for printing; the buttons you see here won't appear in the print dialog" matTooltipPosition="below"
             (click)="toggleDisplayCourseList()">Toggle course
                 list</button>
                 <button id="downloaded" matTooltip="Download all your selections so it can be imported again" matTooltipPosition="below" type="button"
                 mat-stroked-button (click)="
     exportCourses()
-    " style="max-height: 36px;">Export timetable</button>
+    " style="max-height: 36px;">Export</button>
                 <mat-button-toggle-group 
             [(ngModel)]="buttonOptions"
             name="displayOptions" aria-label="displayOptions" multiple>
-                <mat-button-toggle value="F">Display F Term</mat-button-toggle>
-                <mat-button-toggle value="S">Display S Term</mat-button-toggle>
+                <mat-button-toggle value="F">F</mat-button-toggle>
+                <mat-button-toggle value="S">S</mat-button-toggle>
             </mat-button-toggle-group>
         </div></div>
 

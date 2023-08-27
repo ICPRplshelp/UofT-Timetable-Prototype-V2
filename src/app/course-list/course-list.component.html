@@ -35,15 +35,17 @@
                 Hour Time</mat-checkbox>
             <mat-checkbox color="primary" [(ngModel)]="constants.hideSpecial" matTooltip="Hide LEC2000-LEC2999 sections"
                 matTooltipPosition="above">Hide special</mat-checkbox>
-            <mat-checkbox color="primary" [(ngModel)]="enableTTB"
+            <!-- <mat-checkbox color="primary" [(ngModel)]="enableTTB"
                 matTooltip="Enable the option to schedule your courses here" matTooltipPosition="above">Enable Timetable
-                Selection</mat-checkbox>
+                Selection</mat-checkbox> -->
             <mat-checkbox color="primary" [(ngModel)]="constants.oneSectionAtATime"
                 matTooltip="Prevents you from selecting more than one section per course" matTooltipPosition="above">No
                 duplicate sections</mat-checkbox>
+            <mat-checkbox color="primary" [(ngModel)]="constants.courseListOnly"
+            matTooltip="Prevents the timetable from showing" matTooltipPosition="above">Course list only</mat-checkbox>
 
         </div>
-        <app-file-opener *ngIf="enableTTB"
+        <app-file-opener 
             [buttonPrompt]="'Import course selections'"
             [fileProcessor]="importJsonFunction"
         ></app-file-opener>
@@ -82,6 +84,13 @@ obtainEverything()
 ">RELOAD IT</button>
     </div>
 
+
+    <button *ngIf="isSmallScreen && !constants.courseListOnly"
+    id="timetabledisplay" matTooltip="Display the visual timetable" matTooltipPosition="below" type="button"
+            mat-stroked-button (click)="
+            parentHideCourseList()
+">Display visual timetable</button>
+
     <p *ngIf="errorMessage !== ''" style="padding-bottom:6px; color: red;">{{errorMessage}}</p>
 
 </div>
@@ -98,7 +107,7 @@ obtainEverything()
 </ul>
 <div>
 
-    <div class="row" [class.row-shorten-it]="!constants.enableTimetableBuilder && !isSmallScreen">
+    <div class="row" [class.row-shorten-it]="!isSmallScreen">
 
         <div class="card" *ngFor="let coursePack of condensedCourseList"
             [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 420px), 82%)' : 'min(max(200px, 15%), 82%)'">

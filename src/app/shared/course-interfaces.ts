@@ -5,8 +5,8 @@
     }
 
     export interface Building {
-        buildingCode: string;
-        buildingRoomNumber: string;
+        buildingCode?: string;
+        buildingRoomNumber?: string;
         buildingUrl?: string;
         buildingName?: any;
     }

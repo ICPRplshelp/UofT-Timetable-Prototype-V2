@@ -57,10 +57,10 @@ export class TimingsComponent implements OnInit {
   }
 
   padLecs(): boolean{ 
-    return this.smallScreen && !this.util.enableTimetableBuilder;
+    return this.smallScreen && this.util.courseListOnly;
   }
 
-  displayedColumns: string[] = this.util.enableTimetableBuilder
+  displayedColumns: string[] = (this.util.enableTimetableBuilder && !this.util.courseListOnly)
     ? ['sel', 'lec', 'ins', 'time', 'delivery']
     : ['lec', 'ins', 'time', 'delivery'];
   displayedColumnsExpanded: string[] = [...this.displayedColumns];
@@ -341,7 +341,7 @@ export class TimingsComponent implements OnInit {
     const toReturn: MeetingTime[] = [];
     const roomsSoFar: string[] = [];
     for (let mt of mtt) {
-      let buildingIdentifier = `${mt.building.buildingCode} ${mt.building.buildingRoomNumber}`;
+      let buildingIdentifier = `${mt.building.buildingCode ?? ''} ${mt.building.buildingRoomNumber ?? ''}`;
       if (!roomsSoFar.includes(buildingIdentifier)) {
         roomsSoFar.push(buildingIdentifier);
         toReturn.push(mt);

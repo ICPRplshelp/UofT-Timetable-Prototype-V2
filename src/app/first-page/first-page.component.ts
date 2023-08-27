@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { UtilitiesService } from '../shared/utilities.service';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { SelectedCoursesService } from '../selected-courses.service';
@@ -16,7 +16,7 @@ export class FirstPageComponent implements OnInit {
   buttonOptions: string[] = ['F', 'S'];
 
   toggleDisplayCourseList(): void {
-    this.displayCourseList = !this.displayCourseList;
+    this.constants.displayCourseList = !this.constants.displayCourseList;
     console.log(this.buttonOptions);
   }
 
@@ -34,6 +34,15 @@ export class FirstPageComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.isSmallScreen = window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
+
+  }
+
+  isSmallScreen: boolean = false;
+
+  @HostListener('window:resize')
+  checkScreenSize() {
+    this.isSmallScreen = window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
   }
 
 }

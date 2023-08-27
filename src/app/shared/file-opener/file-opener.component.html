@@ -5,7 +5,7 @@
         <strong>{{buttonPrompt}}</strong>
         <br>
         <!-- <button type="button" mat-raised-button (click)="fileInput.click()"> {{buttonPrompt}} </button> -->
-        <input  #fileInput id="file" type="file" (change)="onFileSelected($event)">
+        <input  #fileInput id="file" type="file" accept=".json" (change)="onFileSelected($event)">
         <button mat-raised-button (click)="openFile()">Open File</button>
       </div>
 </div>

@@ -142,8 +142,8 @@ export class CourseDisplay {
     // TODO: ensure program doesn't crash if millisofday isn't a number
     this.startTimeMins = millisToMinutes(mt.start.millisofday);
     this.endTimeMins = millisToMinutes(mt.end.millisofday);
-    this.buildingCode = mt.building.buildingCode;
-    this.buildingNumber = mt.building.buildingRoomNumber;
+    this.buildingCode = mt.building.buildingCode ?? "";
+    this.buildingNumber = mt.building.buildingRoomNumber ?? "";
     this.deliveryMode = (ss.sectionSelected.deliveryModes ?? [])[0]?.mode ?? 'INPER';
     this.sessionCode = mt.sessionCode;
     this.ss = ss;

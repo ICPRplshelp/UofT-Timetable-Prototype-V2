@@ -1,4 +1,5 @@
-<div [style]="smallScreen ? 'max-height:95%;' : ''">
+<div 
+[style]="smallScreen ? 'max-height:95%; max-width: 95%;' : ''">
   <div *ngIf="noCourses()">
     <h1  class="title-text" style="text-align: center">No course selected</h1>
     <p class="center-div-2" style="width: 70%; text-align: center;" >Click on the <strong>white</strong> component of a course card to have its schedule show it.</p>

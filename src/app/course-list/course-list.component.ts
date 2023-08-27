@@ -47,24 +47,32 @@ export class CourseListComponent implements OnInit {
 
   @HostListener('window:resize')
   checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < 768; // Adjust the value as per your definition of a small screen
+    this.isSmallScreen = window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
   }
 
-  get enableTTB() {
-    return this.constants.enableTimetableBuilder;
+  parentHideCourseList() {
+    this.toggleDisplayCourseList();
   }
 
-  set enableTTB(val: boolean) {
+  toggleDisplayCourseList(): void {
+    this.constants.displayCourseList = !this.constants.displayCourseList;
+  }
+
+  // get enableTTB() {
+  //   return this.constants.enableTimetableBuilder;
+  // }
+
+  // set enableTTB(val: boolean) {
     
 
-    this.constants.enableTimetableBuilder = val;
-  }
+  //   this.constants.enableTimetableBuilder = val;
+  // }
 
   ngOnInit(): void {
     this.obtainEverything();
     this.checkScreenSize();
     if(this.isSmallScreen){
-      this.constants.enableTimetableBuilder = false;
+      // this.constants.enableTimetableBuilder = false;
     }
   }
 
@@ -434,7 +442,7 @@ export class CourseListComponent implements OnInit {
 
   selectCourse(coursePack: Course[]): void {
     this.clTimingsSharer.setData(coursePack);
-    if (!this.constants.enableTimetableBuilder) {
+    if (this.constants.courseListOnly || !this.constants.enableTimetableBuilder || this.isSmallScreen) {
       this.openCourseDialogPage(coursePack);
     } else {
 
