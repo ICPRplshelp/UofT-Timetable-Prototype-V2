@@ -17,7 +17,7 @@ export class FirstPageComponent implements OnInit {
 
   toggleDisplayCourseList(): void {
     this.constants.displayCourseList = !this.constants.displayCourseList;
-    console.log(this.buttonOptions);
+    // console.log(this.buttonOptions);
   }
 
   exportCourses(): void {
@@ -26,7 +26,7 @@ export class FirstPageComponent implements OnInit {
 
 
   onToggleChange(event: MatButtonToggleChange) {
-    console.log('Selected value:', event.value);
+    // console.log('Selected value:', event.value);
     // Perform actions based on the selected value
   }
   constructor(public constants: UtilitiesService,

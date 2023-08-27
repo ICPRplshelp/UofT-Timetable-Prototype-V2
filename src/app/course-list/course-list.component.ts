@@ -8,6 +8,7 @@ import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
 import { SelectedCoursesService } from '../selected-courses.service';
 import { Subscription } from 'rxjs';
 import { ExporterService } from '../shared/exporter.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 
@@ -168,9 +169,19 @@ export class CourseListComponent implements OnInit {
         next: (data) => {
           temp = data;
         },
-        error: (err) => {
-          // console.log(err);
-          this.errorMessage = 'This course desginator does not exist or is not offering any courses this term';
+        error: (err: HttpErrorResponse) => {
+
+
+
+          if(err.status === 404)
+            this.errorMessage = 'This course desginator does not exist or is not offering any courses this term';
+          else if (err.status === 403)
+            this.errorMessage = "You're not doing anything weird with your browser, aren't you?";
+          else if (err.status >= 500)
+            this.errorMessage = `Server-side error: ${err.status}`;
+          else if (err.status === 0)
+            this.errorMessage = "You are offline or your connection is really bad";
+          else this.errorMessage = `Something went wrong: ${err.status}`;
         },
         complete: () => {
           courseListCandidate = temp.courses;

@@ -188,7 +188,7 @@ obtainEverything()
                     <div *ngIf="!isNullOrEmpty(getPrq(coursePack[0]))">
                         <div class="loud-header" matTooltip="You must pass these courses before
                         taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Prerequisite</div>
-                        <div [innerHTML]="addSpacesBetweenSlashes(
+                        <div  [innerHTML]="addSpacesBetweenSlashes(
                         stripWrappingPs(getPrq(coursePack[0])))"></div>
                     </div>
 
