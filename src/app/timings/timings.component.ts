@@ -169,13 +169,18 @@ export class TimingsComponent implements OnInit {
 
     let date = new Date(millis);
     let hours = date.getHours() + 5;
-    if (hours >= 20) {
+    if(hours >= 12){
       return 'p';
-    } else if (hours <= 10) {
-      return '';
     } else {
-      return '';
+      return 'a';
     }
+    // if (hours >= 18) {
+    //   return 'p';
+    // } else if (hours <= 10) {
+    //   return '';
+    // } else {
+    //   return '';
+    // }
   }
 
   getDeliveryMode(sec: Section): string {

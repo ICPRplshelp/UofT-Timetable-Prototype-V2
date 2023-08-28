@@ -27,6 +27,10 @@ export class UtilitiesService {
   //   '#bb4bff'   // br5
   // ];
 
+  /**
+   * When updating the drop directory, you must add these here
+   */
+  sessionsWithDrops: string[] = ['20229', '20235'];
   allSessions: SessionInfo[] = [
     {
       sessionName: 'Fall-Winter 2022-2023',
@@ -65,7 +69,7 @@ export class UtilitiesService {
     "#78630e", // 600-level,
     "#85462c" // 700-level
   ];
-
+  disableToolTips: boolean = false;
   conflictBrightColor = '#cc1818';
   conflictColor = '#8b0000';
   conflictTextColor = '#FFFFFF';

@@ -25,6 +25,7 @@ export class CourseListGetterService {
     return this.http.get<PageableCourses>(this.pathToCourseList);
   }
 
+  
 
   getSpecificTTBResponse(crsDes: string, session: string): null | Observable<PageableCourses> {
     if(!(session.match(/^\d{5}$/) && crsDes.match(/^[a-zA-Z]{3}$/))){

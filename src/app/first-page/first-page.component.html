@@ -19,11 +19,11 @@
         </div>
         <div class="print-hidden">
             <div class="flex-horizontal">
-            <button mat-raised-button style="max-height: 36px;"
-            matTooltip="Hides or displays everything but the tables here. Use this for printing; the buttons you see here won't appear in the print dialog" matTooltipPosition="below"
+            <button mat-raised-button style="max-height: 36px;" [matTooltipDisabled]="constants.disableToolTips"
+            matTooltip="Hides or displays everything but the tables here. Use this for printing; the buttons you see here won't appear in the print dialog" [matTooltipDisabled]="constants.disableToolTips" matTooltipPosition="below"
             (click)="toggleDisplayCourseList()">Toggle course
                 list</button>
-                <button id="downloaded" matTooltip="Download all your selections so it can be imported again" matTooltipPosition="below" type="button"
+                <button id="downloaded" matTooltip="Download all your selections so it can be imported again" matTooltipPosition="below" type="button" [matTooltipDisabled]="constants.disableToolTips"
                 mat-stroked-button (click)="
     exportCourses()
     " style="max-height: 36px;">Export</button>

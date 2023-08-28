@@ -25,6 +25,7 @@ import { TimetableCellComponent } from './timetable/timetable-cell/timetable-cel
 import { ConflictTimetableCellComponent } from './timetable/conflict-timetable-cell/conflict-timetable-cell.component';
 import { FirstPageComponent } from './first-page/first-page.component';
 import { FileOpenerComponent } from './shared/file-opener/file-opener.component';
+import { DropCounterComponent } from './drop-counter/drop-counter.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { FileOpenerComponent } from './shared/file-opener/file-opener.component'
     TimetableCellComponent,
     ConflictTimetableCellComponent,
     FirstPageComponent,
-    FileOpenerComponent
+    FileOpenerComponent,
+    DropCounterComponent
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,7 @@ import { SelectedCoursesService } from '../selected-courses.service';
 import { Subscription } from 'rxjs';
 import { ExporterService } from '../shared/exporter.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DropInfo, DropRateViewerService } from '../drop-rate-viewer.service';
 
 
 
@@ -25,6 +26,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class CourseListComponent implements OnInit {
 
 
+
+  dropRateSession: string = "20229";
+
+  getDropInfo(courseCode: string): DropInfo {
+    return this.dropRateViewerService.getDropInfo(this.dropRateSession, courseCode);
+  }
+
+  getDrops(courseCode: string): number {
+    const temp = this.dropRateViewerService.getDropInfo(this.dropRateSession, courseCode);
+    return temp.d / temp.o;
+  }
+
   private functionSubscription: Subscription;
 
   constructor(
@@ -33,7 +46,8 @@ export class CourseListComponent implements OnInit {
     public dialog: MatDialog,
     private clTimingsSharer: ClTimingsSharerService,
     private selectedCourseService: SelectedCoursesService,
-    private exporterService: ExporterService
+    private exporterService: ExporterService,
+    private dropRateViewerService: DropRateViewerService
   ) {
     this.functionSubscription = this.exporterService.getFunctionTriggerObservable().subscribe((session) => {
       // Call the function you want to trigger in the component.
@@ -50,6 +64,9 @@ export class CourseListComponent implements OnInit {
   checkScreenSize() {
     this.isSmallScreen = window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
   }
+
+
+  
 
   parentHideCourseList() {
     this.toggleDisplayCourseList();
@@ -155,6 +172,8 @@ export class CourseListComponent implements OnInit {
       this.errorMessage = 'First three letters of a course only!';
       return;
     }
+    this.dropRateSession = this.sessionToUrl(this.currentSession);
+    console.log(this.dropRateSession);
     const tempResp = this.crsGetter
       .getSpecificTTBResponse(
         this.courseFilter,
