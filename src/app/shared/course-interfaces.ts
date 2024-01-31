@@ -151,14 +151,14 @@
         cmCourseInfo: CmCourseInfo;
         created?: string;
         modified?: string;
-        lastSaved?: string;
+        lastSaved?: string | number;
         primaryTeachMethod?: string;
         faculty?: Faculty;
         coSec?: any;
         department?: Department;
         title?: string;
-        maxCredit?: string;
-        minCredit?: string;
+        maxCredit?: string | number;
+        minCredit?: string | number;
         breadths?: Breadth[];
         notes?: CourseNote[];
         cancelInd?: string;

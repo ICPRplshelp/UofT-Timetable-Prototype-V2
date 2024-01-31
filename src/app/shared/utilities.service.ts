@@ -44,6 +44,10 @@ export class UtilitiesService {
       sessionName: 'Fall-Winter 2023-2024',
       sessionUrl: '20239'
     },
+    {
+      sessionName: 'Summer 2024',
+      sessionUrl: '20245'
+    },
   ];
 
   brColors: string[] = [

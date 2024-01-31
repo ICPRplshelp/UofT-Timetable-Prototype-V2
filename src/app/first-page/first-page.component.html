@@ -4,7 +4,6 @@
     <app-course-list *ngIf="constants.displayCourseList"
         [ngClass]="{'left-div': !(isSmallScreen || constants.courseListOnly), 
         'single-div': isSmallScreen || constants.courseListOnly}">
-        (parentCourseListHider)="toggleDisplayCourseList()"
     </app-course-list>
     
     <app-timings class="mid-div" style="margin-left: -5px;"
