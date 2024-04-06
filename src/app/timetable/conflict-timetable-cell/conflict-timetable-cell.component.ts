@@ -9,7 +9,7 @@ import { ConflictingCourseTableCell } from '../timetable-interfaces';
 export class ConflictTimetableCellComponent implements OnInit {
 
   @Input() displayedCells!: ConflictingCourseTableCell;
-
+  @Input() smallScreen: boolean = false;
 
   /**
    * 

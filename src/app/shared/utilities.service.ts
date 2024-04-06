@@ -30,7 +30,7 @@ export class UtilitiesService {
   /**
    * When updating the drop directory, you must add these here
    */
-  sessionsWithDrops: string[] = ['20229', '20235'];
+  sessionsWithDrops: string[] = ['20229', '20235', '20239'];
   allSessions: SessionInfo[] = [
     {
       sessionName: 'Fall-Winter 2022-2023',

@@ -23,11 +23,14 @@ class="center-text"><strong>Timetable ({{sectionCode}} term)</strong></h1>
 
                     <ng-container *ngIf="isCourseTableCell(tCell)">
                         <app-timetable-cell class="tt-cell"
-                            [displayedCell]="forceCourseTablecell(tCell).displayedCourse"></app-timetable-cell>
+                            [displayedCell]="forceCourseTablecell(tCell).displayedCourse"
+                            [smallScreen]="smallScreen"
+                            ></app-timetable-cell>
                     </ng-container>
 
                     <ng-container *ngIf="isConflictCell(tCell)">
                         <app-conflict-timetable-cell class="tt-cell"
+                        [smallScreen]="smallScreen"
                             [displayedCells]="forceCourseConflictCell(tCell)"></app-conflict-timetable-cell>
                     </ng-container>
                 </td>

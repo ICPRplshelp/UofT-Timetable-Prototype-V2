@@ -131,6 +131,9 @@ export class TimetableComponent implements OnInit {
 
 
   @Input() sectionCode: string = "F";  // the sessioncode is always initinalized
+  @Input() smallScreen: boolean = false;
+
+
   // via input BEFORE ngOnInit is called. Can either be F or S
   yearSectionCode: string = "Y";
   constructor(private selectedCourseService: SelectedCoursesService,

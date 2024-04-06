@@ -66,8 +66,6 @@ export class CourseListComponent implements OnInit {
   }
 
 
-  
-
   parentHideCourseList() {
     this.toggleDisplayCourseList();
   }

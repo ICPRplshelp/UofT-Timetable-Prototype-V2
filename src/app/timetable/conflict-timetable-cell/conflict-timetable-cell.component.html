@@ -4,6 +4,7 @@
 
             
             <app-timetable-cell class="cell-within" [displayedCell]="dc"
+            [smallScreen]="smallScreen"
             [style.height]="toPercent(calculateHeight(dc.endTimeMins - dc.startTimeMins))"
             [style.top]="toPercent(calculatePos(dc.startTimeMins))"
             [style.width]="toPercent(1/displayedCells.displayedCourses.length)"

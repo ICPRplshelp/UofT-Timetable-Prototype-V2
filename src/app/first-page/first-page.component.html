@@ -7,14 +7,14 @@
     </app-course-list>
     
     <app-timings class="mid-div" style="margin-left: -5px;"
-        *ngIf="!constants.courseListOnly && !isSmallScreen && constants.enableTimetableBuilder && constants.displayCourseList" [smallScreen]="true">
+        *ngIf="!constants.courseListOnly && !isSmallScreen && constants.enableTimetableBuilder && constants.displayCourseList" [smallScreen]="true" [forceVerbose]="true">
     </app-timings>
 
     <div class="right-div" *ngIf="!constants.courseListOnly && (!isSmallScreen || !constants.displayCourseList)"
         [ngStyle]="constants.displayCourseList ? {} : {'overflow': 'auto'}">
         <div class="flex-container-page1">
-            <app-timetable  *ngIf="buttonOptions.includes('F')" class="flex-item-page1 page-break-always" [sectionCode]="'F'"></app-timetable>
-            <app-timetable *ngIf="buttonOptions.includes('S')"  class="flex-item-page1" [sectionCode]="'S'"></app-timetable>
+            <app-timetable  *ngIf="buttonOptions.includes('F')" class="flex-item-page1 page-break-always" [sectionCode]="'F'" [smallScreen]="isSmallScreen"></app-timetable>
+            <app-timetable *ngIf="buttonOptions.includes('S')"  class="flex-item-page1" [sectionCode]="'S'" [smallScreen]="isSmallScreen"></app-timetable>
         </div>
         <div class="print-hidden">
             <div class="flex-horizontal">

@@ -50,6 +50,7 @@ export class TimingsComponent implements OnInit {
 
   @Input() storedCourses: Course[] = [];
   @Input() smallScreen: boolean = false;
+  @Input() forceVerbose: boolean = false;
   @Input() hideCourseCode: boolean = false;
 
   noCourses(): boolean {
@@ -89,99 +90,16 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  getDayColor(dayOfWeek: number): string {
-    let dayOfWeek2 = forceNum(dayOfWeek);
-    if (isNaN(dayOfWeek2) || dayOfWeek2 === -1) {
-      dayOfWeek2 = this.util.dayColors.length - 1;
-    }
-    // console.log("temp will be", dayOfWeek2, "and is", this.util.dayColors[dayOfWeek2]);
-    // if (temp === undefined){
-    //   temp = "gray";
-    // }
-    return this.util.dayColors[dayOfWeek2];
-  }
 
-  getDayColoredText(dayOfWeekT: number): string {
-    let dayOfWeek: number = forceNum(dayOfWeekT);
-    if (isNaN(dayOfWeek) || dayOfWeek === -1) {
-      dayOfWeek = this.util.dayColorText.length - 1;
-    }
-    return this.util.dayColorText[dayOfWeek];
-  }
 
-  getDayBrightenedColors(dayOfWeekT: number): string {
-    let dayOfWeek: number = forceNum(dayOfWeekT);
-    if (isNaN(dayOfWeek) || dayOfWeek === -1) {
-      dayOfWeek = this.util.dayBrightenedColors.length - 1;
-    }
-    return this.util.dayBrightenedColors[dayOfWeek];
-  }
+
+
 
   days: string[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', '⠀⠀'];
 
-  // with a millisofday return HH:MM timecode in 24 hour format
-  getTimeCode(millis: number): string {
-    if (isNaN(millis) || millis === -1) {
-      return 'NA';
-    }
 
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
-    let minutes = date.getMinutes();
-    let minsStr = '';
-    if (minutes >= 1) {
-      minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
-      minsStr = ':' + minsStr;
-    }
 
-    return hours + minsStr;
-  }
 
-  getTimeCode12(millisTemp: number): string {
-    let millis = forceNum(millisTemp);
-    if (isNaN(millis) || millis === -1) {
-      return 'NA';
-    }
-
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
-    let minutes = date.getMinutes();
-    let minsStr = '';
-    if (minutes >= 1) {
-      minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
-      minsStr = ':' + minsStr;
-    }
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-
-    return (hours + minsStr).trim();
-  }
-
-  /**
-   *
-   * @param millisTemp millis
-   * Returns AM, PM, or nothing
-   */
-  ampm(millis: number): string {
-    if (isNaN(millis) || millis === -1) {
-      return '';
-    }
-
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
-    if(hours >= 12){
-      return 'p';
-    } else {
-      return 'a';
-    }
-    // if (hours >= 18) {
-    //   return 'p';
-    // } else if (hours <= 10) {
-    //   return '';
-    // } else {
-    //   return '';
-    // }
-  }
 
   getDeliveryMode(sec: Section): string {
     if (sec === null || sec === undefined) {
@@ -299,105 +217,15 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  getDayCode(dayOfWeekT: number) {
-    let dayOfWeek: number = forceNum(dayOfWeekT);
-    if (isNaN(dayOfWeek)) {
-      dayOfWeek = 7;
-    }
-    return this.days[dayOfWeek];
-  }
 
-  ensureScheduleMini(ses: Section): MeetingTime[][] {
-    return [this.ensureSchedule(ses)[0]];
-  }
 
-  /**
-   *
-   * @param mets2 MeetingTime[][] the input array
-   * @returns it transposed
-   */
-  groupMeetings(mets2: MeetingTime[][]): MeetingTime[][] {
-    if (mets2.length === 0) {
-      return [
-        [
-          {
-            start: { day: '', millisofday: '-1' },
-            end: { day: '', millisofday: '-1' },
-            building: {
-              buildingCode: '',
-              buildingRoomNumber: '',
-              buildingUrl: '',
-              buildingName: '',
-            },
-            sessionCode: '10000',
-            repetition: 'WEEKLY',
-            repetitionTime: 'ONCE_A_WEEK',
-          },
-        ],
-      ];
-    }
-    let array = mets2;
-    // console.log(temp);
-    return array[0].map((_, colIndex) => array.map((row) => row[colIndex]));
-    // return array[0].map((col, i) => array.map(row => row[i]));
-  }
 
-  getRidOfDuplicateLocations(mtt: MeetingTime[]): MeetingTime[] {
-    const toReturn: MeetingTime[] = [];
-    const roomsSoFar: string[] = [];
-    for (let mt of mtt) {
-      let buildingIdentifier = `${mt.building.buildingCode ?? ''} ${mt.building.buildingRoomNumber ?? ''}`;
-      if (!roomsSoFar.includes(buildingIdentifier)) {
-        roomsSoFar.push(buildingIdentifier);
-        toReturn.push(mt);
-      }
-    }
-    return toReturn;
-  }
 
-  ensureSchedule(ses: Section): MeetingTime[][] {
-    let meetingTimes2 = ses.meetingTimes;
-    // console.log(meetingTimes2);
-    if (meetingTimes2 === null || meetingTimes2 === undefined) {
-      meetingTimes2 = [];
-    }
-    meetingTimes2.sort((a, b) => {
-      let aStart = forceNum(a.start.day);
-      if (isNaN(aStart)) {
-        aStart = 0;
-      }
-      let bStart = forceNum(b.start.day);
-      if (isNaN(bStart)) {
-        bStart = 0;
-      }
-      if (aStart < bStart) {
-        return -1;
-      } else if (aStart > bStart) {
-        return 1;
-      }
-      let ams = forceNum(a.start.millisofday);
-      let bms = forceNum(b.start.millisofday);
-      if (isNaN(ams)) ams = 0;
-      if (isNaN(bms)) bms = 0;
-      return ams - bms; // if bms is higher, it is negative
-    });
-    return this.splitMeetingTimes(meetingTimes2);
-  }
 
-  splitMeetingTimes(meets: MeetingTime[]): MeetingTime[][] {
-    const toReturn: MeetingTime[][] = [];
-    const sessionList: string[] = [];
-    for (let met of meets) {
-      let ind = sessionList.indexOf(met.sessionCode);
-      if (ind === -1) {
-        toReturn.push([]);
-        sessionList.push(met.sessionCode);
-        ind = sessionList.length - 1;
-      }
-      toReturn[ind].push(met);
-    }
-    return toReturn;
-  }
+
+
+
+
 
   ensureCourseFormat(cs?: Section[]): Section[] {
     if (cs === null || cs === undefined) {
@@ -426,7 +254,7 @@ export class TimingsComponent implements OnInit {
   }
 
   shortenLecNameIfSmall(lecSessionName: string): string {
-    if (this.smallScreen) {
+    if (this.smallScreen && !this.forceVerbose) {
       return lecSessionName[0] + lecSessionName.slice(3);
     } else return lecSessionName;
   }
@@ -669,7 +497,7 @@ export class TimingsComponent implements OnInit {
   ngOnInit(): void {
     if (!this.smallScreen) {
       this.smallScreenVal = 'padding: 42px';
-    } else {
+    } else if (!this.forceVerbose) {
       this.days = ['U', 'M', 'T', 'W', 'R', 'F', 'S', '⠀'];
     }
     this.clTimingsSharer.getData().subscribe({
@@ -743,32 +571,5 @@ export class TimingsComponent implements OnInit {
     }
   }
 
-  meetingCollectionConflicts(
-    mCol: MeetingTime[],
-    crs: Course,
-    sec: Section
-  ): ConflictInfo | null {
 
-    if(!this.util.enableTimetableBuilder)
-      return null;
-
-    if (mCol.length === 0) {
-      return null;
-    }
-    const sesSel: SectionSelection = new SectionSelection(
-      sec, [crs], crs
-    );
-    const dayOfWeek = mCol[0].start.day;
-    const startMinute = msToM(mCol[0].start.millisofday);
-    const endMinute = msToM(mCol[0].end.millisofday);
-    const preRe = this.selectedCoursesService.conflictsWithExisting(
-      crs.sectionCode,
-      forceNum(dayOfWeek),
-      startMinute,
-      endMinute,
-      sesSel
-    );
-    // console.log(preRe);
-    return preRe;
-  }
 }

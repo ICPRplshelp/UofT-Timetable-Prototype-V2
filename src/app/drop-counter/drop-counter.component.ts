@@ -18,7 +18,7 @@ export class DropCounterComponent implements OnInit {
   grey="#919e9d";
   blue='#0DFB57';
   green='#6FCF0E';
-  yellow='#d99a09';
+  yellow='#d98d0b';
   orange='#f26d13'
   red='#e01610'
   darkRed='#b80600';
@@ -78,6 +78,10 @@ formatPercentage(value: number): string {
       return 300;
     }
     return this.dropInfo.d / this.dropInfo.o;
+  }
+
+  fmtAsPercent(num: number) : number {
+    return Math.floor(num * 100);
   }
 
   constructor() { }

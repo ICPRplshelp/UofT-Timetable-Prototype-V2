@@ -9,7 +9,7 @@
         <!-- arrow_downwards -->
         </mat-icon>
         <div class="text-in-drop-box" *ngIf="dropInfo.o > 0">
-            {{getDropPercent() | percent}}
+            {{fmtAsPercent(getDropPercent())}}%
         </div>
         <div class="text-in-drop-box" style="letter-spacing: -2px;" *ngIf="dropInfo.o <= 0">
             -&nbsp;-%

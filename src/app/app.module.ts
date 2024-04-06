@@ -26,6 +26,7 @@ import { ConflictTimetableCellComponent } from './timetable/conflict-timetable-c
 import { FirstPageComponent } from './first-page/first-page.component';
 import { FileOpenerComponent } from './shared/file-opener/file-opener.component';
 import { DropCounterComponent } from './drop-counter/drop-counter.component';
+import { MeetingChipComponent } from './timings/meeting-chip/meeting-chip.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { DropCounterComponent } from './drop-counter/drop-counter.component';
     ConflictTimetableCellComponent,
     FirstPageComponent,
     FileOpenerComponent,
-    DropCounterComponent
+    DropCounterComponent,
+    MeetingChipComponent
   ],
   imports: [
     BrowserModule,
