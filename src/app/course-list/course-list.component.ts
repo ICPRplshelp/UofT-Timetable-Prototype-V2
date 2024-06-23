@@ -529,6 +529,7 @@ export class CourseListComponent implements OnInit {
     'ASYIF',
     'ASYNIF',
     'HYBR',
+    "ONLSYNC",
   ];
 
   oneHasOnline(crses: Course[]): boolean {

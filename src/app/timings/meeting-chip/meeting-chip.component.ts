@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { forceNum } from 'src/app/course-list/course-list.component';
 import { ConflictInfo, SelectedCoursesService } from 'src/app/selected-courses.service';
-import { SectionSelection, msToM } from 'src/app/selectedclasses';
+import { SectionSelection } from 'src/app/selectedclasses';
 import { ClTimingsSharerService } from 'src/app/shared/cl-timings-sharer.service';
 import { Course, MeetingTime, Section } from 'src/app/shared/course-interfaces';
 import { UtilitiesService } from 'src/app/shared/utilities.service';
@@ -145,10 +145,12 @@ export class MeetingChipComponent implements OnInit {
     if (isNaN(millis) || millis === -1) {
       return 'NA';
     }
-
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
-    let minutes = date.getMinutes();
+    let minsOfDay = msToM(millis);
+    let hours = Math.floor(minsOfDay / 60);
+    let minutes = minsOfDay % 60;
+    // let date = new Date(millis);
+    // let hours = date.getHours() + 5;
+    // let minutes = date.getMinutes();
     let minsStr = '';
     if (minutes >= 1) {
       minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
@@ -166,9 +168,8 @@ export class MeetingChipComponent implements OnInit {
     if (isNaN(millis) || millis === -1) {
       return '';
     }
-
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
+    let minsOfDay = msToM(millis);
+    let hours = Math.floor(minsOfDay / 60);
     if(hours >= 12){
       return 'p';
     } else {
@@ -188,9 +189,9 @@ export class MeetingChipComponent implements OnInit {
       return 'NA';
     }
 
-    let date = new Date(millis);
-    let hours = date.getHours() + 5;
-    let minutes = date.getMinutes();
+    let minsOfDay = msToM(millis);
+    let hours = Math.floor(minsOfDay / 60);
+    let minutes = minsOfDay % 60;
     let minsStr = '';
     if (minutes >= 1) {
       minsStr = minutes < 10 ? '0' + minutes : `${minutes}`;
@@ -255,4 +256,12 @@ export class MeetingChipComponent implements OnInit {
     return forceNum(cand);
   }
 
+}
+
+
+export function msToM(ms: number | string): number {
+  if(typeof ms === 'string'){
+    ms = parseInt(ms);
+  }
+  return Math.round(ms / 60000);
 }

@@ -33,6 +33,54 @@ export class UtilitiesService {
   sessionsWithDrops: string[] = ['20229', '20235', '20239'];
   allSessions: SessionInfo[] = [
     {
+      sessionName: 'Fall-Winter 2016-2017',
+      sessionUrl: '20169'
+    },
+    {
+      sessionName: 'Summer 2017',
+      sessionUrl: '20175'
+    },
+    {
+      sessionName: 'Fall-Winter 2017-2018',
+      sessionUrl: '20179'
+    },
+    {
+      sessionName: 'Summer 2018',
+      sessionUrl: '20185'
+    },
+    {
+      sessionName: 'Fall-Winter 2018-2019',
+      sessionUrl: '20189'
+    },
+    {
+      sessionName: 'Summer 2019',
+      sessionUrl: '20195'
+    },
+    {
+      sessionName: 'Fall-Winter 2019-2020',
+      sessionUrl: '20199'
+    },
+    {
+      sessionName: 'Summer 2020',
+      sessionUrl: '20205'
+    },
+    {
+      sessionName: 'Fall-Winter 2020-2021',
+      sessionUrl: '20209'
+    },
+    {
+      sessionName: 'Summer 2021',
+      sessionUrl: '20215'
+    },
+    {
+      sessionName: 'Fall-Winter 2021-2022',
+      sessionUrl: '20219'
+    },
+    {
+      sessionName: 'Summer 2022',
+      sessionUrl: '20225'
+    },
+    {
       sessionName: 'Fall-Winter 2022-2023',
       sessionUrl: '20229'
     },
@@ -47,6 +95,10 @@ export class UtilitiesService {
     {
       sessionName: 'Summer 2024',
       sessionUrl: '20245'
+    },
+    {
+      sessionName: 'Fall-Winter 2024-2025',
+      sessionUrl: '20249'
     },
   ];
 

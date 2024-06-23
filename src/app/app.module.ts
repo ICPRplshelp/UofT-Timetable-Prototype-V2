@@ -27,6 +27,7 @@ import { FirstPageComponent } from './first-page/first-page.component';
 import { FileOpenerComponent } from './shared/file-opener/file-opener.component';
 import { DropCounterComponent } from './drop-counter/drop-counter.component';
 import { MeetingChipComponent } from './timings/meeting-chip/meeting-chip.component';
+import { TimingsTableComponent } from './timings/timings-table/timings-table.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { MeetingChipComponent } from './timings/meeting-chip/meeting-chip.compon
     FirstPageComponent,
     FileOpenerComponent,
     DropCounterComponent,
-    MeetingChipComponent
+    MeetingChipComponent,
+    TimingsTableComponent
   ],
   imports: [
     BrowserModule,

@@ -436,7 +436,7 @@ export class TimingsComponent implements OnInit {
   }
 
   joinWithEndash(items: string[]): string {
-    return items.join(' – ');
+    return items.filter(s => s !== "").join(' – ');
   }
 
   sectionIsLecture(sec: Section): boolean {
