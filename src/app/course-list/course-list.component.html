@@ -22,35 +22,41 @@
             </li>
             <li>The export button can be found on the bottom of the timetable (right side).</li>
             <li>Changing the session and reloading resets your timetable.</li>
-            <li>When importing, if the size of the set of desginators is larger than {{crsGetter.MAX_DESGINATORS}}, then your timetable may display incomplete data.</li>
+            <li>When importing, if the size of the set of desginators is larger than {{crsGetter.MAX_DESGINATORS}}, then
+                your timetable may display incomplete data.</li>
             <li>Drop rates are based on the session selected, or if there's no data the previous session.</li>
             <li><strong>Data may be outdated!</strong></li>
-            <li>For updated enrollment numbers, check out <a href="https://icprplshelp.github.io/UofT-Enrollment-Tracker/">timetable tracker</a>.</li>
+            <li>For updated enrollment numbers, check out <a
+                    href="https://icprplshelp.github.io/UofT-Enrollment-Tracker/">timetable tracker</a>.</li>
         </ul>
 
-        
-        
+
+
         <div class="flex-gap" style="justify-content: center;">
             <mat-checkbox color="primary" [(ngModel)]="constants.is24hour"
-            [matTooltipDisabled]="constants.disableToolTips" matTooltip="When OFF, display 12-hour time" matTooltipPosition="above">24
+                [matTooltipDisabled]="constants.disableToolTips" matTooltip="When OFF, display 12-hour time"
+                matTooltipPosition="above">24
                 Hour Time</mat-checkbox>
             <mat-checkbox color="primary" [(ngModel)]="constants.hideSpecial" matTooltip="Hide LEC2000-LEC2999 sections"
-            [matTooltipDisabled]="constants.disableToolTips" matTooltipPosition="above">Hide special</mat-checkbox>
+                [matTooltipDisabled]="constants.disableToolTips" matTooltipPosition="above">Hide special</mat-checkbox>
             <!-- <mat-checkbox color="primary" [(ngModel)]="enableTTB"
                 matTooltip="Enable the option to schedule your courses here" matTooltipPosition="above">Enable Timetable
                 Selection</mat-checkbox> -->
             <mat-checkbox color="primary" [(ngModel)]="constants.oneSectionAtATime"
-            [matTooltipDisabled]="constants.disableToolTips" matTooltip="Prevents you from selecting more than one section per course" matTooltipPosition="above">No
+                [matTooltipDisabled]="constants.disableToolTips"
+                matTooltip="Prevents you from selecting more than one section per course" matTooltipPosition="above">No
                 duplicate sections</mat-checkbox>
             <mat-checkbox color="primary" [(ngModel)]="constants.courseListOnly"
-            [matTooltipDisabled]="constants.disableToolTips" matTooltip="Prevents the table on the right from showing and hides the option to select sections" matTooltipPosition="above">Course list only</mat-checkbox>
+                [matTooltipDisabled]="constants.disableToolTips"
+                matTooltip="Prevents the table on the right from showing and hides the option to select sections"
+                matTooltipPosition="above">Course list only</mat-checkbox>
             <mat-checkbox color="primary" [(ngModel)]="constants.disableToolTips"
-            [matTooltipDisabled]="constants.disableToolTips" matTooltip="Prevent tooltips like this one from showing at all" matTooltipPosition="above">Disable tooltips</mat-checkbox>        
+                [matTooltipDisabled]="constants.disableToolTips"
+                matTooltip="Prevent tooltips like this one from showing at all" matTooltipPosition="above">Disable
+                tooltips</mat-checkbox>
         </div>
-        <app-file-opener 
-            [buttonPrompt]="'Import course selections'"
-            [fileProcessor]="importJsonFunction"
-        ></app-file-opener>
+        <app-file-opener [buttonPrompt]="'Import course selections'"
+            [fileProcessor]="importJsonFunction"></app-file-opener>
 
 
 
@@ -80,16 +86,16 @@
             </mat-select>
         </mat-form-field>
 
-        <button id="reloadit" [matTooltipDisabled]="constants.disableToolTips" matTooltip="Reload all courses" matTooltipPosition="right" type="button"
-            mat-stroked-button (click)="
+        <button id="reloadit" [matTooltipDisabled]="constants.disableToolTips" matTooltip="Reload all courses"
+            matTooltipPosition="right" type="button" mat-stroked-button (click)="
 obtainEverything()
 ">RELOAD IT</button>
     </div>
 
 
-    <button *ngIf="isSmallScreen && !constants.courseListOnly"
-    id="timetabledisplay" [matTooltipDisabled]="constants.disableToolTips" matTooltip="Display the visual timetable" matTooltipPosition="below" type="button"
-            mat-stroked-button (click)="
+    <button *ngIf="isSmallScreen && !constants.courseListOnly" id="timetabledisplay"
+        [matTooltipDisabled]="constants.disableToolTips" matTooltip="Display the visual timetable"
+        matTooltipPosition="below" type="button" mat-stroked-button (click)="
             parentHideCourseList()
 ">Display visual timetable</button>
 
@@ -107,152 +113,16 @@ obtainEverything()
 
         </li> -->
 </ul>
-<div>
-
-    <div class="row" [class.row-shorten-it]="!isSmallScreen">
-
-        <div class="card" *ngFor="let coursePack of condensedCourseList"
-            [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 420px), 82%)' : 'min(max(200px, 15%), 82%)'">
-            <div class="card-header" [style.background-color]="
-            constants.levelColors[whatLevel(coursePack[0].code)]
-            " (click)="
-            addToCanShowDescriptions(coursePack[0].code)
-            ">
-                <div>
-                    <div class="brq-bumper" style="color: white;" *ngFor="let br of
-            [whatBreadths2(coursePack[0].breadths)]">
-
-                        <div *ngFor="let b of br" [style.background-color]="constants.brColors[b]"
-                            [style.height.%]="100/br.length" class="brq-square">
-                        </div>
-
-                    </div>
-                </div>
-
-                <div *ngIf="oneHasOnline(coursePack)" class="online-bumper">
-                    <mat-icon [matTooltipDisabled]="constants.disableToolTips" matTooltipShowDelay="800" matTooltipPosition="left" matTooltip="Has online lectures">
-                        wifi
-                    </mat-icon>
-                </div>
-
-                <div class="session-bumper">
-                    <div *ngIf="isThisCourseOfferedInThisTerm('F', coursePack)" class="session-square"
-                        [style.background-color]="'LightSalmon'">
-                        <div class="fsy" matTooltipShowDelay="800" [matTooltipDisabled]="constants.disableToolTips" matTooltip="offered in fall" matTooltipPosition="left">
-                            F
-
-                        </div>
-                    </div>
-
-                    <div *ngIf="isThisCourseOfferedInThisTerm('S', coursePack)" class="session-square"
-                        [style.background-color]="'LightBlue'">
-                        <div class="fsy" matTooltipShowDelay="800" [matTooltipDisabled]="constants.disableToolTips" matTooltip="offered in winter" matTooltipPosition="left">
-                            S
-                        </div>
-                    </div>
-
-                    <div *ngIf="isThisCourseOfferedInThisTerm('Y', coursePack)" class="session-square"
-                        [style.background-color]="'MediumOrchid'" style="min-width: 40px;">
-                        <div class="fsy" matTooltipShowDelay="800" [matTooltipDisabled]="constants.disableToolTips" matTooltip="offered year-wide" matTooltipPosition="left">
-                            Y
-                        </div>
-                    </div>
-
-                    <div class="session-square" *ngFor="let hrs of [calculateHourCommitment(coursePack)]">
-                        <div class="hour-commitment-card" matTooltipPosition="right" matTooltipShowDelay="800"
-                        [matTooltipDisabled]="constants.disableToolTips"  [matTooltip]="'Time: ' + hrs + 'h/week'">
-                            {{strMultiply("•", hrs, "")}}
-                        </div>
-                    </div>
-
-                    
-
-                </div>
-
-                <div class="drop-bumper">
-                    <app-drop-counter 
-
-                    matTooltip="Drop rate" [matTooltipDisabled]="constants.disableToolTips"
-                            matTooltipPosition="right" matTooltipShowDelay="800"
-                    
-                    [dropInfo]="getDropInfo(coursePack[0].code)"></app-drop-counter>
-                </div>    
-
-                <div style="position: relative; padding:4px 0px;">
-                    {{coursePack[0].code}}
-
-
-
-
-
-
-
-                </div>
-            </div>
-            <div class="card-body" (click)="selectCourse(coursePack)">
-                <p [innerHTML]="coursePack[0].name">
-                </p>
-
-                <!-- <p>DROPS: {{ getDrops(coursePack[0].code) | percent }}</p> -->
-
-                <div class="card-description" *ngIf="checkCanShowDescription(coursePack[0].code)"
-                    style="text-align: left">
-                    <div>
-                        {{getDesc(coursePack[0])}}
-
-                    </div>
-
-                    <div *ngIf="!isNullOrEmpty(getPrq(coursePack[0]))">
-                        <div  [matTooltipDisabled]="constants.disableToolTips" class="loud-header" matTooltip="You must pass these courses before
-                        taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Prerequisite</div>
-                        <div  [innerHTML]="addSpacesBetweenSlashes(
-                        stripWrappingPs(getPrq(coursePack[0])))"></div>
-                    </div>
-
-                    <div *ngIf="!isNullOrEmpty(getRec(coursePack[0]))">
-                        <div class="loud-header" [matTooltipDisabled]="constants.disableToolTips"
-                            matTooltip="You are recommended, but are not required, to take these courses before this one"
-                            matTooltipPosition="left">
-                            Recommended preparation
-                        </div>
-                        <div [innerHTML]="addSpacesBetweenSlashes(
-                            stripWrappingPs(getRec(coursePack[0])))"></div>
-                    </div>
-
-                    <div *ngIf="!isNullOrEmpty(getCrq(coursePack[0])
-)">
-                        <div [matTooltipDisabled]="constants.disableToolTips"  class="loud-header" matTooltip="You must take these course concurrently or have passed these courses before
-                        taking this one" matTooltipPosition="left" matTooltipShowDelay="200">Corequisite</div>
-                        <div [innerHTML]="addSpacesBetweenSlashes(
-                        stripWrappingPs(getCrq(coursePack[0])))">
-                        </div>
-                    </div>
-
-                    <div *ngIf="!isNullOrEmpty(getExc(coursePack[0]))">
-                        <div class="loud-header" [matTooltipDisabled]="constants.disableToolTips" matTooltip="You can't recieve credit for this course if you've passed
-                        or are taking any of these concurrently" matTooltipPosition="left" matTooltipShowDelay="200">
-                            Exclusion</div>
-                        <div [innerHTML]="addSpacesBetweenSlashes(
-                        stripWrappingPs(getExc(coursePack[0])))">
-                        </div>
-                    </div>
-
-                    <div *ngIf="ensureList(coursePack[0]?.cmCourseInfo?.breadthRequirements).length !== 0">
-                        <div class="loud-header" [matTooltipDisabled]="constants.disableToolTips"
-                            matTooltip="This course fullfills these breadth requirements, credits split among them"
-                            matTooltipPosition="left" matTooltipShowDelay="200">
-                            Breadths</div>
-                        <div *ngFor="let brq of ensureList(coursePack[0].cmCourseInfo.breadthRequirements)">
-                            {{brq}}
-                        </div>
-                    </div>
-                </div>
-
-
-
-            </div>
+<div class="level-grouping">
+    <ng-container *ngFor="let condensedCourseList1 of recondensedCourseList">
+        <div additional-tag="level-grouping" class="row" [class.row-shorten-it]="!isSmallScreen">
+            <ng-container *ngFor="let coursePack of condensedCourseList1">
+                <app-course-card [canShow]="canShow" [coursePack]="coursePack" [dropRateSession]="dropRateSession"
+                    [isSmallScreen]="isSmallScreen" class="card"
+                    [style.min-width]="checkCanShowDescription(coursePack[0].code) ? 'min(max(35%, 420px), 82%)' : 'min(max(200px), 82%)'"></app-course-card>
+            </ng-container>
         </div>
-    </div>
+    </ng-container>
 
 
 

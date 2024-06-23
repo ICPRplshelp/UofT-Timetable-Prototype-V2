@@ -1,22 +1,12 @@
-import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {Breadth, Course, PageableCourses, Section,} from '../shared/course-interfaces';
-import {CourseListGetterService} from '../shared/course-list-getter.service';
-import {SessionInfo, UtilitiesService} from '../shared/utilities.service';
-import {DialogHolderComponent} from "../dialog-holder/dialog-holder.component";
-import {ClTimingsSharerService} from "../shared/cl-timings-sharer.service";
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Course, PageableCourses } from '../shared/course-interfaces';
+import { CourseListGetterService } from '../shared/course-list-getter.service';
+import { SessionInfo, UtilitiesService } from '../shared/utilities.service';
+import { ClTimingsSharerService } from '../shared/cl-timings-sharer.service';
 import { SelectedCoursesService } from '../selected-courses.service';
 import { Subscription } from 'rxjs';
 import { ExporterService } from '../shared/exporter.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DropInfo, DropRateViewerService } from '../drop-rate-viewer.service';
-
-
-
-
-
-
-
 
 @Component({
   selector: 'app-course-list',
@@ -24,47 +14,37 @@ import { DropInfo, DropRateViewerService } from '../drop-rate-viewer.service';
   styleUrls: ['./course-list.component.scss'],
 })
 export class CourseListComponent implements OnInit {
-
-
-
-  dropRateSession: string = "20229";
-
-  getDropInfo(courseCode: string): DropInfo {
-    return this.dropRateViewerService.getDropInfo(this.dropRateSession, courseCode);
-  }
-
-  getDrops(courseCode: string): number {
-    const temp = this.dropRateViewerService.getDropInfo(this.dropRateSession, courseCode);
-    return temp.d / temp.o;
-  }
+  dropRateSession: string = '20229';
 
   private functionSubscription: Subscription;
 
   constructor(
     public crsGetter: CourseListGetterService,
     public constants: UtilitiesService,
-    public dialog: MatDialog,
     private clTimingsSharer: ClTimingsSharerService,
     private selectedCourseService: SelectedCoursesService,
-    private exporterService: ExporterService,
-    private dropRateViewerService: DropRateViewerService
+    private exporterService: ExporterService
   ) {
-    this.functionSubscription = this.exporterService.getFunctionTriggerObservable().subscribe((session) => {
-      // Call the function you want to trigger in the component.
-      this.currentSession = this.urlToSession(session);
-      this.obtainEverything(false);
-    });
+    this.functionSubscription = this.exporterService
+      .getFunctionTriggerObservable()
+      .subscribe((session) => {
+        // Call the function you want to trigger in the component.
+        this.currentSession = this.urlToSession(session);
+        this.obtainEverything(false);
+      });
   }
 
-  importJsonFunction = (input: string) => {this.exporterService.importCoursesFromString(input)};
+  importJsonFunction = (input: string) => {
+    this.exporterService.importCoursesFromString(input);
+  };
 
   isSmallScreen: boolean = false;
 
   @HostListener('window:resize')
   checkScreenSize() {
-    this.isSmallScreen = window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
+    this.isSmallScreen =
+      window.innerWidth < this.constants.smallScreenThreshold; // Adjust the value as per your definition of a small screen
   }
-
 
   parentHideCourseList() {
     this.toggleDisplayCourseList();
@@ -79,7 +59,6 @@ export class CourseListComponent implements OnInit {
   // }
 
   // set enableTTB(val: boolean) {
-    
 
   //   this.constants.enableTimetableBuilder = val;
   // }
@@ -87,13 +66,12 @@ export class CourseListComponent implements OnInit {
   ngOnInit(): void {
     this.obtainEverything();
     this.checkScreenSize();
-    if(this.isSmallScreen){
+    if (this.isSmallScreen) {
       // this.constants.enableTimetableBuilder = false;
     }
   }
 
   lastSessionQuery: string = '';
-
 
   get allSessions(): SessionInfo[] {
     return this.constants.allSessions;
@@ -109,20 +87,23 @@ export class CourseListComponent implements OnInit {
 
   public set currentSession(value: string) {
     this._currentSession = value;
-
   }
 
   sessionToUrl(ses: string): string {
-    const candLink = this.allSessions.find((ss) => ss.sessionName === ses)?.sessionUrl;
-    if(candLink === undefined){
+    const candLink = this.allSessions.find(
+      (ss) => ss.sessionName === ses
+    )?.sessionUrl;
+    if (candLink === undefined) {
       return this.allSessions[0].sessionUrl;
     }
     return candLink;
   }
 
   urlToSession(urlSes: string): string {
-    const candLink = this.allSessions.find((ss) => ss.sessionUrl === urlSes)?.sessionName;
-    if(candLink === undefined){
+    const candLink = this.allSessions.find(
+      (ss) => ss.sessionUrl === urlSes
+    )?.sessionName;
+    if (candLink === undefined) {
       return this.allSessions[0].sessionName;
     }
     return candLink;
@@ -151,6 +132,68 @@ export class CourseListComponent implements OnInit {
 
   courseList: Course[] = [];
   condensedCourseList: Course[][] = [];
+  recondensedCourseList: Course[][][] = [];
+
+  /**
+   * 
+   * @param ccl This must be sorted appropirately
+   *
+   * @returns 
+   */
+  recondenseCourseList(ccl: Course[][]): Course[][][] {
+    const replNum = (n: string) => {
+      for (const ltr of [
+        ['A', '1'],
+        ['B', '2'],
+        ['C', '3'],
+        ['D', '4'],
+      ]) {
+        n = n.replace(ltr[0], ltr[1]);
+      }
+      let index = n.search(/[^0-9]/);
+    
+      // If no non-numeric character is found, return the length of the string
+      index === -1 ? n.length : index;
+      const ac =  n.slice(0, index);
+      console.log(ac);
+      return ac;
+    };
+
+    const acc: Course[][][] = [];
+    let curCl: Course[][] = [];
+
+    let currentLevel = -99;
+    let currentCampus = -99;
+
+    for (const c of ccl) {
+      const level = Math.floor(parseInt(replNum(c[0].code.slice(3))) / 100);
+      if (isNaN(level)) {
+        continue;
+      }
+      const code = c[0].code;
+      let campus = parseInt(code.charAt(code.length - 1));
+      if (isNaN(campus)) {
+        campus = 1; // graduate course
+      }
+      // reset list if level or campus changes
+      console.log(level, campus);
+      if (!(currentLevel === level && currentCampus === campus)) {
+        if (curCl.length >= 1) {
+          acc.push(curCl);
+        }
+        curCl = [];
+        currentLevel = level;
+        currentCampus = campus;
+      }
+      // add to current list
+      curCl.push(c);
+    }
+    // finalize
+    if(curCl.length >= 1){
+      acc.push(curCl);
+    }
+    return acc;
+  }
 
   obtainEverything(clearSections: boolean = true): void {
     let temp: PageableCourses;
@@ -161,107 +204,100 @@ export class CourseListComponent implements OnInit {
     ) {
       return;
     }
-    if(this.lastSessionQuery !== "" && this.lastSessionQuery !== this.currentSession && clearSections){
+    if (
+      this.lastSessionQuery !== '' &&
+      this.lastSessionQuery !== this.currentSession &&
+      clearSections
+    ) {
       this.selectedCourseService.clearSections();
       this.clTimingsSharer.setData([]);
     }
 
-    if(!this.courseFilter.match(/^[a-zA-Z]{3}$/)){
+    if (!this.courseFilter.match(/^[a-zA-Z]{3}$/)) {
       this.errorMessage = 'First three letters of a course only!';
       return;
     }
     this.dropRateSession = this.sessionToUrl(this.currentSession);
     console.log(this.dropRateSession);
-    const tempResp = this.crsGetter
-      .getSpecificTTBResponse(
-        this.courseFilter,
-        this.sessionToUrl(this.currentSession)
-      );
-      
-      if(tempResp === null){
-        this.errorMessage = "Invalid inputs to the course searcher";
-        return;
-      }
-      tempResp.subscribe({
-        next: (data) => {
-          temp = data;
-        },
-        error: (err: HttpErrorResponse) => {
+    const tempResp = this.crsGetter.getSpecificTTBResponse(
+      this.courseFilter,
+      this.sessionToUrl(this.currentSession)
+    );
 
-
-
-          if(err.status === 404)
-            this.errorMessage = 'This course desginator does not exist or is not offering any courses this term';
-          else if (err.status === 403)
-            this.errorMessage = "You're not doing anything weird with your browser, aren't you?";
-          else if (err.status >= 500)
-            this.errorMessage = `Server-side error: ${err.status}`;
-          else if (err.status === 0)
-            this.errorMessage = "You are offline or your connection is really bad";
-          else this.errorMessage = `Something went wrong: ${err.status}`;
-        },
-        complete: () => {
-          courseListCandidate = temp.courses;
-          this.courseList = courseListCandidate;
-          // console.log("Successfully constructed the course list");
-          this.condensedCourseList =
-            this.crsGetter.condenseCourses(courseListCandidate);
-          // console.log(this.condensedCourseList);
-          this.errorMessage = '';
-          this.lastSearchQuery = this.courseFilter;
-          this.lastSessionQuery = this.currentSession;
-          this.selectedCourseService.sessionCode = this.sessionToUrl(this.currentSession);
-          this.condensedCourseList.sort((cl1, cl2) => {
-            let cr1 = cl1[0];
-            let cr2 = cl2[0];
-            let code1 = cr1.code;
-            let code2 = cr2.code;
-            // for both strings above - move the last character to the first
-            const th = (st: string) => (st === 'H' || st === 'Y') ? 2 : st;
-            code1 =
-            th(code1.substring(code1.length - 1)) +
-              code1.substring(0, code1.length - 1);
-            code2 =
-            th(code2.substring(code2.length - 1)) +
-              code2.substring(0, code2.length - 1);
-            const temp1 = code1.localeCompare(code2);
-            if(temp1 === 0){
-              return cr1.sectionCode.localeCompare(cr2.sectionCode);
-            } else{
-              return temp1;
+    if (tempResp === null) {
+      this.errorMessage = 'Invalid inputs to the course searcher';
+      return;
+    }
+    tempResp.subscribe({
+      next: (data) => {
+        temp = data;
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 404)
+          this.errorMessage =
+            'This course desginator does not exist or is not offering any courses this term';
+        else if (err.status === 403)
+          this.errorMessage =
+            "You're not doing anything weird with your browser, aren't you?";
+        else if (err.status >= 500)
+          this.errorMessage = `Server-side error: ${err.status}`;
+        else if (err.status === 0)
+          this.errorMessage =
+            'You are offline or your connection is really bad';
+        else this.errorMessage = `Something went wrong: ${err.status}`;
+      },
+      complete: () => {
+        courseListCandidate = temp.courses;
+        this.courseList = courseListCandidate;
+        // console.log("Successfully constructed the course list");
+        this.condensedCourseList =
+          this.crsGetter.condenseCourses(courseListCandidate);
+        // console.log(this.condensedCourseList);
+        this.errorMessage = '';
+        this.lastSearchQuery = this.courseFilter;
+        this.lastSessionQuery = this.currentSession;
+        this.selectedCourseService.sessionCode = this.sessionToUrl(
+          this.currentSession
+        );
+        this.condensedCourseList.sort((cl1, cl2) => {
+          let cr1 = cl1[0];
+          let cr2 = cl2[0];
+          let code1 = cr1.code;
+          let code2 = cr2.code;
+          // for both strings above - move the last character to the first
+          const th = (st: string) => {
+            if(st === "H" || st === "Y") {
+              return "2";
+            } else if (st === "0"){
+              return "3";
+            } else if (st === "3"){
+              return "4";
+            } else {
+              return st;
             }
-          });
-        },
-      });
-  }
+          };
 
-  /**
-   *
-   * @param term F, S, or Y
-   * @param coursePack a list of courses
-   * @returns whether a course in this list is offered in term.
-   */
-  isThisCourseOfferedInThisTerm(term: string, coursePack: Course[]): boolean {
-    for (let crs of coursePack) {
-      if (crs.sectionCode.toUpperCase() === term) {
-        return true;
-      }
-    }
-    return false;
-  }
+          const rewriteL0 = (cd: string) => {
+            return cd.substring(0, 3) + (cd.charAt(3) === "0" ? "9" : cd.charAt(3))  + cd.substring(4);
+          }
 
-  strMultiply(stringInput: string, count: number, sep: string): string {
-    const countInt = Math.round(count);
-    let finalString = '';
-    for (let i = 0; i < count; i++) {
-      finalString += stringInput;
-      if (i < count - 1) {
-        finalString += sep;
-      }
-    }
-    return finalString;
+          code1 =
+            th(code1.substring(code1.length - 1)) +
+            rewriteL0(code1.substring(0, code1.length - 1));
+          code2 =
+            th(code2.substring(code2.length - 1)) +
+            rewriteL0(code2.substring(0, code2.length - 1));
+          const temp1 = code1.localeCompare(code2);
+          if (temp1 === 0) {
+            return cr1.sectionCode.localeCompare(cr2.sectionCode);
+          } else {
+            return temp1;
+          }
+        });
+        this.recondensedCourseList = this.recondenseCourseList(this.condensedCourseList);
+      },
+    });
   }
-
 
   ensureList<T>(li: T[] | undefined | null): T[] {
     if (li === undefined || li === null) {
@@ -270,126 +306,11 @@ export class CourseListComponent implements OnInit {
     return li;
   }
 
-
-
-
-  /**
-   * Do not double count: if a start-end time appears
-   * the same for the same timing object thing,
-   * don't count it.
-   *
-   * @param coursePack All offerings of the same course
-   * @returns The number of hours I have to commit to the course
-   */
-  calculateHourCommitment(coursePack: Course[]): number {
-    type TimeCellInfo = {
-      day: number;
-      startTime: number;
-      endTime: number;
-    };
-    const compareTimeCells = (
-      timeCell1: TimeCellInfo,
-      timeCell2: TimeCellInfo
-    ) => {
-      return (
-        timeCell1.day === timeCell2.day &&
-        timeCell1.startTime === timeCell2.startTime &&
-        timeCell1.endTime === timeCell2.endTime
-      );
-    };
-    let totMax = 0;
-    for (let crs of coursePack) {
-
-
-      const lecList: number[] = [];
-      const tutList: number[] = [];
-      const praList: number[] = [];
-      if (crs.sections === undefined || crs.sections === null) continue;
-      for (let ses of crs.sections) {
-        // one section - i.e. LEC0101
-        if (ses.meetingTimes === undefined || ses.meetingTimes === null)
-          continue;
-        const seenTimes: TimeCellInfo[] = [];
-        let maxAcc = 0;
-        for (let met of ses.meetingTimes) {
-          let startTime = met?.start?.millisofday;
-          if (startTime === null || startTime === undefined) continue;
-          let endTime = met?.end?.millisofday;
-          if (endTime === null || endTime === undefined) continue;
-          let day = met?.start?.day;
-          if (day === null || day === undefined) continue;
-          const startEndDayTemp = {startTime: forceNum(startTime), 
-            endTime: forceNum(endTime), day: forceNum(day)};
-          if (seenTimes.some((x) => compareTimeCells(x, startEndDayTemp))) {
-            continue;
-          } else {
-            seenTimes.push(startEndDayTemp);
-            maxAcc += (forceNum(endTime) - forceNum(startTime)) / 3600000;
-          }
-
-
-        }
-        if (ses?.teachMethod === undefined || ses?.teachMethod === null) {
-          continue;
-        }
-        switch (ses?.teachMethod.trim().toUpperCase()) {
-          case 'LEC':
-            lecList.push(maxAcc);
-            break;
-          case 'TUT':
-            tutList.push(maxAcc);
-            break;
-          case 'PRA':
-            praList.push(maxAcc);
-            break;
-        }
-      }
-      // console.log(lecList, tutList, praList, crs.code);
-      totMax = this.calculateMode(lecList) + this.calculateMode(tutList) + this.calculateMode(praList);
-    }
-    // console.log(coursePack[0].code, lecMax, tutMax, praMax);
-    return totMax;
-  }
-
   utscBrStrs = ['Literature', 'Behavio', 'History', 'Natural', 'Quant'];
 
-  canShowDescriptions: Set<String> = new Set<String>();
+  // canShowDescriptions: Set<String> = new Set<String>();
 
-  canShow: any = {};
-
-  calculateMode(numbers: number[]): number {
-    const frequencyMap: Map<number, number> = new Map();
-
-    // Count the frequency of each number
-    for (const number of numbers) {
-      if (frequencyMap.has(number)) {
-        frequencyMap.set(number, frequencyMap.get(number)! + 1);
-      } else {
-        frequencyMap.set(number, 1);
-      }
-    }
-
-    let mode: number | undefined;
-    let maxFrequency = 0;
-
-    // Find the number with the highest frequency
-    for (const [number, frequency] of frequencyMap.entries()) {
-      if (frequency > maxFrequency) {
-        mode = number;
-        maxFrequency = frequency;
-      }
-    }
-    if (mode !== undefined)
-      return mode;
-    else return 0;
-  }
-
-
-  addToCanShowDescriptions(crsCode: string): void {
-    this.canShow[crsCode] = this.canShow[crsCode] !== true;
-
-    // console.log(this.canShow);
-  }
+  canShow: Record<string, boolean> = {};
 
   isNullOrEmpty(text: string): boolean {
     return text === null || text === undefined || text === '';
@@ -399,114 +320,6 @@ export class CourseListComponent implements OnInit {
     // console.log(state);
     return this.canShow[crsCode] === true;
   }
-
-  getDesc(crs: Course) {
-    const crsInfo = crs.cmCourseInfo;
-    if (crsInfo === null || crsInfo === undefined) {
-      return '';
-    }
-
-    const desc = crsInfo.description;
-    if (desc === null || desc === undefined) {
-      return 'A description was not provided for this course.';
-    }
-    return this.stripWrappingPs(desc);
-  }
-
-  emptyIfUndef(citem: string | undefined | null): string {
-    if (citem === undefined || citem === null) {
-      return '';
-    } else {
-      return citem;
-    }
-  }
-
-  getPrq(crs: Course) {
-    return this.emptyIfUndef(crs.cmCourseInfo?.prerequisitesText);
-  }
-
-  getRec(crs: Course) {
-    return this.emptyIfUndef(crs.cmCourseInfo?.recommendedPreparation);
-  }
-
-  getCrq(crs: Course) {
-    return this.emptyIfUndef(crs.cmCourseInfo?.corequisitesText);
-  }
-
-  getExc(crs: Course) {
-    return this.emptyIfUndef(crs.cmCourseInfo?.exclusionsText);
-  }
-
-  whatBreadths2(brStuffTemp?: Breadth[]): number[] {
-    if (brStuffTemp === null || brStuffTemp === undefined) {
-      return [0];
-    }
-    let breadthsSoFar: number[] = [];
-    for (let br of brStuffTemp) {
-      if (br.breadthTypes === null || br.breadthTypes === undefined) {
-        continue;
-      }
-      br.breadthTypes.forEach((bt) => {
-        if (bt === null || bt === undefined) {
-          return;
-        }
-        if (bt.code === null || bt.code === undefined) {
-          return;
-        }
-        for (let num of [1, 2, 3, 4, 5]) {
-          if (
-            bt.code.includes(num.toString()) &&
-            !breadthsSoFar.includes(num)
-          ) {
-            breadthsSoFar.push(num);
-          }
-        }
-      });
-    }
-    if (breadthsSoFar.length === 0) return [0];
-    return breadthsSoFar;
-  }
-
-
-  selectCourse(coursePack: Course[]): void {
-    this.clTimingsSharer.setData(coursePack);
-    if (this.constants.courseListOnly || !this.constants.enableTimetableBuilder || this.isSmallScreen) {
-      this.openCourseDialogPage(coursePack);
-    } else {
-
-
-    }
-  }
-
-
-  private openCourseDialogPage(coursePack: Course[]) {
-    if (coursePack.length === 0) {
-      // console.log("No meetings!!!");
-      return;
-    }
-
-    const dialogConfig = new MatDialogConfig();
-
-    if (this.isSmallScreen) {
-      dialogConfig.maxWidth = '100vw';
-      dialogConfig.maxHeight = '100vh';
-      dialogConfig.height = '100%';
-      dialogConfig.width = '100%';
-      dialogConfig.panelClass = 'full-screen-modal';
-    }
-    // const dialogWidth = 600 * Math.max(coursePack.length, 1);
-    // dialogConfig.width = '100%'; // Set the dialog width to 100% of the screen
-    // dialogConfig.height = '100%'; // Set the dialog height to 100% of the screen
-    // dialogConfig.panelClass = 'full-screen-dialog'; // Apply a custom CSS class to the dialog
-
-    dialogConfig.data = {
-      courses: coursePack,
-      smallScreen: this.isSmallScreen,
-    };
-    // dialogConfig.panelClass = 'custom-dialog-container';
-    const dialogRef = this.dialog.open(DialogHolderComponent, dialogConfig);
-  }
-
 
   whatLevel(crsCode: string): number {
     let thirdChar = crsCode[3];
@@ -519,98 +332,12 @@ export class CourseListComponent implements OnInit {
       return thirdChar.charCodeAt(0) - 65 + 1;
     }
   }
-
-  onlineModes = [
-    'SYNC',
-    'SYNIF',
-    'SYNCIF',
-    'OLNSYNC',
-    'ASYNC',
-    'ASYIF',
-    'ASYNIF',
-    'HYBR',
-    "ONLSYNC",
-  ];
-
-  oneHasOnline(crses: Course[]): boolean {
-    for (let crs of crses) {
-      if (this.hasOnline(crs)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  hasOnline(crs: Course) {
-    let secs = crs.sections;
-    if (secs === null || secs === undefined) {
-      secs = [];
-    }
-    for (let sec of secs) {
-      let deliv = this.getDeliveryMode(sec);
-      if (sec.name.startsWith('LEC') && this.onlineModes.includes(deliv)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  getDeliveryMode(sec: Section): string {
-    if (sec === null || sec === undefined) {
-      return 'INPER';
-    }
-    if (sec.deliveryModes === null || sec.deliveryModes === undefined) {
-      return 'INPER';
-    }
-    if (sec.deliveryModes[0] === null || sec.deliveryModes[0] === undefined) {
-      return 'INPER';
-    }
-    if (
-      sec.deliveryModes[0].mode === null ||
-      sec.deliveryModes[0].mode === undefined
-    ) {
-      return 'INPER';
-    }
-    return sec.deliveryModes[0].mode;
-  }
-
-  addSpacesBetweenSlashes(text: string): string {
-    // text = text.replace(/([^\s></])\/([^\s></])/g, "$1 / $2");
-    // return text;
-    const regex = /\/(?!([^<]+)?>)/g;
-
-    // Replace slashes with slashes followed by a space
-    const result = text.replace(regex, '/ ');
-
-    return result;
-  }
-
-  /**
-   * If text starts with <p> and ends with </p> then
-   * remove that.
-   * @param text HTML text.
-   */
-  stripWrappingPs(text: string): string {
-    text = text.trim();
-
-    while (text.endsWith('<br />')) {
-      text = text.slice(0, text.length - 6);
-      text = text.trim();
-    }
-    while (text.startsWith('<p>') && text.endsWith('</p>')) {
-      text = text.slice(3, text.length - 4);
-      text = text.trim();
-    }
-
-    return text;
-  }
 }
 
-
 export function forceNum(st: string | number): number {
-  if(typeof st === 'string'){
+  if (typeof st === 'string') {
     return parseInt(st);
-  } else{
+  } else {
     return st;
   }
 }
